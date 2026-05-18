@@ -1,0 +1,53 @@
+{
+  "vendors": [
+    {
+      "id": "v1",
+      "name": "Misha's Pizza",
+      "cuisine": "Italian",
+      "menu": [
+        {
+          "id": "m1",
+          "name": "Pizza Margherita",
+          "price": 180
+        },
+        {
+          "id": "m2",
+          "name": "Pizza Pepperoni",
+          "price": 220
+        }
+      ]
+    },
+    {
+      "id": "v2",
+      "name": "Denys's Burger",
+      "cuisine": "American",
+      "menu": [
+        {
+          "id": "m3",
+          "name": "Cheeseburger",
+          "price": 150
+        },
+        {
+          "id": "m4",
+          "name": "BBQ Burger",
+          "price": 190
+        }
+      ]
+    }
+  ],
+  "orders": [
+    {
+      "id": "42",
+      "vendorId": "v1",
+      "vendorName": "Misha's Pizza",
+      "items": "2x Pizza",
+      "status": "Ready for Pickup",
+      "distance": 3.2,
+      "fee": 64,
+      "customerAddress": "Dormitory CDV, Poznan",
+      "courierName": null,
+      "createdAt": "18:00"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
