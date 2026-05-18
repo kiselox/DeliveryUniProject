@@ -1,36 +1,106 @@
 {
+  "customers": [
+    {
+      "id": "c1",
+      "name": "Денис",
+      "address": "Dormitory CDV, Poznan"
+    }
+  ],
+  "couriers": [
+    {
+      "id": "cour1",
+      "name": "Курьер 1",
+      "vehicle": "Bicycle"
+    }
+  ],
   "vendors": [
     {
       "id": "v1",
-      "name": "Misha's Pizza",
-      "cuisine": "Italian",
+      "name": "KFC",
+      "cuisine": "Fast Food",
+      "imageUrl": "https://placehold.co/150x150/e0e0e0/333333?text=KFC",
       "menu": [
         {
           "id": "m1",
-          "name": "Pizza Margherita",
-          "price": 180
+          "name": "Zinger Burger",
+          "price": 25
         },
         {
           "id": "m2",
-          "name": "Pizza Pepperoni",
-          "price": 220
+          "name": "Chicken Wings",
+          "price": 20
         }
       ]
     },
     {
       "id": "v2",
-      "name": "Denys's Burger",
-      "cuisine": "American",
+      "name": "McDonald's",
+      "cuisine": "Fast Food",
+      "imageUrl": "https://placehold.co/150x150/e0e0e0/333333?text=McDonalds",
       "menu": [
         {
           "id": "m3",
-          "name": "Cheeseburger",
-          "price": 150
+          "name": "Big Mac",
+          "price": 22
         },
         {
           "id": "m4",
-          "name": "BBQ Burger",
-          "price": 190
+          "name": "Fries",
+          "price": 10
+        }
+      ]
+    },
+    {
+      "id": "v3",
+      "name": "Burger King",
+      "cuisine": "Fast Food",
+      "imageUrl": "https://placehold.co/150x150/e0e0e0/333333?text=Burger+King",
+      "menu": [
+        {
+          "id": "m5",
+          "name": "Whopper",
+          "price": 24
+        },
+        {
+          "id": "m6",
+          "name": "Onion Rings",
+          "price": 12
+        }
+      ]
+    },
+    {
+      "id": "v4",
+      "name": "Pasibus",
+      "cuisine": "Burgers",
+      "imageUrl": "https://placehold.co/150x150/e0e0e0/333333?text=Pasibus",
+      "menu": [
+        {
+          "id": "m7",
+          "name": "Standard Burger",
+          "price": 30
+        },
+        {
+          "id": "m8",
+          "name": "Cheese Fries",
+          "price": 18
+        }
+      ]
+    },
+    {
+      "id": "v5",
+      "name": "Misha's Pizza",
+      "cuisine": "Italian",
+      "imageUrl": "https://placehold.co/150x150/e0e0e0/333333?text=Pizza",
+      "menu": [
+        {
+          "id": "m9",
+          "name": "Pizza Margherita",
+          "price": 40
+        },
+        {
+          "id": "m10",
+          "name": "Pizza Pepperoni",
+          "price": 45
         }
       ]
     }
@@ -38,15 +108,99 @@
   "orders": [
     {
       "id": "42",
+      "customerId": "c1",
       "vendorId": "v1",
       "vendorName": "Misha's Pizza",
       "items": "2x Pizza",
       "status": "Ready for Pickup",
       "distance": 3.2,
       "fee": 64,
-      "customerAddress": "Dormitory CDV, Poznan",
-      "courierName": null,
+      "courierId": null,
       "createdAt": "18:00"
+    },
+    {
+      "customerId": "c1",
+      "vendorId": "v1",
+      "vendorName": "Misha's Pizza",
+      "items": "Pizza Margherita",
+      "status": "Ready for Pickup",
+      "distance": "2.5",
+      "fee": 36,
+      "courierId": null,
+      "createdAt": "21:58",
+      "id": "ncRteW7K6sY"
+    },
+    {
+      "customerId": "c1",
+      "vendorId": "v1",
+      "vendorName": "Misha's Pizza",
+      "items": "Pizza Margherita",
+      "status": "Ready for Pickup",
+      "distance": "2.2",
+      "fee": 36,
+      "courierId": null,
+      "createdAt": "22:14",
+      "id": "JA_LG4m4w5E"
+    },
+    {
+      "customerId": "c1",
+      "vendorId": "v1",
+      "vendorName": "Misha's Pizza",
+      "items": "Pizza Margherita",
+      "status": "Ready for Pickup",
+      "distance": "5.3",
+      "fee": 36,
+      "courierId": null,
+      "createdAt": "22:14",
+      "id": "GqM_7QX0-i4"
+    },
+    {
+      "customerId": "c1",
+      "vendorId": "v1",
+      "vendorName": "Misha's Pizza",
+      "items": "Pizza Margherita",
+      "status": "Ready for Pickup",
+      "distance": "3.0",
+      "fee": 36,
+      "courierId": null,
+      "createdAt": "22:18",
+      "id": "i_UTz9eWXxI"
+    },
+    {
+      "customerId": "c1",
+      "vendorId": "v1",
+      "vendorName": "KFC",
+      "items": "Zinger Burger",
+      "status": "Ready for Pickup",
+      "distance": "2.8",
+      "fee": 5,
+      "courierId": null,
+      "createdAt": "22:41",
+      "id": "8YEr2waztPQ"
+    },
+    {
+      "customerId": "c1",
+      "vendorId": "v2",
+      "vendorName": "McDonald's",
+      "items": "Big Mac",
+      "status": "Ready for Pickup",
+      "distance": "1.7",
+      "fee": 4,
+      "courierId": null,
+      "createdAt": "22:57",
+      "id": "RToBjfGog1c"
+    },
+    {
+      "customerId": "c1",
+      "vendorId": "v1",
+      "vendorName": "KFC",
+      "items": "3x Zinger Burger",
+      "status": "Ready for Pickup",
+      "distance": "4.2",
+      "fee": 15,
+      "courierId": null,
+      "createdAt": "00:21",
+      "id": "a1CM71ApVzQ"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

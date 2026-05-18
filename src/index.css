@@ -1,10 +1,390 @@
+:root {
+  --text: #333;
+  --bg: #f9f9f9;
+  --border: #e5e4e7;
+  --accent: #aa3bff;
+  --green: #00d26a;
+}
+
 body {
   margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg);
+  color: var(--text);
 }
 
 * {
   box-sizing: border-box;
+}
+
+/* ================== App.jsx Styles ================== */
+.home-container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.home-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.btn-role {
+  padding: 15px 25px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  transition: transform 0.2s;
+}
+
+.btn-role:hover {
+  transform: scale(1.05);
+}
+
+.main-nav {
+  padding: 15px;
+  background: #fff;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ccc;
+}
+
+.nav-link {
+  margin-right: 15px;
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+}
+
+/* ================== Customer Layout ================== */
+.customer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.btn-back {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 20px;
+  padding: 0;
+}
+
+/* ================== Header ================== */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+.header-address {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.header-search {
+  display: flex;
+  align-items: center;
+  border: 2px solid #333;
+  border-radius: 30px;
+  padding: 8px 20px;
+  background-color: #fff;
+  width: 350px;
+}
+
+.header-search input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 16px;
+}
+
+.profile-icon {
+  width: 45px;
+  height: 45px;
+  background-color: #000;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+}
+
+/* ================== Restaurant Grid ================== */
+.restaurants-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 40px;
+  margin-top: 40px;
+  background-color: #e8e8e8;
+  padding: 40px;
+  border-radius: 16px;
+}
+
+.restaurant-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.restaurant-card:hover {
+  transform: translateY(-5px);
+}
+
+.restaurant-image-wrapper {
+  width: 160px;
+  height: 160px;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.restaurant-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.restaurant-name {
+  font-size: 16px;
+  color: #333;
+  text-align: center;
+}
+
+/* ================== Figma Menu Redesign ================== */
+.vendor-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 50px;
+  background: #fff;
+  border-radius: 20px;
+  padding-bottom: 30px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.vendor-hero-img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.vendor-logo-wrapper {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #fff;
+  margin-top: -60px;
+  background: #fff;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  z-index: 2;
+}
+
+.vendor-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vendor-hero-title {
+  font-size: 32px;
+  margin: 15px 0 20px;
+  font-weight: 800;
+}
+
+.vendor-search-bar {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  padding: 10px 20px;
+  width: 400px;
+  background-color: #fff;
+}
+
+.vendor-search-bar input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 16px;
+}
+
+.section-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.menu-item-card-figma {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #eee;
+  transition: transform 0.2s;
+}
+
+.menu-item-card-figma:hover {
+  transform: translateY(-3px);
+}
+
+.menu-item-image-wrapper {
+  width: 100%;
+  height: 200px;
+  background: #f0f0f0;
+}
+
+.menu-item-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.menu-item-info {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.menu-item-name {
+  font-size: 18px;
+  color: #333;
+}
+
+.menu-item-price {
+  color: var(--green);
+  margin-top: 8px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.btn-add-cart {
+  padding: 12px;
+  background: #fff;
+  color: #333;
+  border: none;
+  border-top: 1px solid #eee;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+  transition: background 0.2s;
+}
+
+.btn-add-cart:hover {
+  background: #f9f9f9;
+  color: var(--green);
+}
+
+/* ================== Floating Cart ================== */
+.floating-cart-btn {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  width: 70px;
+  height: 70px;
+  background-color: var(--green);
+  border-radius: 50%;
+  border: none;
+  box-shadow: 0 6px 16px rgba(0, 210, 106, 0.4);
+  font-size: 30px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.2s;
+  z-index: 100;
+}
+
+.floating-cart-btn:hover {
+  transform: scale(1.1);
+}
+
+.floating-cart-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.cart-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #ff3b30;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #fff;
+}
+
+/* ================== Quantity Controls ================== */
+.quantity-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 15px;
+  background: #f9f9f9;
+  border-top: 1px solid #eee;
+}
+
+.btn-qty {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s;
+  color: #333;
+}
+
+.btn-qty:hover {
+  background: #e0e0e0;
+}
+
+.qty-value {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
 }
