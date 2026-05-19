@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router';
 
-import CustomerMain from './pages/customer/CustomerMain';
-import CustomerMenu from './pages/customer/CustomerMenu';
+import CustomerMain from './pages/Customer/CustomerMain';
+import CustomerMenu from './pages/Customer/CustomerMenu';
 import Courier from './pages/Courier';
 import Admin from './pages/Admin';
 

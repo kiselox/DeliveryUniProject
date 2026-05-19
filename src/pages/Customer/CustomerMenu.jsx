@@ -11,8 +11,9 @@ export default function CustomerMenu() {
   const { id: customerId, vendorId } = useParams();
   const navigate = useNavigate();
   
-  // cart: { [itemId]: quantity }
   const [cart, setCart] = useState({});
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const { data: customer } = useQuery({
     queryKey: ['customer', customerId],
@@ -29,6 +30,7 @@ export default function CustomerMenu() {
     onSuccess: () => {
       alert('Заказ успешно оформлен и передан курьеру!');
       setCart({});
+      setIsCartOpen(false);
       navigate(`/customer/${customerId}`);
     }
   });
@@ -54,12 +56,18 @@ export default function CustomerMenu() {
 
   const totalItems = Object.values(cart).reduce((sum, q) => sum + q, 0);
 
+  // Логика поиска
+  const filteredMenu = vendor?.menu.filter(item => 
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  ) || [];
+
   const handleCheckout = () => {
     if (totalItems === 0) return;
     
     const cartItems = vendor.menu.filter(item => cart[item.id]);
     const itemsString = cartItems.map(item => `${cart[item.id]}x ${item.name}`).join(', ');
     const totalFee = cartItems.reduce((sum, item) => sum + Math.round(item.price * 0.2) * cart[item.id], 0);
+    const orderTotal = cartItems.reduce((sum, item) => sum + (item.price * cart[item.id]), 0);
     
     const orderData = {
       customerId: customerId,
@@ -69,6 +77,7 @@ export default function CustomerMenu() {
       status: "Ready for Pickup",
       distance: (Math.random() * 5 + 1).toFixed(1),
       fee: totalFee,
+      totalPrice: orderTotal + totalFee,
       courierId: null,
       createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
@@ -77,6 +86,11 @@ export default function CustomerMenu() {
 
   if (isLoading) return <div className="customer-container">Загрузка меню ресторана...</div>;
   if (isError || !vendor) return <div className="customer-container">Ошибка загрузки ресторана!</div>;
+
+  // Данные для модалки корзины
+  const cartItemsData = vendor.menu.filter(item => cart[item.id] > 0);
+  const totalFoodPrice = cartItemsData.reduce((sum, item) => sum + (item.price * cart[item.id]), 0);
+  const totalDeliveryFee = cartItemsData.reduce((sum, item) => sum + Math.round(item.price * 0.2) * cart[item.id], 0);
 
   return (
     <div className="customer-container">
@@ -98,35 +112,91 @@ export default function CustomerMenu() {
         <h2 className="vendor-hero-title">{vendor.name}</h2>
         
         <div className="vendor-search-bar">
-          <input type="text" placeholder="Search menu..." />
+          <input 
+            type="text" 
+            placeholder="Search menu..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
           <span>🔍</span>
         </div>
       </div>
 
       <div className="menu-section">
         <h3 className="section-title">Popular Items</h3>
-        <div className="menu-grid">
-          {vendor.menu.map(item => (
-            <MenuItemCard 
-              key={item.id} 
-              item={item} 
-              quantity={cart[item.id] || 0}
-              onAdd={() => handleAddToCart(item)} 
-              onRemove={() => handleRemoveFromCart(item)}
-            />
-          ))}
-        </div>
+        
+        {filteredMenu.length === 0 ? (
+          <p>Ничего не найдено по вашему запросу "{searchTerm}"</p>
+        ) : (
+          <div className="menu-grid">
+            {filteredMenu.map(item => (
+              <MenuItemCard 
+                key={item.id} 
+                item={item} 
+                quantity={cart[item.id] || 0}
+                onAdd={() => handleAddToCart(item)} 
+                onRemove={() => handleRemoveFromCart(item)}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Плавающая кнопка корзины (теперь всегда видна, но может быть disabled) */}
+      {/* Плавающая кнопка корзины */}
       <button 
         className="floating-cart-btn" 
-        onClick={handleCheckout}
+        onClick={() => setIsCartOpen(true)}
         disabled={totalItems === 0 || mutation.isPending}
       >
         🛒
         {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
       </button>
+
+      {/* Модальное окно Корзины */}
+      {isCartOpen && (
+        <div className="modal-overlay" onClick={() => setIsCartOpen(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Ваша Корзина</h2>
+              <button className="btn-close" onClick={() => setIsCartOpen(false)}>×</button>
+            </div>
+            
+            {cartItemsData.length === 0 ? (
+              <p>Ваша корзина пуста.</p>
+            ) : (
+              <>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                  {cartItemsData.map(item => (
+                    <MenuItemCard 
+                      key={`cart-${item.id}`} 
+                      item={item} 
+                      quantity={cart[item.id]}
+                      onAdd={() => handleAddToCart(item)} 
+                      onRemove={() => handleRemoveFromCart(item)}
+                    />
+                  ))}
+                </div>
+                
+                <div className="modal-total">
+                  <div>Стоимость блюд: {totalFoodPrice} PLN</div>
+                  <div style={{ color: '#888', fontSize: '16px' }}>Доставка: {totalDeliveryFee} PLN</div>
+                  <div style={{ marginTop: '10px', fontSize: '24px', color: 'var(--green)' }}>
+                    Итого: {totalFoodPrice + totalDeliveryFee} PLN
+                  </div>
+                </div>
+
+                <button 
+                  className="btn-confirm-order" 
+                  onClick={handleCheckout}
+                  disabled={mutation.isPending}
+                >
+                  {mutation.isPending ? 'Оформляем заказ...' : 'Подтвердить заказ'}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
