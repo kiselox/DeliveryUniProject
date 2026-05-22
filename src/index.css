@@ -560,3 +560,9 @@ body {
   transform: none;
   box-shadow: none;
 }
+
+/* Leaflet marker container overrides to make dynamic markers display perfectly without white squares */
+.leaflet-div-icon {
+  background: transparent !important;
+  border: none !important;
+}

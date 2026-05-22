@@ -14,7 +14,9 @@ function Home() {
       <h2>Войти как:</h2>
       <div className="home-buttons">
         <button onClick={() => navigate('/customer/c1')} className="btn-role">🛒 Денис (Клиент)</button>
-        <button onClick={() => navigate('/courier/cour1')} className="btn-role">🛵 Курьер 1</button>
+        <button onClick={() => navigate('/courier/cour1')} className="btn-role">🚲 Курьер 1 (Velo)</button>
+        <button onClick={() => navigate('/courier/cour2')} className="btn-role">🛴 Курьер 2 (Scooter)</button>
+        <button onClick={() => navigate('/courier/cour3')} className="btn-role">🚗 Курьер 3 (Car)</button>
         <button onClick={() => navigate('/admin')} className="btn-role">💻 Саппорт (Админ)</button>
       </div>
     </div>

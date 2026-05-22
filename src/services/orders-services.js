@@ -8,6 +8,10 @@ const orderServices = {
     async getOrders() {
         const response = await api.get("/orders");
         return response.data;
+    },
+    async updateOrder(orderId, updates) {
+        const response = await api.patch(`/orders/${orderId}`, updates);
+        return response.data;
     }
 }
 

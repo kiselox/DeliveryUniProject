@@ -3,14 +3,32 @@
     {
       "id": "c1",
       "name": "Денис",
-      "address": "Dormitory CDV, Poznan"
+      "address": "Dormitory CDV, Poznan",
+      "lat": 52.414,
+      "lng": 16.9295
     }
   ],
   "couriers": [
     {
       "id": "cour1",
       "name": "Курьер 1",
-      "vehicle": "Bicycle"
+      "vehicle": "Bicycle",
+      "lat": 52.414,
+      "lng": 16.9295
+    },
+    {
+      "id": "cour2",
+      "name": "Курьер 2",
+      "vehicle": "Scooter",
+      "lat": 52.414,
+      "lng": 16.9295
+    },
+    {
+      "id": "cour3",
+      "name": "Курьер 3",
+      "vehicle": "Car",
+      "lat": 52.414,
+      "lng": 16.9295
     }
   ],
   "vendors": [
@@ -30,7 +48,9 @@
           "name": "Chicken Wings",
           "price": 20
         }
-      ]
+      ],
+      "lat": 52.4018,
+      "lng": 16.9205
     },
     {
       "id": "v2",
@@ -48,7 +68,9 @@
           "name": "Fries",
           "price": 10
         }
-      ]
+      ],
+      "lat": 52.4023,
+      "lng": 16.9261
     },
     {
       "id": "v3",
@@ -66,7 +88,9 @@
           "name": "Onion Rings",
           "price": 12
         }
-      ]
+      ],
+      "lat": 52.4029,
+      "lng": 16.9125
     },
     {
       "id": "v4",
@@ -84,7 +108,9 @@
           "name": "Cheese Fries",
           "price": 18
         }
-      ]
+      ],
+      "lat": 52.4048,
+      "lng": 16.9255
     },
     {
       "id": "v5",
@@ -102,7 +128,9 @@
           "name": "Pizza Pepperoni",
           "price": 45
         }
-      ]
+      ],
+      "lat": 52.4115,
+      "lng": 16.9068
     }
   ],
   "orders": [
@@ -112,10 +140,10 @@
       "vendorId": "v1",
       "vendorName": "Misha's Pizza",
       "items": "2x Pizza",
-      "status": "Ready for Pickup",
+      "status": "Delivered",
       "distance": 3.2,
       "fee": 64,
-      "courierId": null,
+      "courierId": "cour1",
       "createdAt": "18:00"
     },
     {
@@ -123,10 +151,10 @@
       "vendorId": "v1",
       "vendorName": "Misha's Pizza",
       "items": "Pizza Margherita",
-      "status": "Ready for Pickup",
+      "status": "Delivering",
       "distance": "2.5",
       "fee": 36,
-      "courierId": null,
+      "courierId": "cour1",
       "createdAt": "21:58",
       "id": "ncRteW7K6sY"
     },
@@ -135,10 +163,10 @@
       "vendorId": "v1",
       "vendorName": "Misha's Pizza",
       "items": "Pizza Margherita",
-      "status": "Ready for Pickup",
+      "status": "Delivered",
       "distance": "2.2",
       "fee": 36,
-      "courierId": null,
+      "courierId": "cour1",
       "createdAt": "22:14",
       "id": "JA_LG4m4w5E"
     },
@@ -147,257 +175,221 @@
       "vendorId": "v1",
       "vendorName": "Misha's Pizza",
       "items": "Pizza Margherita",
-      "status": "Ready for Pickup",
+      "status": "Delivered",
       "distance": "5.3",
       "fee": 36,
-      "courierId": null,
+      "courierId": "cour1",
       "createdAt": "22:14",
       "id": "GqM_7QX0-i4"
     },
     {
       "customerId": "c1",
       "vendorId": "v1",
-      "vendorName": "Misha's Pizza",
-      "items": "Pizza Margherita",
-      "status": "Ready for Pickup",
-      "distance": "3.0",
-      "fee": 36,
-      "courierId": null,
-      "createdAt": "22:18",
-      "id": "i_UTz9eWXxI"
+      "vendorName": "KFC",
+      "items": "4x Zinger Burger",
+      "status": "Delivered",
+      "distance": "3.8",
+      "fee": 20,
+      "totalPrice": 120,
+      "courierId": "cour1",
+      "createdAt": "10:47",
+      "id": "MgBpNxYcqFc"
     },
     {
       "customerId": "c1",
       "vendorId": "v1",
       "vendorName": "KFC",
-      "items": "Zinger Burger",
-      "status": "Ready for Pickup",
-      "distance": "2.8",
-      "fee": 5,
-      "courierId": null,
-      "createdAt": "22:41",
-      "id": "8YEr2waztPQ"
+      "items": "1x Chicken Wings",
+      "status": "Delivered",
+      "distance": "3.7",
+      "fee": 4,
+      "totalPrice": 24,
+      "courierId": "cour1",
+      "createdAt": "10:47",
+      "id": "Yiwa-95OajQ"
+    },
+    {
+      "customerId": "c1",
+      "vendorId": "v1",
+      "vendorName": "KFC",
+      "items": "1x Chicken Wings",
+      "status": "Delivered",
+      "distance": 0,
+      "fee": 4,
+      "totalPrice": 24,
+      "courierId": "cour1",
+      "createdAt": "13:05",
+      "id": "rBlZa_U50qU"
     },
     {
       "customerId": "c1",
       "vendorId": "v2",
       "vendorName": "McDonald's",
-      "items": "Big Mac",
-      "status": "Ready for Pickup",
-      "distance": "1.7",
-      "fee": 4,
-      "courierId": null,
-      "createdAt": "22:57",
-      "id": "RToBjfGog1c"
+      "items": "2x Fries",
+      "status": "Delivered",
+      "distance": 0,
+      "fee": 309,
+      "totalPrice": 24,
+      "courierId": "cour1",
+      "createdAt": "13:22",
+      "deliveryAddress": "Jeżyce",
+      "id": "NbHeT-Y3cxY",
+      "coefficient": 3
     },
     {
+      "id": "aq621wtpc",
       "customerId": "c1",
-      "vendorId": "v1",
-      "vendorName": "KFC",
-      "items": "3x Zinger Burger",
-      "status": "Ready for Pickup",
-      "distance": "4.2",
-      "fee": 15,
-      "courierId": null,
-      "createdAt": "00:21",
-      "id": "a1CM71ApVzQ"
+      "vendorId": "v2",
+      "vendorName": "McDonald's",
+      "items": "2x Fries",
+      "status": "Delivered",
+      "distance": 1.7,
+      "fee": 261,
+      "totalPrice": 24,
+      "courierId": "cour2",
+      "createdAt": "13:39",
+      "deliveryAddress": "Jeżyce",
+      "deliveryLat": 52.4115,
+      "deliveryLng": 16.9068,
+      "coefficient": 3
     },
     {
+      "id": "xy4llju9g",
       "customerId": "c1",
-      "vendorId": "v3",
-      "vendorName": "Burger King",
-      "items": "1x Onion Rings",
-      "status": "Ready for Pickup",
-      "distance": "5.2",
-      "fee": 2,
-      "courierId": null,
-      "createdAt": "00:30",
-      "id": "it4nT63WZ7g"
+      "vendorId": "v5",
+      "vendorName": "Misha's Pizza",
+      "items": "2x Pizza Pepperoni",
+      "status": "Delivered",
+      "distance": 1.4,
+      "fee": 183,
+      "totalPrice": 108,
+      "courierId": "cour1",
+      "createdAt": "13:40",
+      "deliveryAddress": "Malta",
+      "deliveryLat": 52.4018,
+      "deliveryLng": 16.9205
     },
     {
+      "id": "r1i0hoh6i",
       "customerId": "c1",
-      "vendorId": "v1",
-      "vendorName": "KFC",
-      "items": "2x Zinger Burger",
-      "status": "Ready for Pickup",
-      "distance": "1.7",
+      "vendorId": "v4",
+      "vendorName": "Pasibus",
+      "items": "4x Cheese Fries",
+      "status": "Delivered",
+      "distance": 0.6,
+      "fee": 8,
+      "totalPrice": 88,
+      "courierId": "cour1",
+      "createdAt": "13:42",
+      "deliveryAddress": "Grunwald",
+      "deliveryLat": 52.40055064770348,
+      "deliveryLng": 16.930126511090577
+    },
+    {
+      "id": "pttm72i86",
+      "customerId": "c1",
+      "vendorId": "v2",
+      "vendorName": "McDonald's",
+      "items": "1x Fries",
+      "status": "Delivered",
+      "distance": 1.7,
       "fee": 10,
-      "courierId": null,
-      "createdAt": "00:34",
-      "id": "JUL4LquoopQ"
+      "totalPrice": 12,
+      "courierId": "cour1",
+      "createdAt": "13:59",
+      "deliveryAddress": "Jeżyce 43",
+      "deliveryLat": 52.4115,
+      "deliveryLng": 16.9068
     },
     {
-      "customerId": "c1",
-      "vendorId": "v1",
-      "vendorName": "KFC",
-      "items": "3x Chicken Wings",
-      "status": "Ready for Pickup",
-      "distance": "2.4",
-      "fee": 12,
-      "courierId": null,
-      "createdAt": "00:34",
-      "id": "TSYHV5aa5S8"
-    },
-    {
-      "customerId": "c1",
-      "vendorId": "v1",
-      "vendorName": "KFC",
-      "items": "3x Zinger Burger",
-      "status": "Ready for Pickup",
-      "distance": "4.6",
-      "fee": 15,
-      "courierId": null,
-      "createdAt": "00:35",
-      "id": "nNkppyREPP0"
-    },
-    {
-      "customerId": "c1",
-      "vendorId": "v1",
-      "vendorName": "KFC",
-      "items": "4x Zinger Burger",
-      "status": "Ready for Pickup",
-      "distance": "1.2",
-      "fee": 20,
-      "courierId": null,
-      "createdAt": "00:37",
-      "id": "7LHsBrE38ak"
-    },
-    {
-      "customerId": "c1",
-      "vendorId": "v1",
-      "vendorName": "KFC",
-      "items": "2x Zinger Burger",
-      "status": "Ready for Pickup",
-      "distance": "2.8",
-      "fee": 10,
-      "courierId": null,
-      "createdAt": "00:37",
-      "id": "a3XOVRkwags"
-    },
-    {
+      "id": "bcssmfmx4",
       "customerId": "c1",
       "vendorId": "v4",
       "vendorName": "Pasibus",
       "items": "1x Cheese Fries",
-      "status": "Ready for Pickup",
-      "distance": "1.8",
-      "fee": 4,
-      "courierId": null,
-      "createdAt": "00:38",
-      "id": "pzk3J7-qROk"
+      "status": "Delivered",
+      "distance": 1.1,
+      "fee": 130,
+      "totalPrice": 22,
+      "courierId": "cour1",
+      "createdAt": "14:00",
+      "deliveryAddress": "Dormitory CDV, Poznan",
+      "deliveryLat": 52.414,
+      "deliveryLng": 16.9295,
+      "coefficient": 3
     },
     {
-      "customerId": "c1",
-      "vendorId": "v1",
-      "vendorName": "KFC",
-      "items": "1x Zinger Burger",
-      "status": "Ready for Pickup",
-      "distance": "3.2",
-      "fee": 5,
-      "courierId": null,
-      "createdAt": "00:41",
-      "id": "oRRTpuSouHg"
-    },
-    {
+      "id": "wnffcg0ed",
       "customerId": "c1",
       "vendorId": "v1",
       "vendorName": "KFC",
       "items": "1x Chicken Wings",
-      "status": "Ready for Pickup",
-      "distance": "4.0",
-      "fee": 4,
-      "courierId": null,
-      "createdAt": "00:42",
-      "id": "hfWMr1oHKE0"
-    },
-    {
-      "customerId": "c1",
-      "vendorId": "v1",
-      "vendorName": "KFC",
-      "items": "1x Zinger Burger",
-      "status": "Ready for Pickup",
-      "distance": "1.2",
-      "fee": 5,
-      "courierId": null,
-      "createdAt": "00:44",
-      "id": "dhawak68_ck"
-    },
-    {
-      "customerId": "c1",
-      "vendorId": "v1",
-      "vendorName": "KFC",
-      "items": "1x Zinger Burger",
-      "status": "Ready for Pickup",
-      "distance": "3.1",
-      "fee": 5,
-      "courierId": null,
-      "createdAt": "00:46",
-      "id": "tGdykW6Qyl0"
-    },
-    {
-      "customerId": "c1",
-      "vendorId": "v1",
-      "vendorName": "KFC",
-      "items": "1x Chicken Wings",
-      "status": "Ready for Pickup",
-      "distance": "3.0",
-      "fee": 4,
-      "courierId": null,
-      "createdAt": "00:48",
-      "id": "aRMFAequDCE"
-    },
-    {
-      "customerId": "c1",
-      "vendorId": "v1",
-      "vendorName": "KFC",
-      "items": "1x Zinger Burger, 38x Chicken Wings",
-      "status": "Ready for Pickup",
-      "distance": "4.4",
-      "fee": 157,
-      "totalPrice": 942,
-      "courierId": null,
-      "createdAt": "00:59",
-      "id": "iiOZgLM-zLU"
-    },
-    {
-      "customerId": "c1",
-      "vendorId": "v1",
-      "vendorName": "KFC",
-      "items": "1x Zinger Burger, 4x Chicken Wings",
-      "status": "Ready for Pickup",
-      "distance": "2.1",
-      "fee": 21,
-      "totalPrice": 126,
-      "courierId": null,
-      "createdAt": "01:01",
-      "id": "PhgP8oX2G-M"
-    },
-    {
-      "customerId": "c1",
-      "vendorId": "v1",
-      "vendorName": "KFC",
-      "items": "3x Zinger Burger",
-      "status": "Ready for Pickup",
-      "distance": "1.6",
+      "status": "Delivered",
+      "distance": 3.7,
       "fee": 15,
-      "totalPrice": 90,
-      "courierId": null,
-      "createdAt": "01:02",
-      "id": "VQ5ZGbec8hs"
+      "totalPrice": 35,
+      "courierId": "cour1",
+      "createdAt": "14:35",
+      "deliveryAddress": "towarowa",
+      "deliveryLat": 52.42960946970467,
+      "deliveryLng": 16.951131820678714,
+      "house": "345",
+      "apartment": "345",
+      "floor": "45",
+      "notes": "",
+      "phone": "5645643573457",
+      "coefficient": 3
     },
     {
+      "id": "23np7ny7c",
       "customerId": "c1",
       "vendorId": "v1",
       "vendorName": "KFC",
-      "items": "4x Zinger Burger",
-      "status": "Ready for Pickup",
-      "distance": "3.5",
-      "fee": 20,
-      "totalPrice": 120,
-      "courierId": null,
-      "createdAt": "01:05",
-      "id": "t9uPwkpXT4M"
+      "items": "1x Chicken Wings",
+      "status": "Delivered",
+      "distance": 1.9,
+      "fee": 8,
+      "totalPrice": 28,
+      "courierId": "cour1",
+      "createdAt": "14:46",
+      "deliveryAddress": "Dormitory CDV, Poznan",
+      "deliveryLat": 52.41600052157586,
+      "deliveryLng": 16.936626434326175,
+      "house": "453",
+      "apartment": "4",
+      "floor": "2",
+      "notes": "",
+      "phone": "25",
+      "coefficient": 3
+    },
+    {
+      "id": "6y9ulmbdh",
+      "customerId": "c1",
+      "vendorId": "v1",
+      "vendorName": "KFC",
+      "items": "1x Zinger Burger, 1x Chicken Wings",
+      "status": "Delivered",
+      "distance": 1.5,
+      "fee": 6,
+      "totalPrice": 51,
+      "courierId": "cour1",
+      "createdAt": "15:12",
+      "deliveryAddress": "Dormitory CDV (Моя геопозиция)",
+      "deliveryLat": 52.41445918056493,
+      "deliveryLng": 16.926386985221484,
+      "house": "45",
+      "apartment": "4235",
+      "floor": "4235",
+      "notes": "5625426",
+      "phone": "42352",
+      "coefficient": 1.4000000000000004
     }
   ],
-  "$schema": "./node_modules/json-server/schema.json"
+  "$schema": "./node_modules/json-server/schema.json",
+  "settings": {
+    "pricePerKm": 4,
+    "scooterPricePerKm": 5.5,
+    "carPricePerKm": 7,
+    "globalSurcharge": 0
+  }
 }
