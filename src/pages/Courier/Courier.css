@@ -1,0 +1,125 @@
+/* src/pages/Courier/Courier.css */
+
+/* Custom Courier styling and glassmorphic panels */
+
+.courier-header-profile {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.profile-grid-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.courier-dashboard-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+@media (max-width: 900px) {
+  .courier-dashboard-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.leaflet-map-wrapper {
+  height: 480px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  z-index: 5;
+}
+
+.active-order-glass-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  text-align: left;
+}
+
+.btn-courier-action {
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  border: none;
+  font-size: 16px;
+  fontWeight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-align: center;
+}
+
+.btn-gmaps-link {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 15px;
+  fontWeight: bold;
+  text-decoration: none;
+  text-align: center;
+  margin-top: 15px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-gmaps-link:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.available-orders-list-panel {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 25px;
+  text-align: left;
+}
+
+.order-pickup-row-card {
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 12px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.order-pickup-row-card:hover {
+  border-color: rgba(170, 59, 255, 0.4);
+  background-color: rgba(170, 59, 255, 0.05);
+}
+
+.verification-code-input-box {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-size: 20px;
+  letter-spacing: 4px;
+  text-align: center;
+  font-weight: bold;
+  box-sizing: border-box;
+}
+
+.verification-code-input-box:focus {
+  border-color: #aa3bff;
+  box-shadow: 0 0 10px rgba(170, 59, 255, 0.4);
+  outline: none;
+}

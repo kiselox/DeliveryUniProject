@@ -1,3 +1,4 @@
+// src/pages/Customer/CustomerMain.jsx
 import React from 'react';
 import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
@@ -5,6 +6,7 @@ import vendorsServices from '../../services/vendors-services';
 import customerServices from '../../services/customer-services';
 import Header from '../../components/Header';
 import RestaurantCard from '../../components/RestaurantCard';
+import SupportChatWidget from '../../components/SupportChatWidget';
 
 export default function CustomerMain() {
   const { id: customerId } = useParams();
@@ -35,6 +37,12 @@ export default function CustomerMain() {
           />
         ))}
       </div>
+
+      <SupportChatWidget 
+        userType="customer"
+        userId={customerId}
+        userName={customer?.name || "Клиент"}
+      />
     </div>
   );
 }

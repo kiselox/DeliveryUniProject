@@ -6,6 +6,13 @@
       "address": "Dormitory CDV, Poznan",
       "lat": 52.414,
       "lng": 16.9295
+    },
+    {
+      "id": "c_1779574359459",
+      "name": "матвей",
+      "address": "мама",
+      "lat": 52.414,
+      "lng": 16.9295
     }
   ],
   "couriers": [
@@ -13,20 +20,27 @@
       "id": "cour1",
       "name": "Курьер 1",
       "vehicle": "Bicycle",
-      "lat": 52.414,
-      "lng": 16.9295
+      "lat": 52.41447294241372,
+      "lng": 16.926435355234762
     },
     {
       "id": "cour2",
       "name": "Курьер 2",
       "vehicle": "Scooter",
-      "lat": 52.414,
-      "lng": 16.9295
+      "lat": 52.41441332483677,
+      "lng": 16.92644761450823
     },
     {
       "id": "cour3",
       "name": "Курьер 3",
       "vehicle": "Car",
+      "lat": 52.414,
+      "lng": 16.9295
+    },
+    {
+      "id": "cour_1779574066447",
+      "name": "меганайт",
+      "vehicle": "Bicycle",
       "lat": 52.414,
       "lng": 16.9295
     }
@@ -383,13 +397,176 @@
       "notes": "5625426",
       "phone": "42352",
       "coefficient": 1.4000000000000004
+    },
+    {
+      "id": "ae5c71p0j",
+      "customerId": "c1",
+      "vendorId": "v2",
+      "vendorName": "McDonald's",
+      "items": "3x Fries",
+      "status": "Delivered",
+      "distance": 1.6,
+      "fee": 6,
+      "totalPrice": 36,
+      "courierId": "cour1",
+      "createdAt": "01:48",
+      "deliveryAddress": "Dormitory CDV (Моя геопозиция)",
+      "deliveryLat": 52.41321564909596,
+      "deliveryLng": 16.91027641296387,
+      "house": "43",
+      "apartment": "52",
+      "floor": "67",
+      "notes": "",
+      "phone": "4123431234",
+      "coefficient": 1.5000000000000004
+    },
+    {
+      "id": "tabkv3fyt",
+      "customerId": "c1",
+      "vendorId": "v2",
+      "vendorName": "McDonald's",
+      "items": "2x Fries",
+      "status": "Ready for Pickup",
+      "distance": 1,
+      "fee": 5,
+      "totalPrice": 25,
+      "courierId": null,
+      "createdAt": "01:49",
+      "deliveryAddress": "Dormitory CDV, Poznan",
+      "deliveryLat": 52.411443365953275,
+      "deliveryLng": 16.92606925964356,
+      "house": "52",
+      "apartment": "67",
+      "floor": "",
+      "notes": "",
+      "phone": "23423432",
+      "coefficient": 3
+    },
+    {
+      "id": "7xljd5ykw",
+      "customerId": "c1",
+      "vendorId": "v1",
+      "vendorName": "KFC",
+      "items": "1x Chicken Wings",
+      "status": "Delivered",
+      "distance": 1.5,
+      "fee": 6,
+      "totalPrice": 26,
+      "courierId": "cour1",
+      "createdAt": "21:47",
+      "deliveryAddress": "Dormitory CDV (Моя геопозиция)",
+      "deliveryLat": 52.41456086793766,
+      "deliveryLng": 16.912593841552738,
+      "house": "5643",
+      "apartment": "53",
+      "floor": "36",
+      "notes": "",
+      "phone": "3456",
+      "coefficient": 1.1
+    },
+    {
+      "id": "muk77h3yf",
+      "customerId": "c1",
+      "vendorId": "v2",
+      "vendorName": "McDonald's",
+      "items": "1x Fries",
+      "status": "Delivered",
+      "distance": 9.3,
+      "fee": 37,
+      "totalPrice": 47,
+      "courierId": "cour3",
+      "createdAt": "21:50",
+      "deliveryAddress": "Dormitory CDV, Poznan",
+      "deliveryLat": 52.39160881656263,
+      "deliveryLng": 16.790885925292972,
+      "house": "2345",
+      "apartment": "32415",
+      "floor": "1235",
+      "notes": "",
+      "phone": "4135",
+      "coefficient": 2
+    },
+    {
+      "id": "erwjw0me2",
+      "customerId": "c1",
+      "vendorId": "v2",
+      "vendorName": "McDonald's",
+      "items": "1x Fries",
+      "status": "Delivered",
+      "distance": 5.5,
+      "fee": 22,
+      "totalPrice": 32,
+      "courierId": "cour1",
+      "createdAt": "21:54",
+      "deliveryAddress": "Dormitory CDV, Poznan",
+      "deliveryLat": 52.42595615771326,
+      "deliveryLng": 16.855430603027347,
+      "house": "5463",
+      "apartment": "564",
+      "floor": "5346",
+      "notes": "",
+      "phone": "3546",
+      "coefficient": 3,
+      "acceptedAt": "2026-05-25T05:24:58.198Z",
+      "pickedUpAt": "2026-05-25T05:25:07.455Z"
+    },
+    {
+      "id": "zec3kkips",
+      "customerId": "c1",
+      "vendorId": "v1",
+      "vendorName": "KFC",
+      "items": "1x Chicken Wings",
+      "status": "Ready for Pickup",
+      "distance": 1.5,
+      "fee": 6,
+      "totalPrice": 26,
+      "courierId": null,
+      "createdAt": "23:22",
+      "deliveryAddress": "Dormitory CDV, Poznan",
+      "deliveryLat": 52.41551372349898,
+      "deliveryLng": 16.917164325714115,
+      "house": "435",
+      "apartment": "453",
+      "floor": "453",
+      "notes": "",
+      "phone": "4532",
+      "coefficient": 3
     }
   ],
   "$schema": "./node_modules/json-server/schema.json",
   "settings": {
     "pricePerKm": 4,
     "scooterPricePerKm": 5.5,
-    "carPricePerKm": 7,
+    "carPricePerKm": 6.5,
     "globalSurcharge": 0
-  }
+  },
+  "messages": [
+    {
+      "id": "mxz4hfs4k",
+      "chatId": "order-ncRteW7K6sY",
+      "senderId": "c1",
+      "senderName": "Денис",
+      "role": "customer",
+      "text": "павп",
+      "timestamp": "2026-05-23T22:05:35.026Z"
+    },
+    {
+      "id": "uvcqpn5yb",
+      "chatId": "general-c1",
+      "senderId": "c1",
+      "senderName": "Денис",
+      "role": "customer",
+      "text": "выап",
+      "timestamp": "2026-05-23T22:05:45.927Z"
+    },
+    {
+      "id": "hre27y66w",
+      "chatId": "order-ncRteW7K6sY",
+      "senderId": "admin",
+      "senderName": "Поддержка POLONEZ",
+      "role": "admin",
+      "text": "ты вася",
+      "timestamp": "2026-05-23T22:06:06.821Z"
+    }
+  ]
 }

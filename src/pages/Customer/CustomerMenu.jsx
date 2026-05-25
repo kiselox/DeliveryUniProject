@@ -1,11 +1,16 @@
+// src/pages/Customer/CustomerMenu.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import L from 'leaflet';
 import vendorsServices from '../../services/vendors-services';
 import customerServices from '../../services/customer-services';
-import orderServices from '../../services/orders-services';
 import Header from '../../components/Header';
 import MenuItemCard from '../../components/MenuItemCard';
+import CartDrawer from './components/CartDrawer';
+import { useOrders } from '../../hooks/useOrders';
+import SupportChatWidget from '../../components/SupportChatWidget';
+import './Customer.css';
 
 const PRESET_COORDINATES = {
   'Półwiejska': { lat: 52.4023, lng: 16.9261 },
@@ -38,6 +43,16 @@ export default function CustomerMenu() {
   const mapRef = useRef(null);
   const markerRef = useRef(null);
 
+  // Custom hook for orders
+  const { orders = [], createOrder, isCreating } = useOrders();
+
+  // Find any active order for the client to chat about
+  const activeOrder = orders.find(o => 
+    o.customerId === customerId && 
+    o.status !== "Delivered" && 
+    o.status !== "Cancelled"
+  );
+
   const { data: customer } = useQuery({
     queryKey: ['customer', customerId],
     queryFn: () => customerServices.getCustomerById(customerId),
@@ -55,16 +70,6 @@ export default function CustomerMenu() {
   const { data: vendor, isLoading, isError } = useQuery({
     queryKey: ['vendor', vendorId],
     queryFn: () => vendorsServices.getVendorById(vendorId)
-  });
-
-  const mutation = useMutation({
-    mutationFn: (newOrder) => orderServices.createOrder(newOrder),
-    onSuccess: () => {
-      alert('Заказ успешно оформлен и передан курьеру!');
-      setCart({});
-      setIsCartOpen(false);
-      navigate(`/customer/${customerId}`);
-    }
   });
 
   const handleAddToCart = (menuItem) => {
@@ -93,7 +98,7 @@ export default function CustomerMenu() {
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (totalItems === 0) return;
     if (!phone.trim()) {
       alert('Пожалуйста, введите номер телефона получателя для связи с курьером!');
@@ -125,7 +130,16 @@ export default function CustomerMenu() {
       phone: phone,
       notes: notes
     };
-    mutation.mutate(orderData);
+
+    try {
+      await createOrder(orderData);
+      alert('Заказ успешно оформлен и передан курьеру!');
+      setCart({});
+      setIsCartOpen(false);
+      navigate(`/customer/${customerId}`);
+    } catch (err) {
+      alert('Ошибка при создании заказа: ' + err.message);
+    }
   };
 
   const handlePresetClick = (preset) => {
@@ -200,9 +214,6 @@ export default function CustomerMenu() {
 
     const timer = setTimeout(() => {
       if (!mapContainerRef.current) return;
-
-      const L = window.L;
-      if (!L) return;
 
       if (!mapRef.current) {
         const map = L.map(mapContainerRef.current).setView([deliveryLat, deliveryLng], 14);
@@ -315,281 +326,51 @@ export default function CustomerMenu() {
       <button 
         className="floating-cart-btn" 
         onClick={() => setIsCartOpen(true)}
-        disabled={totalItems === 0 || mutation.isPending}
+        disabled={totalItems === 0 || isCreating}
       >
         🛒
         {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
       </button>
 
-      {/* Cart Modal Overlay */}
-      {isCartOpen && (
-        <div className="modal-overlay" onClick={() => setIsCartOpen(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Ваша Корзина</h2>
-              <button className="btn-close" onClick={() => setIsCartOpen(false)}>×</button>
-            </div>
-            
-            {cartItemsData.length === 0 ? (
-              <p>Ваша корзина пуста.</p>
-            ) : (
-              <>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                  {cartItemsData.map(item => (
-                    <MenuItemCard 
-                      key={`cart-${item.id}`} 
-                      item={item} 
-                      quantity={cart[item.id]}
-                      onAdd={() => handleAddToCart(item)} 
-                      onRemove={() => handleRemoveFromCart(item)}
-                    />
-                  ))}
-                </div>
-                
-                <div className="modal-total">
-                  <div>Стоимость блюд: {totalFoodPrice} PLN</div>
-                  <div style={{ color: '#888', fontSize: '14px' }}>Доставка рассчитывается при отправке (4 PLN/км)</div>
-                  <div style={{ marginTop: '10px', fontSize: '24px', color: 'var(--green)' }}>
-                    Итого (без доставки): {totalFoodPrice} PLN
-                  </div>
-                </div>
+      {/* Refactored Cart Drawer Modal */}
+      <CartDrawer 
+        isCartOpen={isCartOpen}
+        setIsCartOpen={setIsCartOpen}
+        cartItemsData={cartItemsData}
+        cart={cart}
+        handleAddToCart={handleAddToCart}
+        handleRemoveFromCart={handleRemoveFromCart}
+        totalFoodPrice={totalFoodPrice}
+        deliveryAddress={deliveryAddress}
+        setDeliveryAddress={setDeliveryAddress}
+        deliveryLat={deliveryLat}
+        setDeliveryLat={setDeliveryLat}
+        deliveryLng={deliveryLng}
+        setDeliveryLng={setDeliveryLng}
+        mapContainerRef={mapContainerRef}
+        handleGetCurrentPosition={handleGetCurrentPosition}
+        handlePresetClick={handlePresetClick}
+        house={house}
+        setHouse={setHouse}
+        apartment={apartment}
+        setApartment={setApartment}
+        floor={floor}
+        setFloor={setFloor}
+        phone={phone}
+        setPhone={setPhone}
+        notes={notes}
+        setNotes={setNotes}
+        handleCheckout={handleCheckout}
+        isPending={isCreating}
+      />
 
-                {/* Geolocation Section */}
-                <div style={{
-                  marginBottom: '20px',
-                  borderTop: '1px solid #eee',
-                  paddingTop: '15px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '12px',
-                  textAlign: 'left'
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <label style={{ fontWeight: 'bold', fontSize: '15px', color: '#111' }}>📍 Адрес доставки в Познани:</label>
-                    <span style={{ fontSize: '11px', color: '#888', fontStyle: 'italic' }}>
-                      ({deliveryLat.toFixed(4)}, {deliveryLng.toFixed(4)})
-                    </span>
-                  </div>
-                  
-                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                    <input 
-                      type="text"
-                      value={deliveryAddress}
-                      onChange={(e) => setDeliveryAddress(e.target.value)}
-                      placeholder="Улица, например: Półwiejska, Garbary, Jeżyce..."
-                      style={{
-                        padding: '12px 14px',
-                        borderRadius: '12px',
-                        border: '1px solid #ccc',
-                        fontSize: '15px',
-                        flex: 1,
-                        outline: 'none',
-                        boxSizing: 'border-box'
-                      }}
-                    />
-                    <button
-                      type="button"
-                      onClick={handleGetCurrentPosition}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '6px',
-                        padding: '12px 16px',
-                        borderRadius: '12px',
-                        background: 'linear-gradient(135deg, rgba(170, 59, 255, 0.2), rgba(170, 59, 255, 0.05))',
-                        border: '1px solid rgba(170, 59, 255, 0.4)',
-                        color: '#aa3bff',
-                        fontWeight: 'bold',
-                        cursor: 'pointer',
-                        fontSize: '13px',
-                        transition: 'all 0.2s',
-                        boxShadow: '0 4px 15px rgba(170, 59, 255, 0.1)',
-                        whiteSpace: 'nowrap'
-                      }}
-                      onMouseOver={(e) => {
-                        e.currentTarget.style.background = 'linear-gradient(135deg, rgba(170, 59, 255, 0.35), rgba(170, 59, 255, 0.15))';
-                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(170, 59, 255, 0.2)';
-                      }}
-                      onMouseOut={(e) => {
-                        e.currentTarget.style.background = 'linear-gradient(135deg, rgba(170, 59, 255, 0.2), rgba(170, 59, 255, 0.05))';
-                        e.currentTarget.style.boxShadow = '0 4px 15px rgba(170, 59, 255, 0.1)';
-                      }}
-                    >
-                      📍 Моя геопозиция
-                    </button>
-                  </div>
-
-                  {/* Preset buttons */}
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                    {['Półwiejska', 'Garbary', 'Jeżyce', 'Malta', 'Dormitory CDV'].map(preset => (
-                      <button
-                        key={preset}
-                        onClick={() => handlePresetClick(preset)}
-                        type="button"
-                        style={{
-                          padding: '5px 12px',
-                          borderRadius: '16px',
-                          border: '1px solid #e0e0e0',
-                          backgroundColor: '#f5f5f5',
-                          fontSize: '11px',
-                          cursor: 'pointer',
-                          fontWeight: 'bold',
-                          color: '#666',
-                          transition: 'all 0.15s'
-                        }}
-                        onMouseOver={(e) => { e.target.style.backgroundColor = '#eae5fc'; e.target.style.color = '#aa3bff'; e.target.style.borderColor = '#aa3bff'; }}
-                        onMouseOut={(e) => { e.target.style.backgroundColor = '#f5f5f5'; e.target.style.color = '#666'; e.target.style.borderColor = '#e0e0e0'; }}
-                      >
-                        {preset}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Micro map container */}
-                  <div style={{ position: 'relative', margin: '15px 0' }}>
-                    <div 
-                      ref={mapContainerRef} 
-                      id="checkout-map" 
-                      style={{
-                        height: '180px',
-                        width: '100%',
-                        borderRadius: '10px',
-                        border: '1px solid #ddd',
-                        boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-                        zIndex: 10
-                      }}
-                    />
-                    <div style={{
-                      position: 'absolute',
-                      bottom: '5px',
-                      right: '5px',
-                      backgroundColor: 'rgba(255, 255, 255, 0.85)',
-                      padding: '3px 8px',
-                      borderRadius: '4px',
-                      fontSize: '10px',
-                      color: '#444',
-                      zIndex: 100,
-                      fontWeight: 'bold',
-                      pointerEvents: 'none'
-                    }}>
-                      Перетащите маркер 📍 или кликните карту
-                    </div>
-                  </div>
-
-                  {/* Detailed Address Grid */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '12px', color: '#555', marginBottom: '4px', fontWeight: 'bold' }}>Дом/Корпус</label>
-                      <input 
-                        type="text"
-                        value={house}
-                        onChange={(e) => setHouse(e.target.value)}
-                        placeholder="дом 12"
-                        style={{
-                          padding: '10px',
-                          borderRadius: '8px',
-                          border: '1px solid #ccc',
-                          fontSize: '14px',
-                          width: '100%',
-                          outline: 'none',
-                          boxSizing: 'border-box'
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '12px', color: '#555', marginBottom: '4px', fontWeight: 'bold' }}>Квартира</label>
-                      <input 
-                        type="text"
-                        value={apartment}
-                        onChange={(e) => setApartment(e.target.value)}
-                        placeholder="кв 45"
-                        style={{
-                          padding: '10px',
-                          borderRadius: '8px',
-                          border: '1px solid #ccc',
-                          fontSize: '14px',
-                          width: '100%',
-                          outline: 'none',
-                          boxSizing: 'border-box'
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '12px', color: '#555', marginBottom: '4px', fontWeight: 'bold' }}>Этаж</label>
-                      <input 
-                        type="text"
-                        value={floor}
-                        onChange={(e) => setFloor(e.target.value)}
-                        placeholder="3 этаж"
-                        style={{
-                          padding: '10px',
-                          borderRadius: '8px',
-                          border: '1px solid #ccc',
-                          fontSize: '14px',
-                          width: '100%',
-                          outline: 'none',
-                          boxSizing: 'border-box'
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Phone & Notes */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '10px' }}>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '12px', color: '#555', marginBottom: '4px', fontWeight: 'bold' }}>📞 Телефон получателя *</label>
-                      <input 
-                        type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="+48 123 456 789"
-                        required
-                        style={{
-                          padding: '10px',
-                          borderRadius: '8px',
-                          border: '1px solid #ccc',
-                          fontSize: '14px',
-                          width: '100%',
-                          outline: 'none',
-                          boxSizing: 'border-box'
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '12px', color: '#555', marginBottom: '4px', fontWeight: 'bold' }}>📝 Заметка курьеру</label>
-                      <textarea 
-                        value={notes}
-                        onChange={(e) => setNotes(e.target.value)}
-                        placeholder="Например: Оставить у двери, домофон не работает..."
-                        style={{
-                          padding: '10px',
-                          borderRadius: '8px',
-                          border: '1px solid #ccc',
-                          fontSize: '13px',
-                          width: '100%',
-                          height: '60px',
-                          outline: 'none',
-                          resize: 'vertical',
-                          boxSizing: 'border-box'
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <button 
-                  className="btn-confirm-order" 
-                  onClick={handleCheckout}
-                  disabled={mutation.isPending}
-                >
-                  {mutation.isPending ? 'Оформляем заказ...' : 'Подтвердить заказ'}
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      <SupportChatWidget 
+        userType="customer"
+        userId={customerId}
+        userName={customer?.name || "Клиент"}
+        activeOrderId={activeOrder?.id}
+        activeOrderVendor={activeOrder?.vendorName}
+      />
     </div>
   );
 }
