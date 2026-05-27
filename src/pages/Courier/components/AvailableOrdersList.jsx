@@ -59,56 +59,6 @@ export default function AvailableOrdersList({
             {previewOrder.vendorName}
           </h2>
 
-          <div style={{ fontSize: '14px', color: '#666', marginBottom: '15px', backgroundColor: '#f9f9f9', padding: '10px', borderRadius: '8px' }}>
-            <b>Что в заказе:</b> {previewOrder.items}
-          </div>
-
-          {/* Recipient / Delivery Details Card (Preview) */}
-          <div style={{
-            backgroundColor: '#f9f9f9',
-            borderRadius: '12px',
-            padding: '16px',
-            marginBottom: '15px',
-            fontSize: '14px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '10px',
-            textAlign: 'left',
-            border: '1px solid #eee'
-          }}>
-            <div style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#888', letterSpacing: '0.5px' }}>
-              📋 Адрес получателя (Детали)
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
-              <div style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0', padding: '6px 8px', borderRadius: '6px' }}>
-                <span style={{ fontSize: '9px', color: '#999', display: 'block' }}>Дом</span>
-                <strong style={{ fontSize: '13px', color: '#333' }}>{previewOrder.house || '—'}</strong>
-              </div>
-              <div style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0', padding: '6px 8px', borderRadius: '6px' }}>
-                <span style={{ fontSize: '9px', color: '#999', display: 'block' }}>Квартира</span>
-                <strong style={{ fontSize: '13px', color: '#333' }}>{previewOrder.apartment || '—'}</strong>
-              </div>
-              <div style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0', padding: '6px 8px', borderRadius: '6px' }}>
-                <span style={{ fontSize: '9px', color: '#999', display: 'block' }}>Этаж</span>
-                <strong style={{ fontSize: '13px', color: '#333' }}>{previewOrder.floor || '—'}</strong>
-              </div>
-            </div>
-
-            {previewOrder.phone && (
-              <div style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0', padding: '8px 10px', borderRadius: '6px' }}>
-                <span style={{ fontSize: '9px', color: '#999', display: 'block' }}>Телефон</span>
-                <strong style={{ fontSize: '13px', color: '#333' }}>{previewOrder.phone}</strong>
-              </div>
-            )}
-
-            {previewOrder.notes && (
-              <div style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0', padding: '8px 10px', borderRadius: '6px', borderLeft: '3px solid #ffc107' }}>
-                <span style={{ fontSize: '9px', color: '#ffc107', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>Заметка курьеру:</span>
-                <span style={{ fontSize: '12px', fontStyle: 'italic', color: '#555' }}>"{previewOrder.notes}"</span>
-              </div>
-            )}
-          </div>
 
           {/* Distances grid */}
           <div style={{

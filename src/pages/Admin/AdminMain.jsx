@@ -38,20 +38,35 @@ export default function AdminMain() {
   const [selectedChatId, setSelectedChatId] = useState(null);
   const [replyText, setReplyText] = useState('');
   const [partnerProfile, setPartnerProfile] = useState(null);
+  const [sidebarSubTab, setSidebarSubTab] = useState('orders'); // 'orders' or 'general'
   const messagesEndRef = useRef(null);
 
   // Pull support messages for the active conversation
-  const { messages: chatMessages = [], sendMessage: sendAdminMessage } = useSupportChat(selectedChatId);
-
-  // Fetch partner profile whenever selectedChatId or messages update
+  const { messages: chatMessages = [], sendMessage: sendAdminMessage } = useSupportChat(selectedChatId);  // Fetch partner profile whenever selectedChatId or messages update
   useEffect(() => {
     if (!selectedChatId) {
       setPartnerProfile(null);
       return;
     }
-    const clientMessage = chatMessages.find(m => m.role !== 'admin');
-    const partnerId = clientMessage ? clientMessage.senderId : (selectedChatId.startsWith('general-') ? selectedChatId.replace('general-', '') : null);
-    const partnerRole = clientMessage ? clientMessage.role : (selectedChatId.startsWith('general-') ? (selectedChatId.includes('cour') ? 'courier' : 'customer') : 'customer');
+    
+    let partnerId = null;
+    let partnerRole = 'customer';
+
+    if (selectedChatId.startsWith('order-')) {
+      const isCourier = selectedChatId.endsWith('-courier');
+      const orderId = selectedChatId.replace('-courier', '').replace('order-', '');
+      const foundOrder = (orders || []).find(o => o.id === orderId);
+      if (foundOrder) {
+        partnerId = isCourier ? foundOrder.courierId : foundOrder.customerId;
+        partnerRole = isCourier ? 'courier' : 'customer';
+      }
+    }
+
+    if (!partnerId) {
+      const clientMessage = chatMessages.find(m => m.role !== 'admin');
+      partnerId = clientMessage ? clientMessage.senderId : (selectedChatId.startsWith('general-') ? selectedChatId.replace('general-', '') : null);
+      partnerRole = clientMessage ? clientMessage.role : (selectedChatId.startsWith('general-') ? (selectedChatId.includes('cour') ? 'courier' : 'customer') : 'customer');
+    }
 
     if (partnerId && partnerRole) {
       const endpoint = partnerRole === 'courier' ? `/couriers/${partnerId}` : `/customers/${partnerId}`;
@@ -61,8 +76,7 @@ export default function AdminMain() {
     } else {
       setPartnerProfile(null);
     }
-  }, [selectedChatId, chatMessages]);
-
+  }, [selectedChatId, chatMessages, orders]);
   // Poll active chats from the Express backend (every 3 seconds)
   const { data: chatThreads = [], refetch: refetchChats } = useQuery({
     queryKey: ['supportChats'],
@@ -242,6 +256,64 @@ export default function AdminMain() {
     return timeB - timeA;
   });
 
+  // Handle resolving a support chat
+  const handleResolveChat = async () => {
+    if (!selectedChatId) return;
+    if (!window.confirm("Вы действительно хотите пометить это обращение как решенное? Чат будет перемещен в архив.")) {
+      return;
+    }
+    try {
+      await api.post(`/support/chats/${selectedChatId}/resolve`);
+      setSelectedChatId(null);
+      refetchChats();
+    } catch (err) {
+      alert("Не удалось закрыть чат: " + err.message);
+    }
+  };
+
+  // Compute unread counts for order vs general subtabs
+  const unreadOrdersCount = (chatThreads || []).filter(t => t.chatId.startsWith('order-')).reduce((acc, t) => acc + (t.unreadCount || 0), 0);
+  const unreadGeneralCount = (chatThreads || []).filter(t => t.chatId.startsWith('general-')).reduce((acc, t) => acc + (t.unreadCount || 0), 0);
+
+  // Group order chats for the Orders sub-tab in the sidebar
+  const orderGroups = [];
+  const seenOrderIds = new Set();
+
+  (chatThreads || []).forEach(thread => {
+    if (thread.chatId.startsWith('order-')) {
+      const baseOrderId = thread.chatId.replace('-courier', '').replace('order-', '');
+      if (!seenOrderIds.has(baseOrderId)) {
+        seenOrderIds.add(baseOrderId);
+        
+        const customerThread = chatThreads.find(t => t.chatId === `order-${baseOrderId}`);
+        const courierThread = chatThreads.find(t => t.chatId === `order-${baseOrderId}-courier`);
+        
+        const latestTime = Math.max(
+          customerThread ? new Date(customerThread.timestamp).getTime() : 0,
+          courierThread ? new Date(courierThread.timestamp).getTime() : 0
+        );
+        
+        const foundOrder = safeOrders.find(o => o.id === baseOrderId);
+        const isCourierAssigned = foundOrder && foundOrder.courierId;
+
+        orderGroups.push({
+          orderId: baseOrderId,
+          customerThread,
+          courierThread,
+          latestTime,
+          foundOrder,
+          isCourierAssigned
+        });
+      }
+    }
+  });
+
+  orderGroups.sort((a, b) => b.latestTime - a.latestTime);
+
+  // Filter general threads for the General sub-tab
+  const generalThreads = (chatThreads || []).filter(thread => thread.chatId.startsWith('general-'));
+
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -388,53 +460,366 @@ export default function AdminMain() {
           <div className="chat-center-grid">
             {/* Left Thread Sidebar */}
             <div className="chat-threads-sidebar">
-              <h3 style={{ margin: '0 0 10px 0', fontSize: '16px', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '8px' }}>
+              <h3 style={{ margin: '0 0 10px 0', fontSize: '16px', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '8px', textAlign: 'left' }}>
                 Активные обращения
               </h3>
-              
-              {chatThreads.length === 0 ? (
-                <div style={{ margin: 'auto 0', textAlign: 'center', fontSize: '13px', color: 'rgba(255,255,255,0.4)', padding: '20px' }}>
-                  Нет открытых диалогов.
-                </div>
+
+              {/* SUB-TABS (Orders vs General) */}
+              <div style={{
+                display: 'flex',
+                background: 'rgba(255, 255, 255, 0.04)',
+                borderRadius: '10px',
+                padding: '4px',
+                marginBottom: '15px',
+                border: '1px solid rgba(255, 255, 255, 0.08)'
+              }}>
+                <button
+                  onClick={() => setSidebarSubTab('orders')}
+                  style={{
+                    flex: 1,
+                    padding: '8px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    background: sidebarSubTab === 'orders' ? 'linear-gradient(135deg, #ff7beb 0%, #aa3bff 100%)' : 'none',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    fontSize: '12px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  🍕 Заказы
+                  {unreadOrdersCount > 0 && (
+                    <span style={{
+                      backgroundColor: '#ff3b30',
+                      color: '#fff',
+                      fontSize: '10px',
+                      fontWeight: 'bold',
+                      borderRadius: '50%',
+                      minWidth: '16px',
+                      height: '16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '0 4px'
+                    }}>
+                      {unreadOrdersCount}
+                    </span>
+                  )}
+                </button>
+                <button
+                  onClick={() => setSidebarSubTab('general')}
+                  style={{
+                    flex: 1,
+                    padding: '8px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    background: sidebarSubTab === 'general' ? 'linear-gradient(135deg, #ff7beb 0%, #aa3bff 100%)' : 'none',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    fontSize: '12px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  ⚙️ Общие
+                  {unreadGeneralCount > 0 && (
+                    <span style={{
+                      backgroundColor: '#ff3b30',
+                      color: '#fff',
+                      fontSize: '10px',
+                      fontWeight: 'bold',
+                      borderRadius: '50%',
+                      minWidth: '16px',
+                      height: '16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '0 4px'
+                    }}>
+                      {unreadGeneralCount}
+                    </span>
+                  )}
+                </button>
+              </div>
+
+              {/* THREADS LIST */}
+              {sidebarSubTab === 'orders' ? (
+                orderGroups.length === 0 ? (
+                  <div style={{ margin: 'auto 0', textAlign: 'center', fontSize: '13px', color: 'rgba(255,255,255,0.4)', padding: '20px' }}>
+                    Нет активных обращений по заказам.
+                  </div>
+                ) : (
+                  orderGroups.map((group) => {
+                    return (
+                      <div
+                        key={group.orderId}
+                        style={{
+                          backdropFilter: 'blur(10px)',
+                          background: 'rgba(255, 255, 255, 0.03)',
+                          border: '1px solid rgba(255, 255, 255, 0.08)',
+                          borderRadius: '16px',
+                          padding: '16px',
+                          marginBottom: '12px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '12px',
+                          textAlign: 'left'
+                        }}
+                      >
+                        {/* Header info */}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div>
+                            <strong style={{ fontSize: '14px', color: '#fff', display: 'block' }}>
+                              {group.foundOrder ? `🏪 ${group.foundOrder.vendorName}` : `🍕 Заказ #${group.orderId.slice(-4).toUpperCase()}`}
+                            </strong>
+                            <span style={{ fontSize: '11px', color: '#ff7beb', fontWeight: 'bold' }}>
+                              🍕 Заказ #{group.orderId.slice(-4).toUpperCase()}
+                            </span>
+                          </div>
+                          <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>
+                            {group.latestTime > 0 ? new Date(group.latestTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—'}
+                          </span>
+                        </div>
+
+                        {/* Last message preview */}
+                        <div style={{
+                          fontSize: '12px',
+                          color: 'rgba(255,255,255,0.5)',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          background: 'rgba(0,0,0,0.15)',
+                          padding: '6px 10px',
+                          borderRadius: '8px'
+                        }}>
+                          <i>Последнее:</i> {group.customerThread?.lastMessage || group.courierThread?.lastMessage || 'Нет сообщений'}
+                        </div>
+
+                        {/* Buttons row: Courier vs Customer */}
+                        {group.isCourierAssigned ? (
+                          <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                            {/* Client Button */}
+                            <button
+                              onClick={() => setSelectedChatId(`order-${group.orderId}`)}
+                              style={{
+                                flex: 1,
+                                padding: '8px 10px',
+                                borderRadius: '8px',
+                                border: selectedChatId === `order-${group.orderId}` ? '1px solid #c480ff' : '1px solid rgba(255,255,255,0.12)',
+                                background: selectedChatId === `order-${group.orderId}`
+                                  ? 'linear-gradient(135deg, rgba(170, 59, 255, 0.25) 0%, rgba(123, 31, 162, 0.25) 100%)'
+                                  : 'rgba(255,255,255,0.04)',
+                                color: selectedChatId === `order-${group.orderId}` ? '#c480ff' : 'rgba(255,255,255,0.7)',
+                                fontSize: '12px',
+                                fontWeight: 'bold',
+                                cursor: 'pointer',
+                                position: 'relative',
+                                transition: 'all 0.2s',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '4px'
+                              }}
+                            >
+                              👤 Клиент
+                              {group.customerThread?.unreadCount > 0 && (
+                                <span style={{
+                                  position: 'absolute',
+                                  top: '-6px',
+                                  right: '-6px',
+                                  backgroundColor: '#ff3b30',
+                                  color: '#fff',
+                                  fontSize: '10px',
+                                  fontWeight: 'bold',
+                                  borderRadius: '50%',
+                                  minWidth: '16px',
+                                  height: '16px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  border: '2px solid #1a153b',
+                                  padding: '0 2px'
+                                }}>
+                                  {group.customerThread.unreadCount}
+                                </span>
+                              )}
+                            </button>
+
+                            {/* Courier Button */}
+                            <button
+                              onClick={() => setSelectedChatId(`order-${group.orderId}-courier`)}
+                              style={{
+                                flex: 1,
+                                padding: '8px 10px',
+                                borderRadius: '8px',
+                                border: selectedChatId === `order-${group.orderId}-courier` ? '1px solid #ffc107' : '1px solid rgba(255,255,255,0.12)',
+                                background: selectedChatId === `order-${group.orderId}-courier`
+                                  ? 'linear-gradient(135deg, rgba(255, 193, 7, 0.25) 0%, rgba(211, 158, 0, 0.25) 100%)'
+                                  : 'rgba(255,255,255,0.04)',
+                                color: selectedChatId === `order-${group.orderId}-courier` ? '#ffc107' : 'rgba(255,255,255,0.7)',
+                                fontSize: '12px',
+                                fontWeight: 'bold',
+                                cursor: 'pointer',
+                                position: 'relative',
+                                transition: 'all 0.2s',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '4px'
+                              }}
+                            >
+                              🛵 Курьер
+                              {group.courierThread?.unreadCount > 0 && (
+                                <span style={{
+                                  position: 'absolute',
+                                  top: '-6px',
+                                  right: '-6px',
+                                  backgroundColor: '#ff3b30',
+                                  color: '#fff',
+                                  fontSize: '10px',
+                                  fontWeight: 'bold',
+                                  borderRadius: '50%',
+                                  minWidth: '16px',
+                                  height: '16px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  border: '2px solid #1a153b',
+                                  padding: '0 2px'
+                                }}>
+                                  {group.courierThread.unreadCount}
+                                </span>
+                              )}
+                            </button>
+                          </div>
+                        ) : (
+                          /* Not Assigned */
+                          <button
+                            onClick={() => setSelectedChatId(`order-${group.orderId}`)}
+                            style={{
+                              width: '100%',
+                              padding: '8px 10px',
+                              borderRadius: '8px',
+                              border: selectedChatId === `order-${group.orderId}` ? '1px solid #c480ff' : '1px solid rgba(255,255,255,0.12)',
+                              background: selectedChatId === `order-${group.orderId}`
+                                ? 'linear-gradient(135deg, rgba(170, 59, 255, 0.25) 0%, rgba(123, 31, 162, 0.25) 100%)'
+                                : 'rgba(255,255,255,0.04)',
+                              color: selectedChatId === `order-${group.orderId}` ? '#c480ff' : 'rgba(255,255,255,0.7)',
+                              fontSize: '12px',
+                              fontWeight: 'bold',
+                              cursor: 'pointer',
+                              position: 'relative',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '4px'
+                            }}
+                          >
+                            👤 Чат с клиентом
+                            {group.customerThread?.unreadCount > 0 && (
+                              <span style={{
+                                position: 'absolute',
+                                top: '-6px',
+                                right: '-6px',
+                                backgroundColor: '#ff3b30',
+                                color: '#fff',
+                                fontSize: '10px',
+                                fontWeight: 'bold',
+                                borderRadius: '50%',
+                                minWidth: '16px',
+                                height: '16px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                border: '2px solid #1a153b',
+                                padding: '0 2px'
+                              }}>
+                                {group.customerThread.unreadCount}
+                              </span>
+                            )}
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })
+                )
               ) : (
-                chatThreads.map((thread) => {
-                  const isActive = selectedChatId === thread.chatId;
-                  const isOrder = thread.chatId.startsWith('order-');
-                  const time = thread.timestamp 
-                    ? new Date(thread.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                    : '—';
-                    
-                  return (
-                    <div
-                      key={thread.chatId}
-                      onClick={() => setSelectedChatId(thread.chatId)}
-                      className={`chat-thread-card ${isActive ? 'active' : ''}`}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
-                        <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#fff' }}>
-                          {thread.role === 'courier' ? '🛵' : '👤'} {thread.senderName}
-                        </span>
-                        <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>
-                          {time}
-                        </span>
-                      </div>
+                /* General Threads */
+                generalThreads.length === 0 ? (
+                  <div style={{ margin: 'auto 0', textAlign: 'center', fontSize: '13px', color: 'rgba(255,255,255,0.4)', padding: '20px' }}>
+                    Нет общих обращений.
+                  </div>
+                ) : (
+                  generalThreads.map((thread) => {
+                    const isActive = selectedChatId === thread.chatId;
+                    const time = thread.timestamp 
+                      ? new Date(thread.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                      : '—';
                       
-                      <div style={{ fontSize: '11px', color: '#ff7beb', fontWeight: 'bold', marginBottom: '5px' }}>
-                        {isOrder ? `🍕 Заказ #${thread.chatId.replace('order-', '').slice(-4).toUpperCase()}` : '⚙️ Общий вопрос'}
+                    return (
+                      <div
+                        key={thread.chatId}
+                        onClick={() => setSelectedChatId(thread.chatId)}
+                        className={`chat-thread-card ${isActive ? 'active' : ''}`}
+                        style={{ position: 'relative' }}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
+                          <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#fff' }}>
+                            {thread.role === 'courier' ? '🛵' : '👤'} {thread.senderName}
+                          </span>
+                          <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>
+                            {time}
+                          </span>
+                        </div>
+                        
+                        <div style={{ fontSize: '11px', color: '#ff7beb', fontWeight: 'bold', marginBottom: '5px' }}>
+                          ⚙️ Общий вопрос
+                        </div>
+                        
+                        <div style={{
+                          fontSize: '12px',
+                          color: 'rgba(255,255,255,0.6)',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}>
+                          {thread.lastMessage || '—'}
+                        </div>
+
+                        {thread.unreadCount > 0 && (
+                          <span style={{
+                            position: 'absolute',
+                            top: '-5px',
+                            right: '-5px',
+                            backgroundColor: '#ff3b30',
+                            color: '#fff',
+                            fontSize: '10px',
+                            fontWeight: 'bold',
+                            borderRadius: '50%',
+                            minWidth: '18px',
+                            height: '18px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            border: '2px solid #1a153b',
+                            padding: '0 3px'
+                          }}>
+                            {thread.unreadCount}
+                          </span>
+                        )}
                       </div>
-                      
-                      <div style={{
-                        fontSize: '12px',
-                        color: 'rgba(255,255,255,0.6)',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis'
-                      }}>
-                        {thread.lastMessage || '—'}
-                      </div>
-                    </div>
-                  );
-                })
+                    );
+                  })
+                )
               )}
             </div>
 
@@ -445,14 +830,34 @@ export default function AdminMain() {
                   {/* Chat Header */}
                   <div style={{ padding: '15px 20px', background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 'bold' }}>
-                      💬 Переписка по диалогу: {selectedChatId}
+                      💬 Переписка по диалогу: {selectedChatId.startsWith('order-') 
+                        ? `Заказ #${selectedChatId.replace('-courier', '').replace('order-', '').slice(-4).toUpperCase()} (${selectedChatId.endsWith('-courier') ? 'Курьер' : 'Клиент'})`
+                        : `Общий чат с ${partnerProfile?.name || 'пользователем'}`}
                     </h3>
-                    <button
-                      onClick={() => setSelectedChatId(null)}
-                      style={{ background: 'none', border: 'none', color: '#ff4d4d', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}
-                    >
-                      Закрыть чат
-                    </button>
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                      <button
+                        onClick={handleResolveChat}
+                        style={{
+                          background: 'linear-gradient(135deg, #00b35a 0%, #007e3e 100%)',
+                          border: 'none',
+                          color: '#fff',
+                          padding: '6px 12px',
+                          borderRadius: '8px',
+                          fontSize: '12px',
+                          fontWeight: 'bold',
+                          cursor: 'pointer',
+                          boxShadow: '0 2px 8px rgba(0, 179, 90, 0.3)'
+                        }}
+                      >
+                        ✅ Вопрос решен
+                      </button>
+                      <button
+                        onClick={() => setSelectedChatId(null)}
+                        style={{ background: 'none', border: 'none', color: '#aaa', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}
+                      >
+                        Свернуть
+                      </button>
+                    </div>
                   </div>
 
                   {/* Partner Contact Details Banner */}

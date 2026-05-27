@@ -11,13 +11,10 @@ export default function OrderDetailsModal({
   refetchOrders
 }) {
   const [cancelling, setCancelling] = useState(false);
-
-  if (!selectedOrderDetails) return null;
-
-  const order = selectedOrderDetails;
-  
   const [customerProfile, setCustomerProfile] = useState(null);
   const [courierProfile, setCourierProfile] = useState(null);
+
+  const order = selectedOrderDetails;
 
   useEffect(() => {
     if (order?.customerId) {
@@ -37,13 +34,15 @@ export default function OrderDetailsModal({
     }
   }, [order?.customerId, order?.courierId]);
 
-  const coefficientVal = parseFloat(order.coefficient || 1.0);
+  if (!selectedOrderDetails) return null;
+
+  const coefficientVal = parseFloat(order?.coefficient || 1.0);
   
-  const pricePerKm = safeSettings.pricePerKm !== undefined ? safeSettings.pricePerKm : 4.0;
-  const scooterPricePerKm = safeSettings.scooterPricePerKm !== undefined ? safeSettings.scooterPricePerKm : 5.5;
-  const carPricePerKm = safeSettings.carPricePerKm !== undefined ? safeSettings.carPricePerKm : 7.0;
-  const surcharge = safeSettings.globalSurcharge !== undefined ? safeSettings.globalSurcharge : 0.0;
-  const distance = parseFloat(order.distance) || 0.0;
+  const pricePerKm = safeSettings?.pricePerKm !== undefined ? safeSettings.pricePerKm : 4.0;
+  const scooterPricePerKm = safeSettings?.scooterPricePerKm !== undefined ? safeSettings.scooterPricePerKm : 5.5;
+  const carPricePerKm = safeSettings?.carPricePerKm !== undefined ? safeSettings.carPricePerKm : 7.0;
+  const surcharge = safeSettings?.globalSurcharge !== undefined ? safeSettings.globalSurcharge : 0.0;
+  const distance = parseFloat(order?.distance) || 0.0;
 
   const veloPayout = Math.max(5.0, Math.round((distance * pricePerKm + surcharge) * coefficientVal));
   const scooterPayout = Math.max(5.0, Math.round((distance * scooterPricePerKm + surcharge) * coefficientVal));
@@ -52,16 +51,18 @@ export default function OrderDetailsModal({
   // Date and Time formatter
   const formatFullDateTime = (isoString) => {
     if (!isoString) return '—';
-    if (!isoString.includes('T')) return `Сегодня, ${isoString}`;
+    const strVal = String(isoString);
+    if (!strVal.includes('T')) return `Сегодня, ${strVal}`;
     try {
-      const date = new Date(isoString);
+      const date = new Date(strVal);
+      if (isNaN(date.getTime())) return strVal;
       const day = String(date.getDate()).padStart(2, '0');
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const year = date.getFullYear();
       const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       return `${day}.${month}.${year} в ${time}`;
     } catch {
-      return isoString;
+      return strVal;
     }
   };
 
@@ -121,12 +122,12 @@ export default function OrderDetailsModal({
             alignItems: 'center',
             gap: '10px'
           }}>
-            #{order.id.toUpperCase()}
+            #{order?.id ? order.id.toUpperCase() : '—'}
           </h3>
           <div style={{ marginTop: '10px', display: 'flex', gap: '15px', alignItems: 'center' }}>
-            {getStatusBadge(order.status)}
+            {getStatusBadge ? getStatusBadge(order?.status) : <span>{order?.status}</span>}
             <span style={{ fontSize: '13px', opacity: 0.6 }}>
-              Дистанция: 📏 {order.distance} км
+              Дистанция: 📏 {order?.distance} км
             </span>
           </div>
         </div>
@@ -148,7 +149,7 @@ export default function OrderDetailsModal({
               🏬 Заведение & Блюда
             </h4>
             <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
-              {order.vendorName}
+              {order?.vendorName}
             </div>
             <div style={{
               fontSize: '14px',
@@ -159,15 +160,15 @@ export default function OrderDetailsModal({
               padding: '10px',
               borderRadius: '8px'
             }}>
-              {order.items}
+              {order?.items}
             </div>
             
             <div style={{ fontSize: '13px', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <div>📅 <strong>Создан:</strong> {formatFullDateTime(order.createdAt)}</div>
-              {order.acceptedAt && (
+              <div>📅 <strong>Создан:</strong> {formatFullDateTime(order?.createdAt)}</div>
+              {order?.acceptedAt && (
                 <div style={{ color: '#c480ff' }}>🟣 <strong>Принят курьером:</strong> {formatFullDateTime(order.acceptedAt)}</div>
               )}
-              {order.pickedUpAt && (
+              {order?.pickedUpAt && (
                 <div style={{ color: '#00d26a' }}>🍲 <strong>Забран в ресторане:</strong> {formatFullDateTime(order.pickedUpAt)}</div>
               )}
             </div>
@@ -188,11 +189,11 @@ export default function OrderDetailsModal({
             </h4>
             
             <div style={{ fontSize: '14px', lineHeight: '1.4' }}>
-              <div>👤 <strong>Имя:</strong> {customerProfile ? `${customerProfile.name} ${customerProfile.lastName}` : order.customerId}</div>
+              <div>👤 <strong>Имя:</strong> {customerProfile ? `${customerProfile.name || ''} ${customerProfile.lastName || ''}`.trim() || '—' : order?.customerId || '—'}</div>
               {customerProfile?.email && <div style={{ marginTop: '3px' }}>✉️ <strong>Email:</strong> {customerProfile.email}</div>}
-              <div style={{ marginTop: '3px' }}>📞 <strong>Телефон:</strong> {customerProfile?.phone || order.phone || '—'}</div>
+              <div style={{ marginTop: '3px' }}>📞 <strong>Телефон:</strong> {customerProfile?.phone || order?.phone || '—'}</div>
               <div style={{ marginTop: '6px', paddingTop: '6px', borderTop: '1px dashed rgba(255,255,255,0.06)', fontWeight: 'bold' }}>
-                📍 Адрес: {order.deliveryAddress}
+                📍 Адрес: {order?.deliveryAddress}
               </div>
             </div>
 
@@ -206,12 +207,12 @@ export default function OrderDetailsModal({
               padding: '10px',
               borderRadius: '8px'
             }}>
-              <div>🏠 <strong>Дом:</strong> {order.house || '—'}</div>
-              <div>🚪 <strong>Кв.:</strong> {order.apartment || '—'}</div>
-              <div>🏢 <strong>Этаж:</strong> {order.floor || '—'}</div>
+              <div>🏠 <strong>Дом:</strong> {order?.house || '—'}</div>
+              <div>🚪 <strong>Кв.:</strong> {order?.apartment || '—'}</div>
+              <div>🏢 <strong>Этаж:</strong> {order?.floor || '—'}</div>
             </div>
 
-            {order.notes && (
+            {order?.notes && (
               <div style={{
                 padding: '8px 10px',
                 backgroundColor: 'rgba(255, 193, 7, 0.08)',
@@ -225,7 +226,7 @@ export default function OrderDetailsModal({
               </div>
             )}
 
-            {order.courierId && (
+            {order?.courierId && (
               <div style={{
                 marginTop: '5px',
                 backgroundColor: 'rgba(0, 210, 106, 0.06)',
@@ -238,7 +239,7 @@ export default function OrderDetailsModal({
               }}>
                 <div>🛵 <strong>Назначенный курьер:</strong></div>
                 <div style={{ fontWeight: 'bold', fontSize: '14px', marginTop: '3px', color: '#fff' }}>
-                  {courierProfile ? `${courierProfile.name} ${courierProfile.lastName}` : order.courierId}
+                  {courierProfile ? `${courierProfile.name || ''} ${courierProfile.lastName || ''}`.trim() || '—' : order.courierId || '—'}
                 </div>
                 <div style={{ fontSize: '12px', opacity: 0.8, marginTop: '2px' }}>
                   Транспорт: {courierProfile?.vehicle === 'Car' ? '🚗 Автомобиль' : courierProfile?.vehicle === 'Scooter' ? '🛴 Самокат' : '🚲 Велосипед'}
@@ -269,24 +270,24 @@ export default function OrderDetailsModal({
               </div>
             </div>
             <div style={{ textAlign: 'right' }}>
-              {order.courierId && order.status !== 'Cancelled' ? (
+              {order?.courierId && order?.status !== 'Cancelled' ? (
                 <>
                   <div style={{ fontSize: '20px', fontWeight: '900', color: '#00d26a' }}>
-                    {order.fee} PLN (доставка)
+                    {order?.fee} PLN (доставка)
                   </div>
                   <div style={{ fontSize: '12px', opacity: 0.6 }}>
-                    Итого: {order.totalPrice} PLN
+                    Итого: {order?.totalPrice} PLN
                   </div>
                 </>
               ) : (
                 <div style={{ fontSize: '13px', opacity: 0.7, color: '#ffc107', fontStyle: 'italic', fontWeight: '500' }}>
-                  {order.status === 'Cancelled' ? '❌ Заказ отменен (оплата заблокирована)' : '⚠️ Финансовые детали скрыты до назначения курьера'}
+                  {order?.status === 'Cancelled' ? '❌ Заказ отменен (оплата заблокирована)' : '⚠️ Финансовые детали скрыты до назначения курьера'}
                 </div>
               )}
             </div>
           </div>
 
-          {order.status !== 'Cancelled' && (
+          {order?.status !== 'Cancelled' && (
             <>
               <div style={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', color: '#c480ff', marginBottom: '10px', letterSpacing: '0.5px' }}>
                 💸 Прогноз выплат курьерам (с коэф. спроса):
@@ -333,7 +334,7 @@ export default function OrderDetailsModal({
         {/* FOOTER ACTIONS */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            {order.status !== 'Cancelled' && order.status !== 'Delivered' && (
+            {order?.status !== 'Cancelled' && order?.status !== 'Delivered' && (
               <button
                 onClick={handleCancel}
                 disabled={cancelling}

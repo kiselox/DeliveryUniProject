@@ -43,6 +43,8 @@ export default function CourierMain() {
 
   // Selected order for PREVIEW (before accepting)
   const [previewOrder, setPreviewOrder] = useState(null);
+  const [isEarningsOpen, setIsEarningsOpen] = useState(false);
+  const [activeMobileTab, setActiveMobileTab] = useState('map'); // 'map', 'orders', 'earnings', 'profile'
 
   // Use modular React Query hooks
   const { orders = [], refetch, updateOrder } = useOrders();
@@ -90,6 +92,10 @@ export default function CourierMain() {
   
   const availableOrders = orders.filter(order => order.status === "Ready for Pickup").reverse();
 
+  const completedOrders = (orders || []).filter(o => o.courierId === courierId && o.status === "Delivered");
+  const totalEarnings = completedOrders.reduce((sum, o) => sum + calculatePayout(o), 0);
+  const totalDistance = completedOrders.reduce((sum, o) => sum + (parseFloat(o.distance) || 0), 0);
+
   // Load Leaflet CSS dynamically if not present
   useEffect(() => {
     if (!document.getElementById('leaflet-css')) {
@@ -100,6 +106,16 @@ export default function CourierMain() {
       document.head.appendChild(link);
     }
   }, []);
+
+  // Trigger Leaflet map resize adjustment when tab transitions to 'map'
+  useEffect(() => {
+    if (activeMobileTab === 'map' && mapRef.current) {
+      const timer = setTimeout(() => {
+        mapRef.current.invalidateSize();
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [activeMobileTab]);
 
   // HTML5 GPS Tracking simulation
   useEffect(() => {
@@ -214,44 +230,46 @@ export default function CourierMain() {
       courierMarkerRef.current = L.marker([courierLoc.lat, courierLoc.lng], { icon: courierIcon }).addTo(map);
     }
 
-    // 2. Render all Restaurants (Vendors)
+    // 2. Render target Restaurant (Vendor) only if order is active or previewed
     restaurantMarkersRef.current.forEach(m => m.remove());
     restaurantMarkersRef.current = [];
 
-    Object.entries(VENDOR_COORDINATES).forEach(([id, coords]) => {
-      // Highlight vendor if it's the target for the current active/preview order
-      const isTarget = activeOrder?.vendorId === id || previewOrder?.vendorId === id;
-      
-      const restIcon = L.divIcon({
-        html: `
-          <div style="
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: ${isTarget ? '#aa3bff' : '#333'};
-            color: #fff;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            border: 2px solid white;
-            font-size: 11px;
-            font-weight: bold;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-          ">
-            ${coords.name.slice(0, 3)}
-          </div>
-        `,
-        className: 'leaflet-div-icon',
-        iconSize: [32, 32],
-        iconAnchor: [16, 16]
-      });
+    const currentOrder = activeOrder || previewOrder;
+    if (currentOrder) {
+      const targetVendorId = currentOrder.vendorId;
+      const coords = VENDOR_COORDINATES[targetVendorId];
+      if (coords) {
+        const restIcon = L.divIcon({
+          html: `
+            <div style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background-color: #aa3bff;
+              color: #fff;
+              width: 32px;
+              height: 32px;
+              border-radius: 8px;
+              border: 2px solid white;
+              font-size: 11px;
+              font-weight: bold;
+              box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            ">
+              ${coords.name.slice(0, 3)}
+            </div>
+          `,
+          className: 'leaflet-div-icon',
+          iconSize: [32, 32],
+          iconAnchor: [16, 16]
+        });
 
-      const m = L.marker([coords.lat, coords.lng], { icon: restIcon })
-        .bindPopup(`<b>Ресторан: ${coords.name}</b>`)
-        .addTo(map);
-      
-      restaurantMarkersRef.current.push(m);
-    });
+        const m = L.marker([coords.lat, coords.lng], { icon: restIcon })
+          .bindPopup(`<b>Ресторан: ${coords.name}</b>`)
+          .addTo(map);
+        
+        restaurantMarkersRef.current.push(m);
+      }
+    }
 
     // 3. Render Client destination marker if order active/previewed
     if (customerMarkerRef.current) {
@@ -259,7 +277,6 @@ export default function CourierMain() {
       customerMarkerRef.current = null;
     }
 
-    const currentOrder = activeOrder || previewOrder;
     if (currentOrder && currentOrder.deliveryLat && currentOrder.deliveryLng) {
       const clientIcon = L.divIcon({
         html: `<div style="font-size: 28px; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">📍</div>`,
@@ -433,68 +450,257 @@ export default function CourierMain() {
         ← Сменить роль
       </button>
 
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '10px'
-      }}>
-        <h1 style={{ fontSize: '32px', fontWeight: '800', margin: 0 }}>
-          Панель Курьера {courier?.vehicle === 'Scooter' ? '🛴' : courier?.vehicle === 'Car' ? '🚗' : '🚲'}
-        </h1>
-        <span style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.05)',
-          color: '#aa3bff',
-          padding: '6px 14px',
-          borderRadius: '20px',
-          fontSize: '14px',
-          fontWeight: 'bold',
-          border: '1px solid rgba(255,255,255,0.1)'
+      <div className="courier-page-header">
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '10px'
         }}>
-          {courier?.name || `Курьер: ${courierId}`} ({courier?.vehicle || 'Bicycle'})
-        </span>
-      </div>
+          <h1 style={{ fontSize: '32px', fontWeight: '800', margin: 0 }}>
+            Панель Курьера {courier?.vehicle === 'Scooter' ? '🛴' : courier?.vehicle === 'Car' ? '🚗' : '🚲'}
+          </h1>
+          <span style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+            color: '#aa3bff',
+            padding: '6px 14px',
+            borderRadius: '20px',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            border: '1px solid rgba(255,255,255,0.1)'
+          }}>
+            {courier?.name || `Курьер: ${courierId}`} ({courier?.vehicle || 'Bicycle'})
+          </span>
+        </div>
 
-      <p style={{ color: '#aaa', marginBottom: '30px', fontSize: '16px', lineHeight: '1.5', textAlign: 'left' }}>
-        Эмулируйте движение курьера по г. Познань. <b>Все рестораны</b> постоянно видны на карте. Кликните по карте для перемещения.
-      </p>
+        <p style={{ color: '#aaa', marginBottom: '30px', fontSize: '16px', lineHeight: '1.5', textAlign: 'left' }}>
+          Эмулируйте движение курьера по г. Познань. <b>Все рестораны</b> постоянно видны на карте. Кликните по карте для перемещения.
+        </p>
+      </div>
 
       {/* Main Grid Layout */}
       <div className="courier-dashboard-container">
         
         {/* Left Column: Courier Profile & Active/Available orders */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="courier-left-column" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           
-          <CourierProfileHeader 
-            courier={courier}
-            activeOrder={activeOrder}
-            isGpsTracking={isGpsTracking}
-            setIsGpsTracking={setIsGpsTracking}
-          />
+          <div className={`mobile-tab-content ${activeMobileTab === 'profile' ? 'active-tab' : ''}`}>
+            <CourierProfileHeader 
+              courier={courier}
+              activeOrder={activeOrder}
+              isGpsTracking={isGpsTracking}
+              setIsGpsTracking={setIsGpsTracking}
+            />
+          </div>
 
-          <ActiveOrderCard 
-            activeOrder={activeOrder}
-            calculatePayout={calculatePayout}
-            distanceInfo={distanceInfo}
-            getGoogleMapsDirectionsUrl={getGoogleMapsDirectionsUrl}
-            handleConfirmPickUp={handleConfirmPickUp}
-            handleDeliverOrder={handleDeliverOrder}
-          />
+          <div className={`mobile-tab-content ${activeMobileTab === 'earnings' ? 'active-tab' : ''}`}>
+            {/* DAILY EARNINGS GLASSMORPHIC DASHBOARD PANEL */}
+            <div style={{
+              background: '#fff',
+              border: '1px solid #eee',
+              borderRadius: '16px',
+              padding: '24px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
+              textAlign: 'left',
+              transition: 'all 0.3s ease'
+            }}>
+              {/* Header toggle row */}
+              <div 
+                onClick={() => setIsEarningsOpen(!isEarningsOpen)}
+                style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center', 
+                  cursor: 'pointer',
+                  userSelect: 'none'
+                }}
+              >
+                <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', color: '#333' }}>
+                  📊 Мой доход за сегодня
+                </h3>
+                <span style={{ fontSize: '14px', color: '#aa3bff', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  {isEarningsOpen ? 'Свернуть ▲' : 'Подробнее ▼'}
+                </span>
+              </div>
 
-          <AvailableOrdersList 
-            activeOrder={activeOrder}
-            availableOrders={availableOrders}
-            previewOrder={previewOrder}
-            setPreviewOrder={setPreviewOrder}
-            handlePreviewOrder={handlePreviewOrder}
-            calculatePayout={calculatePayout}
-            distanceInfo={distanceInfo}
-            handleAcceptOrder={handleAcceptOrder}
-          />
+              {/* Quick stats grid */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr 1fr',
+                gap: '10px',
+                marginTop: '15px',
+                borderTop: '1px solid #eee',
+                paddingTop: '15px'
+              }}>
+                {/* Earnings column */}
+                <div style={{ background: 'rgba(0,210,106,0.05)', border: '1px solid rgba(0,210,106,0.12)', padding: '10px', borderRadius: '12px', textAlign: 'center' }}>
+                  <span style={{ fontSize: '11px', color: '#555', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>Заработано</span>
+                  <strong style={{ fontSize: '18px', color: '#00aa54' }}>{totalEarnings} PLN</strong>
+                </div>
+                {/* Deliveries count */}
+                <div style={{ background: 'rgba(74,144,226,0.05)', border: '1px solid rgba(74,144,226,0.12)', padding: '10px', borderRadius: '12px', textAlign: 'center' }}>
+                  <span style={{ fontSize: '11px', color: '#555', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>Доставки</span>
+                  <strong style={{ fontSize: '18px', color: '#2575fc' }}>{completedOrders.length} шт</strong>
+                </div>
+                {/* Distance count */}
+                <div style={{ background: 'rgba(170,59,255,0.05)', border: '1px solid rgba(170,59,255,0.12)', padding: '10px', borderRadius: '12px', textAlign: 'center' }}>
+                  <span style={{ fontSize: '11px', color: '#555', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>Пробег</span>
+                  <strong style={{ fontSize: '18px', color: '#8c31d8' }}>{totalDistance.toFixed(1)} км</strong>
+                </div>
+              </div>
+
+              {/* Detailed deliveries list (expandable) */}
+              {isEarningsOpen && (
+                <div style={{
+                  marginTop: '15px',
+                  borderTop: '1px solid #eee',
+                  paddingTop: '15px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                  maxHeight: '220px',
+                  overflowY: 'auto',
+                  paddingRight: '4px'
+                }}>
+                  {completedOrders.length === 0 ? (
+                    <div style={{ padding: '20px 0', textAlign: 'center', color: '#777', fontSize: '13px' }}>
+                      У вас пока нет выполненных заказов за сегодня. 🛵
+                    </div>
+                  ) : (
+                    completedOrders.map(order => {
+                      const payout = calculatePayout(order);
+                      return (
+                        <div 
+                          key={order.id}
+                          style={{
+                            background: '#f9f9f9',
+                            border: '1px solid #eee',
+                            borderRadius: '12px',
+                            padding: '12px',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f1f1f1'}
+                          onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f9f9f9'}
+                        >
+                          <div>
+                            <strong style={{ fontSize: '13px', color: '#333', display: 'block' }}>
+                              🏪 {order.vendorName}
+                            </strong>
+                            <div style={{ display: 'flex', gap: '8px', fontSize: '11px', color: '#666', marginTop: '2px' }}>
+                              <span>🍕 #{order.id.slice(-4).toUpperCase()}</span>
+                              <span>⏱️ {order.createdAt}</span>
+                              <span>🛣️ {order.distance} км</span>
+                            </div>
+                          </div>
+                          <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#00aa54' }}>
+                            +{payout} PLN
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className={`mobile-tab-content ${activeMobileTab === 'orders' ? 'active-tab' : ''}`}>
+            <ActiveOrderCard 
+              activeOrder={activeOrder}
+              calculatePayout={calculatePayout}
+              distanceInfo={distanceInfo}
+              getGoogleMapsDirectionsUrl={getGoogleMapsDirectionsUrl}
+              handleConfirmPickUp={handleConfirmPickUp}
+              handleDeliverOrder={handleDeliverOrder}
+            />
+
+            <AvailableOrdersList 
+              activeOrder={activeOrder}
+              availableOrders={availableOrders}
+              previewOrder={previewOrder}
+              setPreviewOrder={setPreviewOrder}
+              handlePreviewOrder={handlePreviewOrder}
+              calculatePayout={calculatePayout}
+              distanceInfo={distanceInfo}
+              handleAcceptOrder={handleAcceptOrder}
+            />
+          </div>
         </div>
 
         {/* Right Column: Leaflet Micro Map */}
-        <LeafletDeliveryMap mapContainerRef={mapContainerRef} />
+        <div className={`map-tab-wrapper ${activeMobileTab === 'map' ? 'active-tab' : ''}`} style={{ position: 'relative' }}>
+          <LeafletDeliveryMap mapContainerRef={mapContainerRef} />
+          {activeOrder && (
+            <a 
+              href={getGoogleMapsDirectionsUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="map-floating-gmaps-btn"
+              style={{
+                position: 'absolute',
+                top: '15px',
+                right: '15px',
+                zIndex: 1000,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '12px 18px',
+                backgroundColor: '#ffc107',
+                color: '#333',
+                fontSize: '13px',
+                fontWeight: 'bold',
+                borderRadius: '12px',
+                textDecoration: 'none',
+                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.25)',
+                border: '1px solid rgba(255, 255, 255, 0.25)',
+                transition: 'all 0.2s',
+                fontFamily: 'inherit'
+              }}
+            >
+              🗺️ Открыть Google Maps
+            </a>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom Sticky Tab Navigation Bar (Mobile only) */}
+      <div className="courier-bottom-nav">
+        <button 
+          className={activeMobileTab === 'map' ? 'active' : ''} 
+          onClick={() => setActiveMobileTab('map')}
+        >
+          <span className="nav-icon">🗺️</span>
+          <span className="nav-label">Карта</span>
+        </button>
+        <button 
+          className={activeMobileTab === 'orders' ? 'active' : ''} 
+          onClick={() => setActiveMobileTab('orders')}
+        >
+          <span className="nav-icon" style={{ position: 'relative' }}>
+            🛒
+            {availableOrders.length > 0 && (
+              <span className="nav-badge">{availableOrders.length}</span>
+            )}
+          </span>
+          <span className="nav-label">Заказы</span>
+        </button>
+        <button 
+          className={activeMobileTab === 'earnings' ? 'active' : ''} 
+          onClick={() => setActiveMobileTab('earnings')}
+        >
+          <span className="nav-icon">📈</span>
+          <span className="nav-label">Доход</span>
+        </button>
+        <button 
+          className={activeMobileTab === 'profile' ? 'active' : ''} 
+          onClick={() => setActiveMobileTab('profile')}
+        >
+          <span className="nav-icon">👤</span>
+          <span className="nav-label">Профиль</span>
+        </button>
       </div>
 
       <SupportChatWidget 

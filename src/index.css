@@ -310,15 +310,15 @@ body {
 /* ================== Floating Cart ================== */
 .floating-cart-btn {
   position: fixed;
-  bottom: 40px;
-  right: 40px;
-  width: 70px;
-  height: 70px;
+  bottom: 100px;
+  right: 25px;
+  width: 60px;
+  height: 60px;
   background-color: var(--green);
   border-radius: 50%;
   border: none;
   box-shadow: 0 6px 16px rgba(0, 210, 106, 0.4);
-  font-size: 30px;
+  font-size: 26px;
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -823,4 +823,20 @@ body {
   background: rgba(48, 209, 88, 0.15);
   border: 1px solid rgba(48, 209, 88, 0.3);
   color: #30d158;
+}
+
+@media (max-width: 768px) {
+  .support-floating-button {
+    bottom: 85px !important;
+    right: 15px !important;
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 22px !important;
+  }
+  .support-chat-drawer {
+    bottom: 145px !important;
+    right: 15px !important;
+    width: calc(100% - 30px) !important;
+    height: 420px !important;
+  }
 }

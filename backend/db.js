@@ -170,7 +170,8 @@ export async function initDb() {
         sender_name VARCHAR(100),
         role VARCHAR(50),
         text TEXT,
-        timestamp VARCHAR(50) NULL
+        timestamp VARCHAR(50) NULL,
+        resolved BOOLEAN DEFAULT FALSE
       );
     `);
 
@@ -200,6 +201,12 @@ export async function initDb() {
       ALTER TABLE couriers ADD COLUMN IF NOT EXISTS last_name VARCHAR(100) NULL;
       ALTER TABLE couriers ADD COLUMN IF NOT EXISTS email VARCHAR(100) NULL;
       ALTER TABLE couriers ADD COLUMN IF NOT EXISTS phone VARCHAR(100) NULL;
+    `);
+
+    // 3c. Migrate messages table for resolved column
+    console.log('⚙️ Migrating messages schema for resolved column...');
+    await client.query(`
+      ALTER TABLE messages ADD COLUMN IF NOT EXISTS resolved BOOLEAN DEFAULT FALSE;
     `);
 
     // 4. Seed tables if empty

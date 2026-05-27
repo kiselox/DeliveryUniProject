@@ -7,6 +7,7 @@ import customerServices from '../../services/customer-services';
 import Header from '../../components/Header';
 import RestaurantCard from '../../components/RestaurantCard';
 import SupportChatWidget from '../../components/SupportChatWidget';
+import { useOrders } from '../../hooks/useOrders';
 
 export default function CustomerMain() {
   const { id: customerId } = useParams();
@@ -20,6 +21,15 @@ export default function CustomerMain() {
     queryKey: ['vendors'],
     queryFn: vendorsServices.getAllVendors
   });
+
+  const { orders = [] } = useOrders();
+
+  // Find active order for support chat reference
+  const activeOrder = orders.find(o => 
+    o.customerId === customerId && 
+    o.status !== "Delivered" && 
+    o.status !== "Cancelled"
+  );
 
   if (isLoading) return <div className="customer-container">Загрузка меню...</div>;
   if (isError) return <div className="customer-container">Ошибка загрузки!</div>;
@@ -42,6 +52,8 @@ export default function CustomerMain() {
         userType="customer"
         userId={customerId}
         userName={customer?.name || "Клиент"}
+        activeOrderId={activeOrder?.id}
+        activeOrderVendor={activeOrder?.vendorName}
       />
     </div>
   );

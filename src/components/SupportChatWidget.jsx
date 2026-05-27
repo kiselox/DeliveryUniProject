@@ -15,7 +15,9 @@ export default function SupportChatWidget({
   
   // Determine actual chatId
   const generalChatId = `general-${userId}`;
-  const orderChatId = activeOrderId ? `order-${activeOrderId}` : null;
+  const orderChatId = activeOrderId 
+    ? (userType === 'courier' ? `order-${activeOrderId}-courier` : `order-${activeOrderId}`)
+    : null;
   const currentChatId = chatType === 'order' && orderChatId ? orderChatId : generalChatId;
 
   // Load support messages via our custom real-time hook
@@ -62,6 +64,7 @@ export default function SupportChatWidget({
       {/* FLOATING BLUE/PURPLE CHAT TRIGGER BUTTON */}
       <button
         onClick={() => setIsOpen(!isOpen)}
+        className="support-floating-button"
         style={{
           position: 'fixed',
           bottom: '25px',
@@ -96,6 +99,7 @@ export default function SupportChatWidget({
       {/* CHAT DRAWER PANEL */}
       {isOpen && (
         <div
+          className="support-chat-drawer"
           style={{
             position: 'fixed',
             bottom: '100px',

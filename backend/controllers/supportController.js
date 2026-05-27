@@ -36,7 +36,8 @@ export const sendChatMessage = async (req, res, next) => {
         senderName,
         role,
         text,
-        timestamp
+        timestamp,
+        resolved: false
       };
       if (!localDb.messages) {
         localDb.messages = [];
@@ -81,27 +82,51 @@ export const getChatMessages = async (req, res, next) => {
 export const getActiveChats = async (req, res, next) => {
   try {
     if (usePostgres) {
-      // Fetch distinct chats with their latest messages using SQL
+      // Fetch distinct chats with their latest messages and calculate unreadCount using SQL
       const result = await pool.query(`
-        SELECT DISTINCT ON (chat_id) 
-          chat_id, sender_name, role, text, timestamp
-        FROM messages
-        ORDER BY chat_id, timestamp DESC
+        SELECT 
+          m.chat_id,
+          m.sender_name,
+          m.role,
+          m.text AS last_message,
+          m.timestamp,
+          COALESCE(u.unread_count, 0)::INTEGER AS unread_count
+        FROM (
+          SELECT DISTINCT ON (chat_id) 
+            chat_id, sender_name, role, text, timestamp
+          FROM messages
+          WHERE NOT COALESCE(resolved, FALSE)
+          ORDER BY chat_id, timestamp DESC
+        ) m
+        LEFT JOIN (
+          SELECT 
+            chat_id, 
+            COUNT(*) AS unread_count
+          FROM messages msg
+          WHERE role != 'admin' 
+            AND NOT COALESCE(resolved, FALSE)
+            AND timestamp > COALESCE(
+              (SELECT MAX(timestamp) FROM messages WHERE chat_id = msg.chat_id AND role = 'admin' AND NOT COALESCE(resolved, FALSE)),
+              ''
+            )
+          GROUP BY chat_id
+        ) u ON m.chat_id = u.chat_id
       `);
       
       const chats = result.rows.map(row => ({
         chatId: row.chat_id,
         senderName: row.sender_name,
         role: row.role,
-        lastMessage: row.text,
-        timestamp: row.timestamp
+        lastMessage: row.last_message,
+        timestamp: row.timestamp,
+        unreadCount: row.unread_count
       }));
       
       // Sort in JS by timestamp descending
       chats.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
       res.json(chats);
     } else {
-      const msgs = localDb.messages || [];
+      const msgs = (localDb.messages || []).filter(msg => !msg.resolved);
       const chatsMap = {};
       
       // Group and get latest message
@@ -118,7 +143,8 @@ export const getActiveChats = async (req, res, next) => {
             senderName,
             role,
             lastMessage: msg.text,
-            timestamp: msg.timestamp
+            timestamp: msg.timestamp,
+            unreadCount: 0
           };
         } else if (existing && isMsgAdmin) {
           // Keep user info if admin sent last message
@@ -127,10 +153,50 @@ export const getActiveChats = async (req, res, next) => {
         }
       });
       
+      // Compute unreadCount for each active chat
+      Object.keys(chatsMap).forEach(cId => {
+        const chatMsgs = msgs.filter(m => m.chatId === cId);
+        // Find latest admin message timestamp
+        const adminMsgs = chatMsgs.filter(m => m.role === 'admin');
+        const latestAdminTime = adminMsgs.length > 0
+          ? Math.max(...adminMsgs.map(m => new Date(m.timestamp).getTime()))
+          : 0;
+          
+        // Count user messages sent after latestAdminTime
+        const unread = chatMsgs.filter(m => m.role !== 'admin' && new Date(m.timestamp).getTime() > latestAdminTime).length;
+        chatsMap[cId].unreadCount = unread;
+      });
+      
       const chats = Object.values(chatsMap);
       chats.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
       res.json(chats);
     }
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Mark a support chat as resolved/closed
+export const resolveChat = async (req, res, next) => {
+  try {
+    const { chatId } = req.params;
+    if (!chatId) {
+      return res.status(400).json({ error: 'Missing chatId parameter' });
+    }
+
+    if (usePostgres) {
+      await pool.query(
+        'UPDATE messages SET resolved = TRUE WHERE chat_id = $1',
+        [chatId]
+      );
+    } else {
+      localDb.messages = (localDb.messages || []).map(msg => 
+        msg.chatId === chatId ? { ...msg, resolved: true } : msg
+      );
+      saveLocalDb();
+    }
+    
+    res.json({ success: true, message: `Chat ${chatId} has been successfully resolved.` });
   } catch (err) {
     next(err);
   }

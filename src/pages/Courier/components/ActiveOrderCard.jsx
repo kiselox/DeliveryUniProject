@@ -57,57 +57,80 @@ export default function ActiveOrderCard({
       </div>
 
       {/* Recipient / Delivery Details Card */}
-      <div style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.15)',
-        borderRadius: '12px',
-        padding: '16px',
-        marginBottom: '15px',
-        fontSize: '14px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '12px'
-      }}>
-        <div style={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', opacity: 0.9, letterSpacing: '0.5px' }}>
-          📋 Карточка Доставки
+      {isAccepted ? (
+        <div style={{
+          backgroundColor: 'rgba(0, 0, 0, 0.15)',
+          borderRadius: '12px',
+          padding: '16px',
+          marginBottom: '15px',
+          fontSize: '13px',
+          textAlign: 'center',
+          color: '#ffc107',
+          fontWeight: 'bold',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '6px'
+        }}>
+          <span style={{ fontSize: '20px' }}>🔒</span>
+          <span>Детали доставки скрыты</span>
+          <span style={{ fontSize: '11px', fontWeight: 'normal', opacity: 0.8 }}>
+            Контакты и точный адрес получателя станут доступны после того, как вы подтвердите получение заказа в ресторане.
+          </span>
         </div>
+      ) : (
+        <div style={{
+          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+          borderRadius: '12px',
+          padding: '16px',
+          marginBottom: '15px',
+          fontSize: '14px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px'
+        }}>
+          <div style={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', opacity: 0.9, letterSpacing: '0.5px' }}>
+            📋 Карточка Доставки
+          </div>
 
-        {/* Grid for House, Apartment, Floor */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
-          <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.15)', padding: '8px 10px', borderRadius: '8px' }}>
-            <span style={{ fontSize: '10px', opacity: 0.7, display: 'block' }}>Дом</span>
-            <strong style={{ fontSize: '15px' }}>{activeOrder.house || '—'}</strong>
-          </div>
-          <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.15)', padding: '8px 10px', borderRadius: '8px' }}>
-            <span style={{ fontSize: '10px', opacity: 0.7, display: 'block' }}>Квартира</span>
-            <strong style={{ fontSize: '15px' }}>{activeOrder.apartment || '—'}</strong>
-          </div>
-          <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.15)', padding: '8px 10px', borderRadius: '8px' }}>
-            <span style={{ fontSize: '10px', opacity: 0.7, display: 'block' }}>Этаж</span>
-            <strong style={{ fontSize: '15px' }}>{activeOrder.floor || '—'}</strong>
-          </div>
-        </div>
-
-        {/* Recipient Phone */}
-        {activeOrder.phone && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(0, 0, 0, 0.15)', padding: '10px 12px', borderRadius: '8px' }}>
-            <span>📞</span>
-            <div style={{ flexGrow: 1 }}>
-              <span style={{ fontSize: '10px', opacity: 0.7, display: 'block' }}>Телефон получателя</span>
-              <a href={`tel:${activeOrder.phone}`} style={{ color: '#fff', fontWeight: 'bold', fontSize: '15px', textDecoration: 'underline' }}>
-                {activeOrder.phone}
-              </a>
+          {/* Grid for House, Apartment, Floor */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+            <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.15)', padding: '8px 10px', borderRadius: '8px' }}>
+              <span style={{ fontSize: '10px', opacity: 0.7, display: 'block' }}>Дом</span>
+              <strong style={{ fontSize: '15px' }}>{activeOrder.house || '—'}</strong>
+            </div>
+            <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.15)', padding: '8px 10px', borderRadius: '8px' }}>
+              <span style={{ fontSize: '10px', opacity: 0.7, display: 'block' }}>Квартира</span>
+              <strong style={{ fontSize: '15px' }}>{activeOrder.apartment || '—'}</strong>
+            </div>
+            <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.15)', padding: '8px 10px', borderRadius: '8px' }}>
+              <span style={{ fontSize: '10px', opacity: 0.7, display: 'block' }}>Этаж</span>
+              <strong style={{ fontSize: '15px' }}>{activeOrder.floor || '—'}</strong>
             </div>
           </div>
-        )}
 
-        {/* Courier Notes */}
-        {activeOrder.notes && (
-          <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.15)', padding: '10px 12px', borderRadius: '8px', borderLeft: '3px solid #ffc107' }}>
-            <span style={{ fontSize: '10px', opacity: 0.8, fontWeight: 'bold', color: '#ffc107', display: 'block', marginBottom: '3px' }}>📝 Заметка курьеру:</span>
-            <span style={{ fontSize: '13px', fontStyle: 'italic', lineHeight: '1.4' }}>"{activeOrder.notes}"</span>
-          </div>
-        )}
-      </div>
+          {/* Recipient Phone */}
+          {activeOrder.phone && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(0, 0, 0, 0.15)', padding: '10px 12px', borderRadius: '8px' }}>
+              <span>📞</span>
+              <div style={{ flexGrow: 1 }}>
+                <span style={{ fontSize: '10px', opacity: 0.7, display: 'block' }}>Телефон получателя</span>
+                <a href={`tel:${activeOrder.phone}`} style={{ color: '#fff', fontWeight: 'bold', fontSize: '15px', textDecoration: 'underline' }}>
+                  {activeOrder.phone}
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* Courier Notes */}
+          {activeOrder.notes && (
+            <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.15)', padding: '10px 12px', borderRadius: '8px', borderLeft: '3px solid #ffc107' }}>
+              <span style={{ fontSize: '10px', opacity: 0.8, fontWeight: 'bold', color: '#ffc107', display: 'block', marginBottom: '3px' }}>📝 Заметка курьеру:</span>
+              <span style={{ fontSize: '13px', fontStyle: 'italic', lineHeight: '1.4' }}>"{activeOrder.notes}"</span>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Google Maps Directions Navigator Button */}
       <a 
