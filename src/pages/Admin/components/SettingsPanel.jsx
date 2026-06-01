@@ -1,5 +1,4 @@
 // src/pages/Admin/components/SettingsPanel.jsx
-import React from 'react';
 
 export default function SettingsPanel({
   settings,
@@ -81,7 +80,7 @@ export default function SettingsPanel({
 
           {/* Scooter Rate */}
           <div className="price-rate-item-box">
-            <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', fontWeight: 'bold' }}>🛴 Самокат (Ставка)</span>
+            <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', fontWeight: 'bold' }}>🛵 Скутер (Ставка)</span>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               <button 
                 type="button" 

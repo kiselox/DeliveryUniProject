@@ -1,5 +1,5 @@
 // src/pages/Courier/CourierMain.jsx
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import L from 'leaflet';
@@ -19,11 +19,14 @@ const VENDOR_COORDINATES = {
   v2: { name: "McDonald's", lat: 52.4023, lng: 16.9261 },
   v3: { name: 'Burger King', lat: 52.4029, lng: 16.9125 },
   v4: { name: 'Pasibus', lat: 52.4048, lng: 16.9255 },
-  v5: { name: "Misha's Pizza", lat: 52.4115, lng: 16.9068 }
+  v5: { name: "Misha's Pizza", lat: 52.4115, lng: 16.9068 },
+  v6: { name: 'Pierogarnia Poznańska', lat: 52.4250, lng: 16.9180 },
+  v7: { name: 'Poznań Kebab', lat: 52.3920, lng: 16.9220 },
+  v8: { name: 'Hana Sushi', lat: 52.4080, lng: 16.9580 }
 };
 
 export default function CourierMain() {
-  const { id: courierId = 'cour1' } = useParams();
+  const { id: courierId = 'cour1', tab } = useParams();
   const navigate = useNavigate();
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
@@ -39,12 +42,11 @@ export default function CourierMain() {
   
   // Real-time distance state computed by backend
   const [distanceInfo, setDistanceInfo] = useState({ distanceMeters: 0, distanceKm: 0, mode: 'Local' });
-  const [isUpdatingLocation, setIsUpdatingLocation] = useState(false);
 
   // Selected order for PREVIEW (before accepting)
   const [previewOrder, setPreviewOrder] = useState(null);
   const [isEarningsOpen, setIsEarningsOpen] = useState(false);
-  const [activeMobileTab, setActiveMobileTab] = useState('map'); // 'map', 'orders', 'earnings', 'profile'
+  const activeMobileTab = tab || 'orders'; // 'orders', 'map', 'earnings', 'profile'
 
   // Use modular React Query hooks
   const { orders = [], refetch, updateOrder } = useOrders();
@@ -65,12 +67,24 @@ export default function CourierMain() {
     order.courierId === courierId
   );
 
+  const hasInitializedLocRef = useRef(false);
+
   // Dynamically center coordinates when courier loads
   useEffect(() => {
-    if (courier?.lat && courier?.lng) {
-      setCourierLoc({ lat: courier.lat, lng: courier.lng });
+    if (courier?.lat && courier?.lng && !hasInitializedLocRef.current) {
+      setTimeout(() => {
+        setCourierLoc({ lat: courier.lat, lng: courier.lng });
+      }, 0);
+      hasInitializedLocRef.current = true;
     }
   }, [courier]);
+
+  // Automatically redirect to /orders if tab is not set
+  useEffect(() => {
+    if (!tab) {
+      navigate(`/courier/${courierId}/orders`, { replace: true });
+    }
+  }, [tab, courierId, navigate]);
 
   const calculatePayout = (order) => {
     if (!order) return 0;
@@ -123,7 +137,9 @@ export default function CourierMain() {
 
     if (!navigator.geolocation) {
       alert("Геолокация не поддерживается вашим браузером.");
-      setIsGpsTracking(false);
+      setTimeout(() => {
+        setIsGpsTracking(false);
+      }, 0);
       return;
     }
 
@@ -147,7 +163,6 @@ export default function CourierMain() {
   useEffect(() => {
     const syncLocation = async () => {
       try {
-        setIsUpdatingLocation(true);
         const targetRestaurantId = activeOrder?.vendorId || previewOrder?.vendorId || null;
         
         const response = await api.post('/api/couriers/location', {
@@ -166,8 +181,6 @@ export default function CourierMain() {
         }
       } catch (err) {
         console.error("Failed to sync location with server:", err.message);
-      } finally {
-        setIsUpdatingLocation(false);
       }
     };
 
@@ -176,7 +189,7 @@ export default function CourierMain() {
     }, 400);
 
     return () => clearTimeout(debounceTimer);
-  }, [courierLoc, activeOrder?.id, previewOrder?.id, courierId]);
+  }, [courierLoc, activeOrder?.id, activeOrder?.vendorId, previewOrder?.id, previewOrder?.vendorId, courierId]);
 
   // Initialize Leaflet Map
   useEffect(() => {
@@ -214,12 +227,17 @@ export default function CourierMain() {
     const map = mapRef.current;
     if (!map) return;
 
+    // Auto-center map if GPS Tracking is active
+    if (isGpsTracking) {
+      map.panTo([courierLoc.lat, courierLoc.lng]);
+    }
+
     // 1. Render/Update Courier marker with absolute presence check
     if (courierMarkerRef.current && map.hasLayer(courierMarkerRef.current)) {
       courierMarkerRef.current.setLatLng([courierLoc.lat, courierLoc.lng]);
     } else {
       if (courierMarkerRef.current) {
-        courierMarkerRef.current.remove();
+        map.removeLayer(courierMarkerRef.current);
       }
       const courierIcon = L.divIcon({
         html: `<div style="font-size: 26px; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🛵</div>`,
@@ -231,7 +249,7 @@ export default function CourierMain() {
     }
 
     // 2. Render target Restaurant (Vendor) only if order is active or previewed
-    restaurantMarkersRef.current.forEach(m => m.remove());
+    restaurantMarkersRef.current.forEach(m => map.removeLayer(m));
     restaurantMarkersRef.current = [];
 
     const currentOrder = activeOrder || previewOrder;
@@ -273,7 +291,7 @@ export default function CourierMain() {
 
     // 3. Render Client destination marker if order active/previewed
     if (customerMarkerRef.current) {
-      customerMarkerRef.current.remove();
+      map.removeLayer(customerMarkerRef.current);
       customerMarkerRef.current = null;
     }
 
@@ -294,11 +312,11 @@ export default function CourierMain() {
 
     // 4. Render Route Polylines (Segment 1 and Segment 2)
     if (pathLine1Ref.current) {
-      pathLine1Ref.current.remove();
+      map.removeLayer(pathLine1Ref.current);
       pathLine1Ref.current = null;
     }
     if (pathLine2Ref.current) {
-      pathLine2Ref.current.remove();
+      map.removeLayer(pathLine2Ref.current);
       pathLine2Ref.current = null;
     }
 
@@ -340,7 +358,7 @@ export default function CourierMain() {
         }
       }
     }
-  }, [courierLoc, activeOrder, orders, previewOrder]);
+  }, [courierLoc, activeOrder, orders, previewOrder, isGpsTracking]);
 
   // Clean up Leaflet on unmount
   useEffect(() => {
@@ -425,55 +443,26 @@ export default function CourierMain() {
   if (isCourierError) return <div style={{ padding: '20px' }}>Ошибка загрузки API профиля курьера</div>;
 
   return (
-    <div style={{
-      maxWidth: '1200px',
-      margin: '0 auto',
-      padding: '40px 20px',
-      fontFamily: 'system-ui, sans-serif'
-    }}>
+    <div className="courier-container-wrapper">
       {/* Return button */}
       <button 
-        style={{
-          background: 'none',
-          border: 'none',
-          color: '#aa3bff',
-          fontSize: '16px',
-          fontWeight: 'bold',
-          cursor: 'pointer',
-          marginBottom: '20px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '5px'
-        }} 
+        className="btn-role-switch"
         onClick={() => navigate('/')}
       >
         ← Сменить роль
       </button>
 
       <div className="courier-page-header">
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '10px'
-        }}>
-          <h1 style={{ fontSize: '32px', fontWeight: '800', margin: 0 }}>
-            Панель Курьера {courier?.vehicle === 'Scooter' ? '🛴' : courier?.vehicle === 'Car' ? '🚗' : '🚲'}
+        <div className="courier-header-row">
+          <h1 className="courier-header-title">
+            Панель Курьера {courier?.vehicle === 'Scooter' ? '🛵' : courier?.vehicle === 'Car' ? '🚗' : '🚲'}
           </h1>
-          <span style={{
-            backgroundColor: 'rgba(255, 255, 255, 0.05)',
-            color: '#aa3bff',
-            padding: '6px 14px',
-            borderRadius: '20px',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            border: '1px solid rgba(255,255,255,0.1)'
-          }}>
+          <span className="courier-header-badge">
             {courier?.name || `Курьер: ${courierId}`} ({courier?.vehicle || 'Bicycle'})
           </span>
         </div>
 
-        <p style={{ color: '#aaa', marginBottom: '30px', fontSize: '16px', lineHeight: '1.5', textAlign: 'left' }}>
+        <p className="courier-header-desc">
           Эмулируйте движение курьера по г. Познань. <b>Все рестораны</b> постоянно видны на карте. Кликните по карте для перемещения.
         </p>
       </div>
@@ -482,7 +471,7 @@ export default function CourierMain() {
       <div className="courier-dashboard-container">
         
         {/* Left Column: Courier Profile & Active/Available orders */}
-        <div className="courier-left-column" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="courier-left-column flex-column-gap-md">
           
           <div className={`mobile-tab-content ${activeMobileTab === 'profile' ? 'active-tab' : ''}`}>
             <CourierProfileHeader 
@@ -670,14 +659,14 @@ export default function CourierMain() {
       <div className="courier-bottom-nav">
         <button 
           className={activeMobileTab === 'map' ? 'active' : ''} 
-          onClick={() => setActiveMobileTab('map')}
+          onClick={() => navigate(`/courier/${courierId}/map`)}
         >
           <span className="nav-icon">🗺️</span>
           <span className="nav-label">Карта</span>
         </button>
         <button 
           className={activeMobileTab === 'orders' ? 'active' : ''} 
-          onClick={() => setActiveMobileTab('orders')}
+          onClick={() => navigate(`/courier/${courierId}/orders`)}
         >
           <span className="nav-icon" style={{ position: 'relative' }}>
             🛒
@@ -689,14 +678,14 @@ export default function CourierMain() {
         </button>
         <button 
           className={activeMobileTab === 'earnings' ? 'active' : ''} 
-          onClick={() => setActiveMobileTab('earnings')}
+          onClick={() => navigate(`/courier/${courierId}/earnings`)}
         >
           <span className="nav-icon">📈</span>
           <span className="nav-label">Доход</span>
         </button>
         <button 
           className={activeMobileTab === 'profile' ? 'active' : ''} 
-          onClick={() => setActiveMobileTab('profile')}
+          onClick={() => navigate(`/courier/${courierId}/profile`)}
         >
           <span className="nav-icon">👤</span>
           <span className="nav-label">Профиль</span>

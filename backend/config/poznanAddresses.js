@@ -6,7 +6,10 @@ export const VENDOR_COORDINATES = {
   v2: { name: "McDonald's", lat: 52.4023, lng: 16.9261 }, // Półwiejska
   v3: { name: 'Burger King', lat: 52.4029, lng: 16.9125 },// Poznań Główny
   v4: { name: 'Pasibus', lat: 52.4048, lng: 16.9255 },    // Półwiejska
-  v5: { name: "Misha's Pizza", lat: 52.4115, lng: 16.9068 } // Jeżyce
+  v5: { name: "Misha's Pizza", lat: 52.4115, lng: 16.9068 }, // Jeżyce
+  v6: { name: 'Pierogarnia Poznańska', lat: 52.4250, lng: 16.9180 }, // Sołacz / Winogrady
+  v7: { name: 'Poznań Kebab', lat: 52.3920, lng: 16.9220 },          // Wilda
+  v8: { name: 'Hana Sushi', lat: 52.4080, lng: 16.9580 }             // Malta (East) / Śródka
 };
 
 // Built-in dictionary of street names in Poznań for quick geocoding (normalized keys)

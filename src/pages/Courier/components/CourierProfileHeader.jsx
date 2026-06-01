@@ -1,5 +1,4 @@
 // src/pages/Courier/components/CourierProfileHeader.jsx
-import React from 'react';
 
 export default function CourierProfileHeader({
   courier,
@@ -30,7 +29,7 @@ export default function CourierProfileHeader({
           <span style={{ color: '#555', fontSize: '13px', fontWeight: '500' }}>Транспортное средство</span>
           <div style={{ fontWeight: 'bold', fontSize: '16px', marginTop: '4px', color: '#333' }}>
             {courier.vehicle === 'Bicycle' ? '🚲 Велосипед (Стандарт)' : 
-             courier.vehicle === 'Scooter' ? '🛴 Электросамокат (Быстрый)' : 
+             courier.vehicle === 'Scooter' ? '🛵 Электроскутер (Быстрый)' : 
              courier.vehicle === 'Car' ? '🚗 Автомобиль (Дальний)' : courier.vehicle}
           </div>
         </div>

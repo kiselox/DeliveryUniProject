@@ -57,7 +57,7 @@ export const getChatMessages = async (req, res, next) => {
     const { chatId } = req.params;
     if (usePostgres) {
       const result = await pool.query(
-        'SELECT * FROM messages WHERE chat_id = $1 ORDER BY timestamp ASC',
+        'SELECT * FROM messages WHERE chat_id = $1 AND NOT COALESCE(resolved, FALSE) ORDER BY timestamp ASC',
         [chatId]
       );
       res.json(result.rows.map(row => ({
@@ -70,7 +70,7 @@ export const getChatMessages = async (req, res, next) => {
         timestamp: row.timestamp
       })));
     } else {
-      const messages = (localDb.messages || []).filter(msg => msg.chatId === chatId);
+      const messages = (localDb.messages || []).filter(msg => msg.chatId === chatId && !msg.resolved);
       res.json(messages);
     }
   } catch (err) {
@@ -184,14 +184,22 @@ export const resolveChat = async (req, res, next) => {
       return res.status(400).json({ error: 'Missing chatId parameter' });
     }
 
+    // If it's an order-related chat, resolve both customer and courier chats for this order
+    const chatIdsToResolve = [chatId];
+    if (chatId.startsWith('order-')) {
+      const baseOrderId = chatId.replace('-courier', '').replace('order-', '');
+      chatIdsToResolve.push(`order-${baseOrderId}`);
+      chatIdsToResolve.push(`order-${baseOrderId}-courier`);
+    }
+
     if (usePostgres) {
       await pool.query(
-        'UPDATE messages SET resolved = TRUE WHERE chat_id = $1',
-        [chatId]
+        'UPDATE messages SET resolved = TRUE WHERE chat_id = ANY($1)',
+        [chatIdsToResolve]
       );
     } else {
       localDb.messages = (localDb.messages || []).map(msg => 
-        msg.chatId === chatId ? { ...msg, resolved: true } : msg
+        chatIdsToResolve.includes(msg.chatId) ? { ...msg, resolved: true } : msg
       );
       saveLocalDb();
     }

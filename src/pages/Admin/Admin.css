@@ -5,6 +5,7 @@
 .admin-dashboard-container {
   max-width: 1550px;
   margin: 0 auto;
+  width: 100%;
 }
 
 .support-glass-card {
@@ -321,4 +322,591 @@
     opacity: 0.6;
     transform: scale(0.98);
   }
+}
+
+/* ==========================================================================
+   SUPPORT CHAT SIDEBAR CLASSES (RULE 2 COMPLIANT EXTRACTS)
+   ========================================================================== */
+
+.chat-threads-sidebar-title {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: bold;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding-bottom: 8px;
+  text-align: left;
+}
+
+.sidebar-tabs {
+  display: flex;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-tab-btn {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  background: none;
+  color: #fff;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.sidebar-tab-btn.active {
+  background: linear-gradient(135deg, #ff7beb 0%, #aa3bff 100%);
+}
+
+.sidebar-tab-badge {
+  background-color: #ff3b30;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 50%;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.sidebar-empty-state {
+  margin: auto 0;
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255,255,255,0.4);
+  padding: 20px;
+}
+
+.order-group-card {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.order-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-group-vendor {
+  font-size: 14px;
+  color: #fff;
+  display: block;
+}
+
+.order-group-subtitle {
+  font-size: 11px;
+  color: #ff7beb;
+  font-weight: bold;
+}
+
+.order-group-time {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+}
+
+.order-group-preview {
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: rgba(0,0,0,0.15);
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.order-group-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.order-group-btn-client {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.7);
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.order-group-btn-client.active {
+  border: 1px solid #c480ff;
+  background: linear-gradient(135deg, rgba(170, 59, 255, 0.25) 0%, rgba(123, 31, 162, 0.25) 100%);
+  color: #c480ff;
+}
+
+.order-group-btn-courier {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.7);
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.order-group-btn-courier.active {
+  border: 1px solid #ffc107;
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.25) 0%, rgba(211, 158, 0, 0.25) 100%);
+  color: #ffc107;
+}
+
+.order-group-btn-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: #ff3b30;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 50%;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #1a153b;
+  padding: 0 2px;
+}
+
+.general-thread-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.general-thread-card-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.general-thread-card-time {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+}
+
+.general-thread-card-subtitle {
+  font-size: 11px;
+  color: #ff7beb;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.general-thread-card-preview {
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.general-thread-card-badge {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  background-color: #ff3b30;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 50%;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+/* ==========================================================================
+   ORDER DETAILS MODAL CLASSES (RULE 2 COMPLIANT EXTRACTS)
+   ========================================================================== */
+
+.admin-modal-content.admin-modal-large {
+  max-width: 750px;
+  position: relative;
+}
+
+.admin-modal-close-pos {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.admin-modal-header {
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.admin-modal-pretitle {
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #ff7beb;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.admin-modal-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  background: linear-gradient(to right, #ff7beb, #aa3bff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.admin-modal-subtitle-row {
+  margin-top: 10px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.admin-modal-subtitle-item {
+  font-size: 13px;
+  opacity: 0.6;
+}
+
+.admin-modal-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.admin-modal-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.admin-modal-card-title {
+  margin: 0 0 5px 0;
+  font-size: 15px;
+  color: #c480ff;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 6px;
+}
+
+.admin-modal-card-highlight {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.admin-modal-details-list {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+}
+
+.admin-modal-timeline {
+  font-size: 13px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.text-purple {
+  color: #c480ff;
+}
+
+.text-green {
+  color: #00d26a;
+}
+
+.admin-modal-body-text {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.mt-xs {
+  margin-top: 3px;
+}
+
+.flex-column-gap-sm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-modal-card-total-row {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(255,255,255,0.06);
+  font-weight: bold;
+}
+
+.flex-align-center-gap-md {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-modal-card-name {
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 3px;
+  color: #fff;
+}
+
+.admin-modal-card-subtext {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+
+.admin-modal-wide-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.admin-modal-wide-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 12px;
+  margin-bottom: 15px;
+}
+
+.admin-modal-wide-card-pretitle {
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #c480ff;
+  letter-spacing: 0.5px;
+}
+
+.admin-modal-wide-card-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 2px;
+}
+
+.text-red {
+  color: #ff4757;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.admin-modal-wide-card-total {
+  font-size: 20px;
+  font-weight: 900;
+  color: #00d26a;
+}
+
+.admin-modal-wide-card-subtotal {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.admin-modal-warning-text {
+  font-size: 13px;
+  opacity: 0.7;
+  color: #ffc107;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.admin-modal-wide-card-subtitle {
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #c480ff;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
+.admin-modal-wide-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  text-align: center;
+}
+
+.admin-modal-wide-grid-item {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 12px 15px;
+}
+
+.admin-modal-wide-grid-item-label {
+  font-size: 12px;
+  opacity: 0.6;
+  font-weight: bold;
+  color: #ff7beb;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.admin-modal-wide-grid-item-value {
+  font-size: 18px;
+  color: #fff;
+}
+
+.admin-modal-btn-partner {
+  margin-top: 12px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(196, 128, 255, 0.25);
+  background: linear-gradient(135deg, rgba(196, 128, 255, 0.1) 0%, rgba(170, 59, 255, 0.1) 100%);
+  color: #e4c4ff;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(170, 59, 255, 0.05);
+}
+.admin-modal-btn-partner:hover {
+  background: linear-gradient(135deg, rgba(196, 128, 255, 0.2) 0%, rgba(170, 59, 255, 0.2) 100%);
+  border: 1px solid rgba(196, 128, 255, 0.5);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.admin-modal-btn-courier {
+  margin-top: 12px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 210, 106, 0.25);
+  background: linear-gradient(135deg, rgba(0, 210, 106, 0.1) 0%, rgba(0, 180, 90, 0.1) 100%);
+  color: #a3ffd0;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 210, 106, 0.05);
+}
+.admin-modal-btn-courier:hover {
+  background: linear-gradient(135deg, rgba(0, 210, 106, 0.2) 0%, rgba(0, 180, 90, 0.2) 100%);
+  border: 1px solid rgba(0, 210, 106, 0.5);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.admin-page-wrapper {
+  min-height: 100vh;
+  background: radial-gradient(circle at 50% 50%, #151030 0%, #0d091a 100%);
+  color: #f3f1f6;
+  padding: 40px 20px;
+  font-family: system-ui, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-loading-wrapper {
+  text-align: center;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.admin-loading-title {
+  font-size: 24px;
+  font-weight: bold;
+  background: linear-gradient(to right, #ff7beb, #aa3bff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 8px 0;
+}
+
+.admin-loading-desc {
+  font-size: 14px;
+  opacity: 0.7;
+  color: #ccc;
+  margin: 0;
+}
+
+.admin-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.admin-header-title {
+  font-size: 36px;
+  font-weight: 800;
+  margin: 0;
+  background: linear-gradient(to right, #ff7beb, #aa3bff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 10px rgba(170, 59, 255, 0.2);
+}
+
+.admin-online-badge {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 10px 20px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }

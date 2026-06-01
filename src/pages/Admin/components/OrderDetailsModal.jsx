@@ -1,5 +1,5 @@
 // src/pages/Admin/components/OrderDetailsModal.jsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../../../services/api';
 
 export default function OrderDetailsModal({
@@ -8,7 +8,10 @@ export default function OrderDetailsModal({
   safeSettings,
   getStatusBadge,
   updateOrder,
-  refetchOrders
+  refetchOrders,
+  setActiveTab,
+  setSelectedChatId,
+  setSidebarSubTab
 }) {
   const [cancelling, setCancelling] = useState(false);
   const [customerProfile, setCustomerProfile] = useState(null);
@@ -16,13 +19,48 @@ export default function OrderDetailsModal({
 
   const order = selectedOrderDetails;
 
+  const handleWriteToPartner = (roleType) => {
+    if (!order) return;
+    const isDeliveredOrCancelled = order.status === 'Delivered' || order.status === 'Cancelled';
+    let chatId = '';
+    let subTab = 'orders';
+
+    if (roleType === 'customer') {
+      if (isDeliveredOrCancelled) {
+        chatId = `general-${order.customerId}`;
+        subTab = 'general';
+      } else {
+        chatId = `order-${order.id}`;
+        subTab = 'orders';
+      }
+    } else if (roleType === 'courier') {
+      if (!order.courierId) return;
+      if (isDeliveredOrCancelled) {
+        chatId = `general-${order.courierId}`;
+        subTab = 'general';
+      } else {
+        chatId = `order-${order.id}-courier`;
+        subTab = 'orders';
+      }
+    }
+
+    if (chatId) {
+      if (setSelectedChatId) setSelectedChatId(chatId);
+      if (setSidebarSubTab) setSidebarSubTab(subTab);
+      if (setActiveTab) setActiveTab('support');
+      setSelectedOrderDetails(null);
+    }
+  };
+
   useEffect(() => {
     if (order?.customerId) {
       api.get(`/customers/${order.customerId}`)
         .then(res => setCustomerProfile(res.data))
         .catch(err => console.error('Error fetching customer details:', err));
     } else {
-      setCustomerProfile(null);
+      setTimeout(() => {
+        setCustomerProfile(null);
+      }, 0);
     }
 
     if (order?.courierId) {
@@ -30,7 +68,9 @@ export default function OrderDetailsModal({
         .then(res => setCourierProfile(res.data))
         .catch(err => console.error('Error fetching courier details:', err));
     } else {
-      setCourierProfile(null);
+      setTimeout(() => {
+        setCourierProfile(null);
+      }, 0);
     }
   }, [order?.customerId, order?.courierId]);
 
@@ -86,113 +126,76 @@ export default function OrderDetailsModal({
 
   return (
     <div className="admin-modal-overlay">
-      <div className="admin-modal-content" style={{ maxWidth: '750px', position: 'relative' }}>
+      <div className="admin-modal-content admin-modal-large">
         {/* CLOSE BUTTON AT TOP RIGHT */}
         <button
           onClick={() => setSelectedOrderDetails(null)}
-          className="btn-admin-close"
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: '20px'
-          }}
+          className="btn-admin-close admin-modal-close-pos"
         >
           ×
         </button>
 
         {/* HEADER */}
-        <div style={{ marginBottom: '25px', textAlign: 'left' }}>
-          <span style={{
-            fontSize: '11px',
-            textTransform: 'uppercase',
-            fontWeight: 'bold',
-            color: '#ff7beb',
-            letterSpacing: '1px',
-            display: 'block',
-            marginBottom: '4px'
-          }}>
+        <div className="admin-modal-header">
+          <span className="admin-modal-pretitle">
             ПОЛНАЯ ИНФОРМАЦИЯ О ЗАКАЗЕ
           </span>
-          <h3 style={{
-            fontSize: '24px',
-            fontWeight: '800',
-            margin: 0,
-            color: '#fff',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px'
-          }}>
+          <h3 className="admin-modal-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             #{order?.id ? order.id.toUpperCase() : '—'}
           </h3>
-          <div style={{ marginTop: '10px', display: 'flex', gap: '15px', alignItems: 'center' }}>
+          <div className="admin-modal-subtitle-row">
             {getStatusBadge ? getStatusBadge(order?.status) : <span>{order?.status}</span>}
-            <span style={{ fontSize: '13px', opacity: 0.6 }}>
+            <span className="admin-modal-subtitle-item">
               Дистанция: 📏 {order?.distance} км
             </span>
           </div>
         </div>
 
         {/* TWO-COLUMN GRID */}
-        <div className="checkout-grid-3col" style={{ gridTemplateColumns: '1fr 1fr', gap: '25px', marginBottom: '25px', textAlign: 'left' }}>
+        <div className="admin-modal-grid-2col">
           
           {/* COLUMN 1: VENDOR & BASKET */}
-          <div style={{
-            backgroundColor: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.05)',
-            padding: '20px',
-            borderRadius: '16px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '10px'
-          }}>
-            <h4 style={{ margin: '0 0 5px 0', fontSize: '15px', color: '#c480ff', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '6px' }}>
+          <div className="admin-modal-card flex-column-gap-sm">
+            <h4 className="admin-modal-card-title">
               🏬 Заведение & Блюда
             </h4>
-            <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
+            <div className="admin-modal-card-highlight">
               {order?.vendorName}
             </div>
-            <div style={{
-              fontSize: '14px',
-              opacity: 0.8,
-              lineHeight: '1.5',
-              whiteSpace: 'pre-line',
-              backgroundColor: 'rgba(0,0,0,0.2)',
-              padding: '10px',
-              borderRadius: '8px'
-            }}>
+            <div className="admin-modal-body-text" style={{ opacity: 0.8, whiteSpace: 'pre-line', backgroundColor: 'rgba(0,0,0,0.2)', padding: '10px', borderRadius: '8px' }}>
               {order?.items}
             </div>
             
-            <div style={{ fontSize: '13px', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div className="admin-modal-timeline">
               <div>📅 <strong>Создан:</strong> {formatFullDateTime(order?.createdAt)}</div>
               {order?.acceptedAt && (
-                <div style={{ color: '#c480ff' }}>🟣 <strong>Принят курьером:</strong> {formatFullDateTime(order.acceptedAt)}</div>
+                <div className="text-purple">🟣 <strong>Принят курьером:</strong> {formatFullDateTime(order.acceptedAt)}</div>
               )}
               {order?.pickedUpAt && (
-                <div style={{ color: '#00d26a' }}>🍲 <strong>Забран в ресторане:</strong> {formatFullDateTime(order.pickedUpAt)}</div>
+                <div className="text-green">🍲 <strong>Забран в ресторане:</strong> {formatFullDateTime(order.pickedUpAt)}</div>
               )}
             </div>
           </div>
 
           {/* COLUMN 2: CLIENT INFO */}
-          <div style={{
-            backgroundColor: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.05)',
-            padding: '20px',
-            borderRadius: '16px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '12px'
-          }}>
-            <h4 style={{ margin: '0 0 5px 0', fontSize: '15px', color: '#c480ff', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '6px' }}>
+          <div className="admin-modal-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <h4 className="admin-modal-card-title">
               📍 Адрес & Получатель
             </h4>
             
-            <div style={{ fontSize: '14px', lineHeight: '1.4' }}>
+            <div className="admin-modal-body-text">
               <div>👤 <strong>Имя:</strong> {customerProfile ? `${customerProfile.name || ''} ${customerProfile.lastName || ''}`.trim() || '—' : order?.customerId || '—'}</div>
-              {customerProfile?.email && <div style={{ marginTop: '3px' }}>✉️ <strong>Email:</strong> {customerProfile.email}</div>}
-              <div style={{ marginTop: '3px' }}>📞 <strong>Телефон:</strong> {customerProfile?.phone || order?.phone || '—'}</div>
-              <div style={{ marginTop: '6px', paddingTop: '6px', borderTop: '1px dashed rgba(255,255,255,0.06)', fontWeight: 'bold' }}>
+              {customerProfile?.email && <div className="mt-xs">✉️ <strong>Email:</strong> {customerProfile.email}</div>}
+              <div className="mt-xs">📞 <strong>Телефон:</strong> {customerProfile?.phone || order?.phone || '—'}</div>
+              
+              <button
+                onClick={() => handleWriteToPartner('customer')}
+                className="admin-modal-btn-partner"
+              >
+                💬 Написать клиенту {order?.status === 'Delivered' ? '(в общий чат)' : '(по заказу)'}
+              </button>
+
+              <div className="admin-modal-card-total-row">
                 📍 Адрес: {order?.deliveryAddress}
               </div>
             </div>
@@ -238,49 +241,49 @@ export default function OrderDetailsModal({
                 lineHeight: '1.4'
               }}>
                 <div>🛵 <strong>Назначенный курьер:</strong></div>
-                <div style={{ fontWeight: 'bold', fontSize: '14px', marginTop: '3px', color: '#fff' }}>
+                <div className="admin-modal-card-name">
                   {courierProfile ? `${courierProfile.name || ''} ${courierProfile.lastName || ''}`.trim() || '—' : order.courierId || '—'}
                 </div>
-                <div style={{ fontSize: '12px', opacity: 0.8, marginTop: '2px' }}>
-                  Транспорт: {courierProfile?.vehicle === 'Car' ? '🚗 Автомобиль' : courierProfile?.vehicle === 'Scooter' ? '🛴 Самокат' : '🚲 Велосипед'}
+                <div className="admin-modal-card-subtext">
+                  Транспорт: {courierProfile?.vehicle === 'Car' ? '🚗 Автомобиль' : courierProfile?.vehicle === 'Scooter' ? '🛵 Скутер' : '🚲 Велосипед'}
                 </div>
-                {courierProfile?.phone && <div style={{ fontSize: '12px', opacity: 0.8 }}>📞 Тел: {courierProfile.phone}</div>}
-                {courierProfile?.email && <div style={{ fontSize: '12px', opacity: 0.8 }}>✉️ Email: {courierProfile.email}</div>}
+                {courierProfile?.phone && <div className="admin-modal-card-subtext">📞 Тел: {courierProfile.phone}</div>}
+                {courierProfile?.email && <div className="admin-modal-card-subtext">✉️ Email: {courierProfile.email}</div>}
+
+                <button
+                  onClick={() => handleWriteToPartner('courier')}
+                  className="admin-modal-btn-courier"
+                >
+                  💬 Написать курьеру {order?.status === 'Delivered' ? '(в общий чат)' : '(по заказу)'}
+                </button>
               </div>
             )}
           </div>
         </div>
 
         {/* BOTTOM SECTION: PRICE & DYNAMIC PAYOUT COMPARISONS */}
-        <div style={{
-          background: 'rgba(170, 59, 255, 0.05)',
-          border: '1px solid rgba(170, 59, 255, 0.15)',
-          borderRadius: '16px',
-          padding: '20px',
-          marginBottom: '25px',
-          textAlign: 'left'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '12px', marginBottom: '15px' }}>
+        <div className="admin-modal-wide-card">
+          <div className="admin-modal-wide-card-header">
             <div>
-              <span style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#c480ff', letterSpacing: '0.5px' }}>
+              <span className="admin-modal-wide-card-pretitle">
                 ФИНАНСОВЫЙ СТАТУС ЗАКАЗА
               </span>
-              <div style={{ fontSize: '16px', fontWeight: 'bold', marginTop: '2px' }}>
-                Коэффициент спроса: <span style={{ color: '#ff4757' }}>⚡ x{coefficientVal.toFixed(1)}</span>
+              <div className="admin-modal-wide-card-title">
+                Коэффициент спроса: <span className="text-red">⚡ x{coefficientVal.toFixed(1)}</span>
               </div>
             </div>
-            <div style={{ textAlign: 'right' }}>
+            <div className="text-right">
               {order?.courierId && order?.status !== 'Cancelled' ? (
                 <>
-                  <div style={{ fontSize: '20px', fontWeight: '900', color: '#00d26a' }}>
+                  <div className="admin-modal-wide-card-total">
                     {order?.fee} PLN (доставка)
                   </div>
-                  <div style={{ fontSize: '12px', opacity: 0.6 }}>
+                  <div className="admin-modal-wide-card-subtotal">
                     Итого: {order?.totalPrice} PLN
                   </div>
                 </>
               ) : (
-                <div style={{ fontSize: '13px', opacity: 0.7, color: '#ffc107', fontStyle: 'italic', fontWeight: '500' }}>
+                <div className="admin-modal-warning-text">
                   {order?.status === 'Cancelled' ? '❌ Заказ отменен (оплата заблокирована)' : '⚠️ Финансовые детали скрыты до назначения курьера'}
                 </div>
               )}
@@ -289,42 +292,27 @@ export default function OrderDetailsModal({
 
           {order?.status !== 'Cancelled' && (
             <>
-              <div style={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', color: '#c480ff', marginBottom: '10px', letterSpacing: '0.5px' }}>
+              <div className="admin-modal-wide-card-subtitle">
                 💸 Прогноз выплат курьерам (с коэф. спроса):
               </div>
               
-              <div className="checkout-grid-3col" style={{ gap: '15px', textAlign: 'center' }}>
+              <div className="admin-modal-wide-grid">
                 {/* VELO */}
-                <div style={{
-                  backgroundColor: 'rgba(0,0,0,0.2)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  padding: '12px',
-                  borderRadius: '10px'
-                }}>
-                  <span style={{ fontSize: '12px', opacity: 0.6, fontWeight: 'bold', color: '#ff7beb', display: 'block', marginBottom: '4px' }}>ВЕЛОСИПЕД</span>
-                  <strong style={{ fontSize: '18px', color: '#fff' }}>{veloPayout} PLN</strong>
+                <div className="admin-modal-wide-grid-item">
+                  <span className="admin-modal-wide-grid-item-label">ВЕЛОСИПЕД</span>
+                  <strong className="admin-modal-wide-grid-item-value">{veloPayout} PLN</strong>
                 </div>
 
                 {/* SCOOTER */}
-                <div style={{
-                  backgroundColor: 'rgba(0,0,0,0.2)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  padding: '12px',
-                  borderRadius: '10px'
-                }}>
-                  <span style={{ fontSize: '12px', opacity: 0.6, fontWeight: 'bold', color: '#ff7beb', display: 'block', marginBottom: '4px' }}>САМОКАТ</span>
-                  <strong style={{ fontSize: '18px', color: '#fff' }}>{scooterPayout} PLN</strong>
+                <div className="admin-modal-wide-grid-item">
+                  <span className="admin-modal-wide-grid-item-label">СКУТЕР</span>
+                  <strong className="admin-modal-wide-grid-item-value">{scooterPayout} PLN</strong>
                 </div>
 
                 {/* CAR */}
-                <div style={{
-                  backgroundColor: 'rgba(0,0,0,0.2)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  padding: '12px',
-                  borderRadius: '10px'
-                }}>
-                  <span style={{ fontSize: '12px', opacity: 0.6, fontWeight: 'bold', color: '#ff7beb', display: 'block', marginBottom: '4px' }}>АВТОМОБИЛЬ</span>
-                  <strong style={{ fontSize: '18px', color: '#fff' }}>{carPayout} PLN</strong>
+                <div className="admin-modal-wide-grid-item">
+                  <span className="admin-modal-wide-grid-item-label">АВТОМОБИЛЬ</span>
+                  <strong className="admin-modal-wide-grid-item-value">{carPayout} PLN</strong>
                 </div>
               </div>
             </>

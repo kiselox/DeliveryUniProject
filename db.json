@@ -3,16 +3,32 @@
     {
       "id": "c1",
       "name": "Денис",
-      "address": "Dormitory CDV, Poznan",
+      "address": "Brzask",
       "lat": 52.414,
-      "lng": 16.9295
+      "lng": 16.9295,
+      "password": "0e6f89e49bd733a20fe3b7a528d4ecef382f62507b33fc875cec187da9fb8e391c75a6a4112b2583c2b2711665ffc7f5135b9bd9eef7f92f8ed776b51abb55e2",
+      "lastName": "Тестовый",
+      "email": "denis@example.com",
+      "phone": "+48 123 456 789",
+      "house": "45",
+      "apartment": "45",
+      "floor": "45",
+      "notes": ""
     },
     {
       "id": "c_1779574359459",
       "name": "матвей",
       "address": "мама",
       "lat": 52.414,
-      "lng": 16.9295
+      "lng": 16.9295,
+      "password": "0e6f89e49bd733a20fe3b7a528d4ecef382f62507b33fc875cec187da9fb8e391c75a6a4112b2583c2b2711665ffc7f5135b9bd9eef7f92f8ed776b51abb55e2",
+      "lastName": "Тестовый",
+      "email": "c_1779574359459@example.com",
+      "phone": "+48 123 456 789",
+      "house": "52",
+      "apartment": "67",
+      "floor": "52",
+      "notes": "leave near the door"
     }
   ],
   "couriers": [
@@ -21,28 +37,45 @@
       "name": "Курьер 1",
       "vehicle": "Bicycle",
       "lat": 52.414397357755846,
-      "lng": 16.926461111493573
+      "lng": 16.926461111493573,
+      "password": "0e6f89e49bd733a20fe3b7a528d4ecef382f62507b33fc875cec187da9fb8e391c75a6a4112b2583c2b2711665ffc7f5135b9bd9eef7f92f8ed776b51abb55e2",
+      "lastName": "Тестовый",
+      "email": "vlad@example.com",
+      "phone": "+48 987 654 321",
+      "rating": 3.7
     },
     {
       "id": "cour2",
       "name": "Курьер 2",
       "vehicle": "Scooter",
       "lat": 52.41441332483677,
-      "lng": 16.92644761450823
+      "lng": 16.92644761450823,
+      "password": "0e6f89e49bd733a20fe3b7a528d4ecef382f62507b33fc875cec187da9fb8e391c75a6a4112b2583c2b2711665ffc7f5135b9bd9eef7f92f8ed776b51abb55e2",
+      "lastName": "Тестовый",
+      "email": "scooter@example.com",
+      "phone": "+48 987 654 321"
     },
     {
       "id": "cour3",
       "name": "Курьер 3",
       "vehicle": "Car",
       "lat": 52.414,
-      "lng": 16.9295
+      "lng": 16.9295,
+      "password": "0e6f89e49bd733a20fe3b7a528d4ecef382f62507b33fc875cec187da9fb8e391c75a6a4112b2583c2b2711665ffc7f5135b9bd9eef7f92f8ed776b51abb55e2",
+      "lastName": "Тестовый",
+      "email": "car@example.com",
+      "phone": "+48 987 654 321"
     },
     {
       "id": "cour_1779574066447",
       "name": "меганайт",
       "vehicle": "Bicycle",
       "lat": 52.414,
-      "lng": 16.9295
+      "lng": 16.9295,
+      "password": "0e6f89e49bd733a20fe3b7a528d4ecef382f62507b33fc875cec187da9fb8e391c75a6a4112b2583c2b2711665ffc7f5135b9bd9eef7f92f8ed776b51abb55e2",
+      "lastName": "Тестовый",
+      "email": "cour_1779574066447@example.com",
+      "phone": "+48 987 654 321"
     },
     {
       "id": "cour_1779722387305",
@@ -52,7 +85,8 @@
       "phone": "+35341543524",
       "vehicle": "Bicycle",
       "lat": 52.414,
-      "lng": 16.9295
+      "lng": 16.9295,
+      "password": "0e6f89e49bd733a20fe3b7a528d4ecef382f62507b33fc875cec187da9fb8e391c75a6a4112b2583c2b2711665ffc7f5135b9bd9eef7f92f8ed776b51abb55e2"
     }
   ],
   "vendors": [
@@ -60,101 +94,913 @@
       "id": "v1",
       "name": "KFC",
       "cuisine": "Fast Food",
-      "imageUrl": "https://placehold.co/150x150/e0e0e0/333333?text=KFC",
+      "imageUrl": "https://images.unsplash.com/photo-1513639776629-7b61b0ac49cb?w=600&auto=format&fit=crop&q=80",
+      "heroImage": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=1200&auto=format&fit=crop&q=80",
+      "rating": 2.3,
+      "deliveryTime": "20-30 min",
+      "priceLevel": "$$",
+      "lat": 52.4018,
+      "lng": 16.9205,
       "menu": [
         {
           "id": "m1",
           "name": "Zinger Burger",
-          "price": 25
+          "price": 25,
+          "category": "mains",
+          "description": "Crispy chicken breast fillet, fresh lettuce, and creamy mayo in a toasted sesame bun.",
+          "imageUrl": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": true,
+          "isVegan": false
         },
         {
           "id": "m2",
           "name": "Chicken Wings",
-          "price": 20
+          "price": 20,
+          "category": "mains",
+          "description": "Crispy, golden-brown chicken wings seasoned with our signature blend of herbs and spices.",
+          "imageUrl": "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": true,
+          "isVegan": false
+        },
+        {
+          "id": "m11",
+          "name": "Twister Wrap",
+          "price": 22,
+          "category": "mains",
+          "description": "Toasted tortilla filled with crispy chicken strips, fresh lettuce, juicy tomatoes, and pepper mayonnaise.",
+          "imageUrl": "https://images.unsplash.com/photo-1626700051175-6518c4793f4f?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m15",
+          "name": "Grander Burger",
+          "price": 28,
+          "category": "mains",
+          "description": "Huge chicken breast fillet, crispy bacon, rich cheddar cheese, fresh lettuce, onions, and spicy BBQ sauce.",
+          "imageUrl": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m16",
+          "name": "Chicken Strips",
+          "price": 24,
+          "category": "mains",
+          "description": "5 pieces of crispy, hand-breaded chicken breast strips served golden brown with garlic dip.",
+          "imageUrl": "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m12",
+          "name": "French Fries",
+          "price": 10,
+          "category": "sides",
+          "description": "Crispy golden potato fries, lightly salted and cooked in pure vegetable oil.",
+          "imageUrl": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m13",
+          "name": "Coleslaw Salad",
+          "price": 8,
+          "category": "sides",
+          "description": "Freshly shredded cabbage and carrots tossed in a rich, sweet, and creamy dressing.",
+          "imageUrl": "https://images.unsplash.com/photo-1625938146369-adc83368bda7?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m17",
+          "name": "Crispy Onion Rings",
+          "price": 11,
+          "category": "sides",
+          "description": "Sweet, battered onion rings deep fried to a delicious crunch.",
+          "imageUrl": "https://images.unsplash.com/photo-1639024471283-2bc7b3c6a267?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m14",
+          "name": "Pepsi Cola",
+          "price": 7,
+          "category": "drinks",
+          "description": "Refreshing, ice-cold Pepsi soft drink served in a chilled cup.",
+          "imageUrl": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m18",
+          "name": "Mirinda Orange",
+          "price": 7,
+          "category": "drinks",
+          "description": "Ice-cold refreshing orange carbonated soft drink served over ice.",
+          "imageUrl": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
         }
-      ],
-      "lat": 52.4018,
-      "lng": 16.9205
+      ]
     },
     {
       "id": "v2",
       "name": "McDonald's",
       "cuisine": "Fast Food",
-      "imageUrl": "https://placehold.co/150x150/e0e0e0/333333?text=McDonalds",
+      "imageUrl": "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600&auto=format&fit=crop&q=80",
+      "heroImage": "https://images.unsplash.com/photo-1550547660-d9450f859349?w=1200&auto=format&fit=crop&q=80",
+      "rating": 1,
+      "deliveryTime": "15-25 min",
+      "priceLevel": "$$",
+      "lat": 52.4023,
+      "lng": 16.9261,
       "menu": [
         {
           "id": "m3",
           "name": "Big Mac",
-          "price": 22
+          "price": 22,
+          "category": "mains",
+          "description": "Two 100% beef patties, special sauce, crisp lettuce, cheddar cheese, pickles, and onions in a sesame bun.",
+          "imageUrl": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m21",
+          "name": "McChicken",
+          "price": 18,
+          "category": "mains",
+          "description": "Crispy breaded chicken patty, shredded iceberg lettuce, and creamy mayonnaise on a toasted sesame bun.",
+          "imageUrl": "https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m22",
+          "name": "Chicken McNuggets",
+          "price": 16,
+          "category": "mains",
+          "description": "Tender, juicy chicken breast bites in a crisp, golden tempura coating.",
+          "imageUrl": "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m25",
+          "name": "Double Cheeseburger",
+          "price": 15,
+          "category": "mains",
+          "description": "Two flame-grilled beef patties, double cheddar cheese, pickles, mustard, and ketchup in a soft bun.",
+          "imageUrl": "https://images.unsplash.com/photo-1550547660-d9450f859349?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m26",
+          "name": "Spicy McNuggets",
+          "price": 18,
+          "category": "mains",
+          "description": "Juicy chicken bites in a crispy tempura batter with a hot cayenne pepper kick.",
+          "imageUrl": "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": true,
+          "isVegan": false
         },
         {
           "id": "m4",
-          "name": "Fries",
-          "price": 10
+          "name": "Fries XL",
+          "price": 10,
+          "category": "sides",
+          "description": "World-famous crispy golden French fries, perfectly salted and warm.",
+          "imageUrl": "https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m23",
+          "name": "Apple Pie",
+          "price": 9,
+          "category": "desserts",
+          "description": "Warm, crispy baked pastry crust filled with sweet, spiced apple chunks.",
+          "imageUrl": "https://images.unsplash.com/photo-1519869325930-281384150729?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m28",
+          "name": "McFlurry Oreo",
+          "price": 14,
+          "category": "desserts",
+          "description": "Creamy vanilla soft-serve ice cream mixed with crunchy crushed Oreo cookie pieces.",
+          "imageUrl": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m24",
+          "name": "Coca-Cola",
+          "price": 7,
+          "category": "drinks",
+          "description": "Classic carbonated refreshing Coca-Cola soda, served ice-cold.",
+          "imageUrl": "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m27",
+          "name": "Cappuccino McCafe",
+          "price": 12,
+          "category": "drinks",
+          "description": "Premium freshly brewed espresso shot with smooth, steamed whole milk foam.",
+          "imageUrl": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
         }
-      ],
-      "lat": 52.4023,
-      "lng": 16.9261
+      ]
     },
     {
       "id": "v3",
       "name": "Burger King",
       "cuisine": "Fast Food",
-      "imageUrl": "https://placehold.co/150x150/e0e0e0/333333?text=Burger+King",
+      "imageUrl": "https://images.unsplash.com/photo-1534790566766-4b2a8c668b1a?w=600&auto=format&fit=crop&q=80",
+      "heroImage": "https://images.unsplash.com/photo-1521305916504-4a1121188589?w=1200&auto=format&fit=crop&q=80",
+      "rating": 4.3,
+      "deliveryTime": "25-35 min",
+      "priceLevel": "$$",
+      "lat": 52.4029,
+      "lng": 16.9125,
       "menu": [
         {
           "id": "m5",
           "name": "Whopper",
-          "price": 24
+          "price": 24,
+          "category": "mains",
+          "description": "Flame-grilled premium beef patty, juicy tomatoes, fresh lettuce, creamy mayo, ketchup, pickles, and sliced onions.",
+          "imageUrl": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m31",
+          "name": "Steakhouse Burger",
+          "price": 29,
+          "category": "mains",
+          "description": "Flame-grilled beef, crispy bacon, melted swiss cheese, crispy fried onions, and sweet smoky BBQ sauce.",
+          "imageUrl": "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m35",
+          "name": "Bacon Double Cheese",
+          "price": 19,
+          "category": "mains",
+          "description": "Two flame-grilled beef patties, melted American cheese, crispy bacon, pickles, mustard, and ketchup.",
+          "imageUrl": "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m36",
+          "name": "Crispy Chicken Burger",
+          "price": 20,
+          "category": "mains",
+          "description": "Tender, breaded chicken breast fillet topped with fresh lettuce, tomatoes, and rich mayo.",
+          "imageUrl": "https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
         },
         {
           "id": "m6",
           "name": "Onion Rings",
-          "price": 12
+          "price": 12,
+          "category": "sides",
+          "description": "Sweet onions sliced thick, battered in a light crispy golden-fried coating.",
+          "imageUrl": "https://images.unsplash.com/photo-1639024471283-2bc7b3c6a267?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m32",
+          "name": "Chili Cheese Nuggets",
+          "price": 15,
+          "category": "sides",
+          "description": "Smooth melty cheddar cheese with hot green jalapeno pieces in a crispy batter.",
+          "imageUrl": "https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": true,
+          "isVegan": false
+        },
+        {
+          "id": "m33",
+          "name": "Warm Waffle",
+          "price": 11,
+          "category": "desserts",
+          "description": "Warm and sweet Belgian waffle, drizzled with rich Belgian chocolate syrup.",
+          "imageUrl": "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m38",
+          "name": "Chocolate Sundae",
+          "price": 10,
+          "category": "desserts",
+          "description": "Smooth vanilla soft-serve ice cream topped with sweet chocolate fudge sauce.",
+          "imageUrl": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m34",
+          "name": "Sprite",
+          "price": 7,
+          "category": "drinks",
+          "description": "Crisp, sweet, lemon-lime carbonated soda served cold.",
+          "imageUrl": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m37",
+          "name": "Fanta Orange",
+          "price": 7,
+          "category": "drinks",
+          "description": "Refreshing, orange carbonated soft drink served ice-cold over ice.",
+          "imageUrl": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
         }
-      ],
-      "lat": 52.4029,
-      "lng": 16.9125
+      ]
     },
     {
       "id": "v4",
       "name": "Pasibus",
       "cuisine": "Burgers",
-      "imageUrl": "https://placehold.co/150x150/e0e0e0/333333?text=Pasibus",
+      "imageUrl": "https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=600&auto=format&fit=crop&q=80",
+      "heroImage": "https://images.unsplash.com/photo-1460306855393-0410f61241c7?w=1200&auto=format&fit=crop&q=80",
+      "rating": 4.7,
+      "deliveryTime": "30-40 min",
+      "priceLevel": "$$$",
+      "lat": 52.4048,
+      "lng": 16.9255,
       "menu": [
         {
           "id": "m7",
           "name": "Standard Burger",
-          "price": 30
+          "price": 30,
+          "category": "mains",
+          "description": "Premium local grilled beef, cheddar cheese, crisp lettuce, tomato, pickles, and hand-crafted house sauce.",
+          "imageUrl": "https://images.unsplash.com/photo-1550547660-d9450f859349?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m41",
+          "name": "Bebok Burger",
+          "price": 34,
+          "category": "mains",
+          "description": "Beef, grilled smoked bacon, pan-seared wild mushrooms, smoked oscypek cheese, and rich BBQ sauce.",
+          "imageUrl": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m45",
+          "name": "Chorizo Burger",
+          "price": 36,
+          "category": "mains",
+          "description": "Premium beef, spicy grilled chorizo sausage, cheddar, red onion marmalade, and spicy chipotle sauce.",
+          "imageUrl": "https://images.unsplash.com/photo-1550547660-d9450f859349?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": true,
+          "isVegan": false
         },
         {
           "id": "m8",
           "name": "Cheese Fries",
-          "price": 18
+          "price": 18,
+          "category": "sides",
+          "description": "Crispy house thick-cut skin-on fries loaded with warm, silky gourmet melted cheddar cheese sauce.",
+          "imageUrl": "https://images.unsplash.com/photo-1585109649139-366815a0d713?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m42",
+          "name": "Nachos Fries",
+          "price": 19,
+          "category": "sides",
+          "description": "Thick-cut skin-on fries topped with hot jalapeno peppers, liquid cheese, and crispy crushed nachos.",
+          "imageUrl": "https://images.unsplash.com/photo-1544816155-12df9643f363?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": true,
+          "isVegan": false
+        },
+        {
+          "id": "m46",
+          "name": "Sweet Potato Fries",
+          "price": 16,
+          "category": "sides",
+          "description": "Crispy fried golden sweet potato fries served with garlic aioli dip.",
+          "imageUrl": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m44",
+          "name": "Chocolate Brownie",
+          "price": 14,
+          "category": "desserts",
+          "description": "Gooey, dense chocolate fudge brownie served warm with a dusting of powdered sugar.",
+          "imageUrl": "https://images.unsplash.com/photo-1564355808539-22fda35bed7e?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m48",
+          "name": "Raspberry Cheesecake",
+          "price": 16,
+          "category": "desserts",
+          "description": "Rich and velvety baked New York cheesecake topped with a sweet, tart raspberry glaze.",
+          "imageUrl": "https://images.unsplash.com/photo-1519869325930-281384150729?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m43",
+          "name": "Craft Lemonade",
+          "price": 12,
+          "category": "drinks",
+          "description": "Freshly squeezed lemon lemonade, lightly sweetened with pure cane sugar and brewed with mint.",
+          "imageUrl": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m47",
+          "name": "Cold Brew Coffee",
+          "price": 14,
+          "category": "drinks",
+          "description": "House-steeped smooth and refreshing cold brew coffee served black over ice.",
+          "imageUrl": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
         }
-      ],
-      "lat": 52.4048,
-      "lng": 16.9255
+      ]
     },
     {
       "id": "v5",
       "name": "Misha's Pizza",
       "cuisine": "Italian",
-      "imageUrl": "https://placehold.co/150x150/e0e0e0/333333?text=Pizza",
+      "imageUrl": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80",
+      "heroImage": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=1200&auto=format&fit=crop&q=80",
+      "rating": 4.6,
+      "deliveryTime": "35-45 min",
+      "priceLevel": "$$$",
+      "lat": 52.4115,
+      "lng": 16.9068,
       "menu": [
         {
           "id": "m9",
           "name": "Pizza Margherita",
-          "price": 40
+          "price": 40,
+          "category": "mains",
+          "description": "San Marzano tomato sauce, fresh mozzarella di bufala, organic extra virgin olive oil, and fresh sweet basil.",
+          "imageUrl": "https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
         },
         {
           "id": "m10",
           "name": "Pizza Pepperoni",
-          "price": 45
+          "price": 45,
+          "category": "mains",
+          "description": "Signature tomato base, grated mozzarella, spicy Italian pepperoni salame, and aromatic dry oregano.",
+          "imageUrl": "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": true,
+          "isVegan": false
+        },
+        {
+          "id": "m55",
+          "name": "Quattro Formaggi",
+          "price": 48,
+          "category": "mains",
+          "description": "Creamy gorgonzola, aged parmesan, pecorino, and fresh mozzarella melted together over a white garlic olive oil base.",
+          "imageUrl": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m56",
+          "name": "Pasta Carbonara",
+          "price": 38,
+          "category": "mains",
+          "description": "Al dente spaghetti tossed with crispy guanciale, raw egg yolk, pecorino romano cheese, and cracked black pepper.",
+          "imageUrl": "https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m51",
+          "name": "Garlic Bread",
+          "price": 15,
+          "category": "sides",
+          "description": "Toasted artisan sourdough baguette brushed with garlic herb butter and sprinkled with aged Parmigiano.",
+          "imageUrl": "https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m53",
+          "name": "Caprese Salad",
+          "price": 22,
+          "category": "sides",
+          "description": "Thick slices of ripe tomatoes and creamy fresh mozzarella, seasoned with sea salt, sweet basil oil, and sweet balsamic glaze.",
+          "imageUrl": "https://images.unsplash.com/photo-1592417817098-8f3d6eb19675?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m52",
+          "name": "Classic Tiramisu",
+          "price": 20,
+          "category": "desserts",
+          "description": "Light, coffee-soaked Italian ladyfinger biscuits layered with rich whipped egg yolk mascarpone cheese, dusted heavily with pure cocoa.",
+          "imageUrl": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m57",
+          "name": "Vanilla Panna Cotta",
+          "price": 18,
+          "category": "desserts",
+          "description": "Silky, cooked sweet vanilla cream gelatin dessert served cold with a sweet wild berry compote.",
+          "imageUrl": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m54",
+          "name": "San Pellegrino",
+          "price": 10,
+          "category": "drinks",
+          "description": "Gently sparkling premium Italian natural spring mineral water in a glass bottle.",
+          "imageUrl": "https://images.unsplash.com/photo-1608885898957-a599fb1b467e?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m58",
+          "name": "Red Grape Elixir",
+          "price": 15,
+          "category": "drinks",
+          "description": "Refreshing, fruity non-alcoholic premium Italian red grape blend served chilled.",
+          "imageUrl": "https://images.unsplash.com/photo-1608885898957-a599fb1b467e?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
         }
-      ],
-      "lat": 52.4115,
-      "lng": 16.9068
+      ]
+    },
+    {
+      "id": "v6",
+      "name": "Pierogarnia Poznańska",
+      "cuisine": "Polish",
+      "imageUrl": "https://images.unsplash.com/photo-1486427944299-d1955d23e317?w=600&auto=format&fit=crop&q=80",
+      "heroImage": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=1200&auto=format&fit=crop&q=80",
+      "rating": 4.8,
+      "deliveryTime": "30-45 min",
+      "priceLevel": "$$",
+      "lat": 52.425,
+      "lng": 16.918,
+      "menu": [
+        {
+          "id": "m61",
+          "name": "Pierogi Ruskie",
+          "price": 28,
+          "category": "mains",
+          "description": "Classic Polish hand-pinched boiled dumplings stuffed with potatoes, polish farmer cottage cheese, and sweet caramelized onions.",
+          "imageUrl": "https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m62",
+          "name": "Pierogi z Mięsem",
+          "price": 30,
+          "category": "mains",
+          "description": "Boiled traditional savory dumplings filled with seasoned pork and beef, topped with aromatic melted lard and crispy bacon cracklings.",
+          "imageUrl": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m66",
+          "name": "Placki Ziemniaczane",
+          "price": 24,
+          "category": "mains",
+          "description": "Pan-fried shredded potato pancakes, crisp on the outside, soft inside, served with fresh cooling sour cream.",
+          "imageUrl": "https://images.unsplash.com/photo-1518492104633-130d0cc84637?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m67",
+          "name": "Żurek Staropolski",
+          "price": 26,
+          "category": "mains",
+          "description": "Traditional hot sour rye soup cooked with smoked white sausage, quarters of hard-boiled egg, and horseradish.",
+          "imageUrl": "https://images.unsplash.com/photo-1547592180-85f173990554?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m68",
+          "name": "Pierogi ze Szpinakiem",
+          "price": 28,
+          "category": "mains",
+          "description": "Delightful handmade dumplings stuffed with seasoned baby spinach leaves, Greek feta cheese, and roasted garlic.",
+          "imageUrl": "https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m64",
+          "name": "Barszcz Czerwony",
+          "price": 14,
+          "category": "sides",
+          "description": "Brilliant clear ruby-red fermented beetroot broth, seasoned with garlic, marjoram, and a touch of sour apple.",
+          "imageUrl": "https://images.unsplash.com/photo-1547592180-85f173990554?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m63",
+          "name": "Pierogi z Jagodami",
+          "price": 26,
+          "category": "desserts",
+          "description": "Sweet handmade dumplings stuffed with fresh summer forest blueberries, served warm with sweet cream and powdered sugar.",
+          "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m69",
+          "name": "Szarlotka Apple Pie",
+          "price": 18,
+          "category": "desserts",
+          "description": "Traditional double-crust baked apple tart with cinnamon, served warm with vanilla powdered sugar.",
+          "imageUrl": "https://images.unsplash.com/photo-1519869325930-281384150729?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m65",
+          "name": "Kompot Domowy",
+          "price": 8,
+          "category": "drinks",
+          "description": "Rich homemade warm/cold brew fruit infusion cooked from local apples, sour cherries, strawberries, and sweet plums.",
+          "imageUrl": "https://images.unsplash.com/photo-1621263764928-df1444c5e859?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m70",
+          "name": "Traditional Kvass",
+          "price": 10,
+          "category": "drinks",
+          "description": "Traditional naturally fermented carbonated beverage made from dark rye bread.",
+          "imageUrl": "https://images.unsplash.com/photo-1621263764928-df1444c5e859?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        }
+      ]
+    },
+    {
+      "id": "v7",
+      "name": "Poznań Kebab",
+      "cuisine": "Kebab",
+      "imageUrl": "https://images.unsplash.com/photo-1561651823-34feb02250e4?w=600&auto=format&fit=crop&q=80",
+      "heroImage": "https://images.unsplash.com/photo-1561719408-2dd8852756b7?w=1200&auto=format&fit=crop&q=80",
+      "rating": 4.5,
+      "deliveryTime": "15-30 min",
+      "priceLevel": "$",
+      "lat": 52.392,
+      "lng": 16.922,
+      "menu": [
+        {
+          "id": "m71",
+          "name": "Rollo Kebab XL",
+          "price": 24,
+          "category": "mains",
+          "description": "Giant grilled thin flatbread wrap packed tightly with slow-roasted shaved beef, fresh cabbage salad, sweet tomatoes, and authentic garlic sauce.",
+          "imageUrl": "https://images.unsplash.com/photo-1626700051175-6518c4793f4f?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m73",
+          "name": "Kebab in Pita",
+          "price": 20,
+          "category": "mains",
+          "description": "Freshly baked hollow pita bread pocket stuffed with tender roasted chicken doner meat, chopped lettuce, onions, and rich spicy tomato sauce.",
+          "imageUrl": "https://images.unsplash.com/photo-1628258475640-9c2409f97aa7?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": true,
+          "isVegan": false
+        },
+        {
+          "id": "m74",
+          "name": "Falafel Roll Wrap",
+          "price": 22,
+          "category": "mains",
+          "description": "Crispy golden fried spiced chickpea falafel croquettes wrapped in thin tortilla bread with fresh garden greens, tomatoes, pickles, and sesame tahini sauce.",
+          "imageUrl": "https://images.unsplash.com/photo-1547058886-af7781d1902e?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m77",
+          "name": "Plate Kebab XL",
+          "price": 28,
+          "category": "mains",
+          "description": "A very generous platter of shaved slow-roasted doner beef, hot saffron rice, fresh pita, cabbage salad, and white garlic dressing.",
+          "imageUrl": "https://images.unsplash.com/photo-1561719408-2dd8852756b7?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m72",
+          "name": "Kebab Box with Fries",
+          "price": 22,
+          "category": "sides",
+          "description": "Convenient box loaded with hot crispy golden French fries, shaved roasted beef, crunchy lettuce, and layers of garlic and hot red chili sauces.",
+          "imageUrl": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": true,
+          "isVegan": false
+        },
+        {
+          "id": "m78",
+          "name": "Hummus & Pita",
+          "price": 14,
+          "category": "sides",
+          "description": "Creamy blend of pureed chickpeas, sesame tahini, olive oil, lemon, and garlic, served with warm, toasted pita triangles.",
+          "imageUrl": "https://images.unsplash.com/photo-1547058886-af7781d1902e?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m75",
+          "name": "Honey Baklava",
+          "price": 12,
+          "category": "desserts",
+          "description": "Extremely sweet, flaky layered Turkish phyllo pastry, stuffed with chopped walnuts and pistachio nuts, baked in thick honey syrup.",
+          "imageUrl": "https://images.unsplash.com/photo-1519676867240-f03562e64548?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m80",
+          "name": "Baked Rice Pudding",
+          "price": 14,
+          "category": "desserts",
+          "description": "Sweet, creamy traditional oven-baked rice and milk dessert, topped with ground cinnamon.",
+          "imageUrl": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m76",
+          "name": "Salted Ayran",
+          "price": 6,
+          "category": "drinks",
+          "description": "Traditional savory Turkish fermented yogurt drink, whisked with cold water and fine table salt. Perfectly cools spicy foods.",
+          "imageUrl": "https://images.unsplash.com/photo-1543362906-acfc16c67564?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m79",
+          "name": "Turkish Tulip Tea",
+          "price": 8,
+          "category": "drinks",
+          "description": "Strong, rich traditional Turkish black tea brewed in a double teapot, served in a classic tulip glass.",
+          "imageUrl": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        }
+      ]
+    },
+    {
+      "id": "v8",
+      "name": "Hana Sushi",
+      "cuisine": "Sushi",
+      "imageUrl": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&auto=format&fit=crop&q=80",
+      "heroImage": "https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=1200&auto=format&fit=crop&q=80",
+      "rating": 4.9,
+      "deliveryTime": "40-55 min",
+      "priceLevel": "$$$$",
+      "lat": 52.408,
+      "lng": 16.958,
+      "menu": [
+        {
+          "id": "m81",
+          "name": "Philadelphia Roll",
+          "price": 38,
+          "category": "mains",
+          "description": "8 premium rolled sushi pieces loaded with rich Philadelphia cream cheese, buttery Hass avocado, cucumber, wrapped in fresh raw Norwegian orange salmon.",
+          "imageUrl": "https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m82",
+          "name": "Spicy Tuna Uramaki",
+          "price": 42,
+          "category": "mains",
+          "description": "8 inside-out sushi rolls filled with chopped raw bluefin tuna, spring scallions, hot spicy mayo, and rolled in toasted black/white sesame seeds.",
+          "imageUrl": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": true,
+          "isVegan": false
+        },
+        {
+          "id": "m83",
+          "name": "Yasai Maki Roll",
+          "price": 32,
+          "category": "mains",
+          "description": "8 completely vegan sushi rolls filled with roasted red peppers, blanched asparagus spears, sliced avocado, and glazed with thick sweet soy unagi sauce.",
+          "imageUrl": "https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m87",
+          "name": "Salmon Nigiri",
+          "price": 22,
+          "category": "mains",
+          "description": "4 elegant hand-pressed vinegared sushi rice balls topped with thick slices of premium fresh raw salmon, served with wasabi and pickled ginger.",
+          "imageUrl": "https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": false
+        },
+        {
+          "id": "m84",
+          "name": "Sea Salt Edamame",
+          "price": 14,
+          "category": "sides",
+          "description": "Warm steamed fresh green soybean pods in the shell, heavily tossed with coarse Maldon sea salt crystals.",
+          "imageUrl": "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m85",
+          "name": "Hot Miso Soup",
+          "price": 12,
+          "category": "sides",
+          "description": "Savory, steamy dashi stock broth mixed with light white shiro miso paste, soft silken tofu cubes, wakame seaweed, and sliced scallions.",
+          "imageUrl": "https://images.unsplash.com/photo-1607301401219-43c4725f778d?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m88",
+          "name": "Wakame Salad",
+          "price": 16,
+          "category": "sides",
+          "description": "Sweet, crunchy seasoned shredded green seaweed salad tossed in sesame oil and toasted sesame seeds.",
+          "imageUrl": "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m86",
+          "name": "Green Tea Mochi",
+          "price": 18,
+          "category": "desserts",
+          "description": "3 sweet, soft, elastic Japanese glutinous rice cakes filled with premium Japanese matcha green tea ice cream centers.",
+          "imageUrl": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m90",
+          "name": "Tempura Banana",
+          "price": 16,
+          "category": "desserts",
+          "description": "Sweet banana slices fried in a light crispy golden tempura batter, drizzled with raw blossom honey.",
+          "imageUrl": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        },
+        {
+          "id": "m89",
+          "name": "Hot Sake (Non-Alc)",
+          "price": 18,
+          "category": "drinks",
+          "description": "Traditional warmed sweet premium non-alcoholic Japanese fermented rice beverage.",
+          "imageUrl": "https://images.unsplash.com/photo-1608885898957-a599fb1b467e?w=500&auto=format&fit=crop&q=80",
+          "isSpicy": false,
+          "isVegan": true
+        }
+      ]
     }
   ],
   "orders": [
@@ -168,7 +1014,9 @@
       "distance": 3.2,
       "fee": 64,
       "courierId": "cour1",
-      "createdAt": "18:00"
+      "createdAt": "2026-05-25T18:00:00.000Z",
+      "ratingCourier": null,
+      "ratingRestaurant": 1
     },
     {
       "customerId": "c1",
@@ -179,7 +1027,7 @@
       "distance": "2.5",
       "fee": 36,
       "courierId": "cour1",
-      "createdAt": "21:58",
+      "createdAt": "2026-05-25T21:58:00.000Z",
       "id": "ncRteW7K6sY"
     },
     {
@@ -191,8 +1039,10 @@
       "distance": "2.2",
       "fee": 36,
       "courierId": "cour1",
-      "createdAt": "22:14",
-      "id": "JA_LG4m4w5E"
+      "createdAt": "2026-05-25T22:14:00.000Z",
+      "id": "JA_LG4m4w5E",
+      "ratingCourier": 5,
+      "ratingRestaurant": 5
     },
     {
       "customerId": "c1",
@@ -203,8 +1053,10 @@
       "distance": "5.3",
       "fee": 36,
       "courierId": "cour1",
-      "createdAt": "22:14",
-      "id": "GqM_7QX0-i4"
+      "createdAt": "2026-05-25T22:14:00.000Z",
+      "id": "GqM_7QX0-i4",
+      "ratingCourier": 1,
+      "ratingRestaurant": 1
     },
     {
       "customerId": "c1",
@@ -216,7 +1068,7 @@
       "fee": 20,
       "totalPrice": 120,
       "courierId": "cour1",
-      "createdAt": "10:47",
+      "createdAt": "2026-05-25T10:47:00.000Z",
       "id": "MgBpNxYcqFc"
     },
     {
@@ -229,7 +1081,7 @@
       "fee": 4,
       "totalPrice": 24,
       "courierId": "cour1",
-      "createdAt": "10:47",
+      "createdAt": "2026-05-25T10:47:00.000Z",
       "id": "Yiwa-95OajQ"
     },
     {
@@ -242,7 +1094,7 @@
       "fee": 4,
       "totalPrice": 24,
       "courierId": "cour1",
-      "createdAt": "13:05",
+      "createdAt": "2026-05-25T13:05:00.000Z",
       "id": "rBlZa_U50qU"
     },
     {
@@ -255,7 +1107,7 @@
       "fee": 309,
       "totalPrice": 24,
       "courierId": "cour1",
-      "createdAt": "13:22",
+      "createdAt": "2026-05-25T13:22:00.000Z",
       "deliveryAddress": "Jeżyce",
       "id": "NbHeT-Y3cxY",
       "coefficient": 3
@@ -271,7 +1123,7 @@
       "fee": 261,
       "totalPrice": 24,
       "courierId": "cour2",
-      "createdAt": "13:39",
+      "createdAt": "2026-05-25T13:39:00.000Z",
       "deliveryAddress": "Jeżyce",
       "deliveryLat": 52.4115,
       "deliveryLng": 16.9068,
@@ -288,7 +1140,7 @@
       "fee": 183,
       "totalPrice": 108,
       "courierId": "cour1",
-      "createdAt": "13:40",
+      "createdAt": "2026-05-25T13:40:00.000Z",
       "deliveryAddress": "Malta",
       "deliveryLat": 52.4018,
       "deliveryLng": 16.9205
@@ -304,7 +1156,7 @@
       "fee": 8,
       "totalPrice": 88,
       "courierId": "cour1",
-      "createdAt": "13:42",
+      "createdAt": "2026-05-25T13:42:00.000Z",
       "deliveryAddress": "Grunwald",
       "deliveryLat": 52.40055064770348,
       "deliveryLng": 16.930126511090577
@@ -320,7 +1172,7 @@
       "fee": 10,
       "totalPrice": 12,
       "courierId": "cour1",
-      "createdAt": "13:59",
+      "createdAt": "2026-05-25T13:59:00.000Z",
       "deliveryAddress": "Jeżyce 43",
       "deliveryLat": 52.4115,
       "deliveryLng": 16.9068
@@ -336,7 +1188,7 @@
       "fee": 130,
       "totalPrice": 22,
       "courierId": "cour1",
-      "createdAt": "14:00",
+      "createdAt": "2026-05-25T14:00:00.000Z",
       "deliveryAddress": "Dormitory CDV, Poznan",
       "deliveryLat": 52.414,
       "deliveryLng": 16.9295,
@@ -353,7 +1205,7 @@
       "fee": 15,
       "totalPrice": 35,
       "courierId": "cour1",
-      "createdAt": "14:35",
+      "createdAt": "2026-05-25T14:35:00.000Z",
       "deliveryAddress": "towarowa",
       "deliveryLat": 52.42960946970467,
       "deliveryLng": 16.951131820678714,
@@ -375,7 +1227,7 @@
       "fee": 8,
       "totalPrice": 28,
       "courierId": "cour1",
-      "createdAt": "14:46",
+      "createdAt": "2026-05-25T14:46:00.000Z",
       "deliveryAddress": "Dormitory CDV, Poznan",
       "deliveryLat": 52.41600052157586,
       "deliveryLng": 16.936626434326175,
@@ -397,7 +1249,7 @@
       "fee": 6,
       "totalPrice": 51,
       "courierId": "cour1",
-      "createdAt": "15:12",
+      "createdAt": "2026-05-25T15:12:00.000Z",
       "deliveryAddress": "Dormitory CDV (Моя геопозиция)",
       "deliveryLat": 52.41445918056493,
       "deliveryLng": 16.926386985221484,
@@ -406,7 +1258,9 @@
       "floor": "4235",
       "notes": "5625426",
       "phone": "42352",
-      "coefficient": 1.4000000000000004
+      "coefficient": 1.4000000000000004,
+      "ratingCourier": null,
+      "ratingRestaurant": 1
     },
     {
       "id": "ae5c71p0j",
@@ -419,7 +1273,7 @@
       "fee": 6,
       "totalPrice": 36,
       "courierId": "cour1",
-      "createdAt": "01:48",
+      "createdAt": "2026-05-25T01:48:00.000Z",
       "deliveryAddress": "Dormitory CDV (Моя геопозиция)",
       "deliveryLat": 52.41321564909596,
       "deliveryLng": 16.91027641296387,
@@ -436,12 +1290,12 @@
       "vendorId": "v2",
       "vendorName": "McDonald's",
       "items": "2x Fries",
-      "status": "Ready for Pickup",
+      "status": "Delivered",
       "distance": 1,
       "fee": 5,
       "totalPrice": 25,
-      "courierId": null,
-      "createdAt": "01:49",
+      "courierId": "cour2",
+      "createdAt": "2026-05-25T01:49:00.000Z",
       "deliveryAddress": "Dormitory CDV, Poznan",
       "deliveryLat": 52.411443365953275,
       "deliveryLng": 16.92606925964356,
@@ -450,7 +1304,9 @@
       "floor": "",
       "notes": "",
       "phone": "23423432",
-      "coefficient": 3
+      "coefficient": 3,
+      "acceptedAt": "2026-05-28T21:48:14.804Z",
+      "pickedUpAt": "2026-05-28T21:48:16.156Z"
     },
     {
       "id": "7xljd5ykw",
@@ -463,7 +1319,7 @@
       "fee": 6,
       "totalPrice": 26,
       "courierId": "cour1",
-      "createdAt": "21:47",
+      "createdAt": "2026-05-25T21:47:00.000Z",
       "deliveryAddress": "Dormitory CDV (Моя геопозиция)",
       "deliveryLat": 52.41456086793766,
       "deliveryLng": 16.912593841552738,
@@ -472,7 +1328,9 @@
       "floor": "36",
       "notes": "",
       "phone": "3456",
-      "coefficient": 1.1
+      "coefficient": 1.1,
+      "ratingCourier": null,
+      "ratingRestaurant": 1
     },
     {
       "id": "muk77h3yf",
@@ -485,7 +1343,7 @@
       "fee": 37,
       "totalPrice": 47,
       "courierId": "cour3",
-      "createdAt": "21:50",
+      "createdAt": "2026-05-25T21:50:00.000Z",
       "deliveryAddress": "Dormitory CDV, Poznan",
       "deliveryLat": 52.39160881656263,
       "deliveryLng": 16.790885925292972,
@@ -494,7 +1352,9 @@
       "floor": "1235",
       "notes": "",
       "phone": "4135",
-      "coefficient": 2
+      "coefficient": 2,
+      "ratingCourier": null,
+      "ratingRestaurant": 1
     },
     {
       "id": "erwjw0me2",
@@ -507,7 +1367,7 @@
       "fee": 22,
       "totalPrice": 32,
       "courierId": "cour1",
-      "createdAt": "21:54",
+      "createdAt": "2026-05-25T21:54:00.000Z",
       "deliveryAddress": "Dormitory CDV, Poznan",
       "deliveryLat": 52.42595615771326,
       "deliveryLng": 16.855430603027347,
@@ -518,7 +1378,9 @@
       "phone": "3546",
       "coefficient": 3,
       "acceptedAt": "2026-05-25T05:24:58.198Z",
-      "pickedUpAt": "2026-05-25T05:25:07.455Z"
+      "pickedUpAt": "2026-05-25T05:25:07.455Z",
+      "ratingCourier": null,
+      "ratingRestaurant": 1
     },
     {
       "id": "zec3kkips",
@@ -531,7 +1393,7 @@
       "fee": 6,
       "totalPrice": 26,
       "courierId": "cour1",
-      "createdAt": "23:22",
+      "createdAt": "2026-05-25T23:22:00.000Z",
       "deliveryAddress": "Dormitory CDV, Poznan",
       "deliveryLat": 52.41551372349898,
       "deliveryLng": 16.917164325714115,
@@ -542,7 +1404,9 @@
       "phone": "4532",
       "coefficient": 3,
       "acceptedAt": "2026-05-25T06:28:37.160Z",
-      "pickedUpAt": "2026-05-25T06:30:27.267Z"
+      "pickedUpAt": "2026-05-25T06:30:27.267Z",
+      "ratingCourier": 5,
+      "ratingRestaurant": 5
     },
     {
       "id": "l0iisih1p",
@@ -555,7 +1419,7 @@
       "fee": 42,
       "totalPrice": 62,
       "courierId": "cour1",
-      "createdAt": "08:20",
+      "createdAt": "2026-05-25T08:20:00.000Z",
       "deliveryAddress": "Dormitory CDV, Poznan",
       "deliveryLat": 52.41196814588186,
       "deliveryLng": 17.075500488281254,
@@ -579,7 +1443,7 @@
       "fee": 5,
       "totalPrice": 140,
       "courierId": "cour_1779722387305",
-      "createdAt": "08:57",
+      "createdAt": "2026-05-25T08:57:00.000Z",
       "deliveryAddress": "Dormitory CDV, Poznan",
       "deliveryLat": 52.41041955673979,
       "deliveryLng": 16.90177917480469,
@@ -603,7 +1467,7 @@
       "fee": 5,
       "totalPrice": 59,
       "courierId": "cour1",
-      "createdAt": "08:58",
+      "createdAt": "2026-05-25T08:58:00.000Z",
       "deliveryAddress": "Dormitory CDV, Poznan",
       "deliveryLat": 52.414,
       "deliveryLng": 16.9295,
@@ -627,7 +1491,7 @@
       "fee": 5,
       "totalPrice": 50,
       "courierId": "cour1",
-      "createdAt": "09:26",
+      "createdAt": "2026-05-25T09:26:00.000Z",
       "deliveryAddress": "Dormitory CDV, Poznan",
       "deliveryLat": 52.416366971361406,
       "deliveryLng": 16.91233634948731,
@@ -651,7 +1515,7 @@
       "fee": 7,
       "totalPrice": 19,
       "courierId": "cour1",
-      "createdAt": "09:28",
+      "createdAt": "2026-05-25T09:28:00.000Z",
       "deliveryAddress": "Dormitory CDV, Poznan",
       "deliveryLat": 52.414,
       "deliveryLng": 16.9295,
@@ -670,12 +1534,12 @@
       "vendorId": "v3",
       "vendorName": "Burger King",
       "items": "1x Onion Rings",
-      "status": "Accepted",
+      "status": "Delivered",
       "distance": 2.6,
       "fee": 10,
       "totalPrice": 22,
       "courierId": "cour3",
-      "createdAt": "21:18",
+      "createdAt": "2026-05-25T21:18:00.000Z",
       "deliveryAddress": "Dormitory CDV, Poznan",
       "deliveryLat": 52.40606472755718,
       "deliveryLng": 16.875000000000004,
@@ -685,14 +1549,417 @@
       "notes": "",
       "phone": "4235",
       "coefficient": 1.3,
-      "acceptedAt": "2026-05-27T19:18:54.031Z"
+      "acceptedAt": "2026-05-27T19:18:54.031Z",
+      "pickedUpAt": "2026-05-28T22:06:40.892Z"
+    },
+    {
+      "id": "ox29pnoib",
+      "customerId": "c1",
+      "vendorId": "v3",
+      "vendorName": "Burger King",
+      "items": "3x Onion Rings",
+      "status": "Delivered",
+      "distance": 1.7,
+      "fee": 7,
+      "totalPrice": 43,
+      "courierId": "cour3",
+      "createdAt": "2026-05-25T00:06:00.000Z",
+      "deliveryAddress": "Dormitory CDV, Poznan",
+      "deliveryLat": 52.414,
+      "deliveryLng": 16.9295,
+      "house": "кец",
+      "apartment": "4532",
+      "floor": "2345",
+      "notes": "",
+      "phone": "3425",
+      "coefficient": 1.2,
+      "acceptedAt": "2026-05-28T22:06:54.476Z",
+      "pickedUpAt": "2026-05-28T22:06:56.183Z"
+    },
+    {
+      "id": "q5vhr9v7q",
+      "customerId": "c1",
+      "vendorId": "v6",
+      "vendorName": "Pierogarnia Poznańska",
+      "items": "1x Placki Ziemniaczane, 2x Pierogi z Jagodami, 1x Szarlotka Apple Pie",
+      "status": "Ready for Pickup",
+      "distance": 10,
+      "fee": 40,
+      "totalPrice": 134,
+      "courierId": null,
+      "createdAt": "2026-05-25T15:32:00.000Z",
+      "deliveryAddress": "Polwejska",
+      "deliveryLat": 52.40541019793731,
+      "deliveryLng": 17.07206726074219,
+      "house": "3425",
+      "apartment": "2345",
+      "floor": "3245",
+      "notes": "",
+      "phone": "2345234652",
+      "coefficient": 3
+    },
+    {
+      "id": "w7hpko7h6",
+      "customerId": "c1",
+      "vendorId": "v1",
+      "vendorName": "KFC",
+      "items": "1x Chicken Wings, 1x Chicken Strips, 1x Mirinda Orange",
+      "status": "Ready for Pickup",
+      "distance": 7,
+      "fee": 33,
+      "totalPrice": 84,
+      "courierId": null,
+      "createdAt": "2026-05-25T15:55:00.000Z",
+      "deliveryAddress": "Dormitory CDV, Poznan",
+      "deliveryLat": 52.34556483811643,
+      "deliveryLng": 16.87259674072266,
+      "house": "35",
+      "apartment": "353",
+      "floor": "34555",
+      "notes": "",
+      "phone": "35353",
+      "coefficient": 3
+    },
+    {
+      "id": "ci3wqqjts",
+      "customerId": "c1",
+      "vendorId": "v5",
+      "vendorName": "Misha's Pizza",
+      "items": "3x Garlic Bread",
+      "status": "Ready for Pickup",
+      "distance": 1.4,
+      "fee": 11,
+      "totalPrice": 56,
+      "courierId": null,
+      "createdAt": "2026-05-25T16:16:00.000Z",
+      "deliveryAddress": "Моя геопозиция",
+      "deliveryLat": 52.4144148216932,
+      "deliveryLng": 16.926427039898655,
+      "house": "5432563",
+      "apartment": "3452345",
+      "floor": "3452345234",
+      "notes": "",
+      "phone": "+48 123 456 789",
+      "coefficient": 3
+    },
+    {
+      "id": "geym8bzjv",
+      "customerId": "c1",
+      "vendorId": "v3",
+      "vendorName": "Burger King",
+      "items": "1x Crispy Chicken Burger",
+      "status": "Ready for Pickup",
+      "distance": 1.7,
+      "fee": 12,
+      "totalPrice": 32,
+      "courierId": null,
+      "createdAt": "2026-05-25T16:20:00.000Z",
+      "deliveryAddress": "Dormitory CDV, Poznan",
+      "deliveryLat": 52.414,
+      "deliveryLng": 16.9295,
+      "house": "45",
+      "apartment": "45",
+      "floor": "45",
+      "notes": "",
+      "phone": "+48 123 456 789",
+      "coefficient": 3
+    },
+    {
+      "id": "3we6yvvv4",
+      "customerId": "c_1779574359459",
+      "vendorId": "v8",
+      "vendorName": "Hana Sushi",
+      "items": "1x Salmon Nigiri",
+      "status": "Delivered",
+      "distance": 3.3,
+      "fee": 18,
+      "totalPrice": 40,
+      "courierId": "cour1",
+      "createdAt": "2026-05-25T16:21:00.000Z",
+      "deliveryAddress": "мама",
+      "deliveryLat": 52.43033641609317,
+      "deliveryLng": 16.954693794250492,
+      "house": "52",
+      "apartment": "67",
+      "floor": "52",
+      "notes": "leave near the door",
+      "phone": "+48 123 456 789",
+      "coefficient": 3,
+      "acceptedAt": "2026-05-29T16:13:01.386Z",
+      "pickedUpAt": "2026-05-30T09:03:22.101Z"
+    },
+    {
+      "id": "meknkv1bn",
+      "customerId": "c1",
+      "vendorId": "v4",
+      "vendorName": "Pasibus",
+      "items": "2x Cheese Fries",
+      "status": "Delivered",
+      "distance": 1.1,
+      "fee": 9,
+      "totalPrice": 45,
+      "courierId": "cour1",
+      "createdAt": "2026-05-25T16:44:00.000Z",
+      "deliveryAddress": "Dormitory CDV, Poznan",
+      "deliveryLat": 52.414,
+      "deliveryLng": 16.9295,
+      "house": "45",
+      "apartment": "45",
+      "floor": "45",
+      "notes": "",
+      "phone": "+48 123 456 789",
+      "coefficient": 3,
+      "acceptedAt": "2026-05-29T16:08:26.493Z",
+      "pickedUpAt": "2026-05-29T16:10:08.625Z"
+    },
+    {
+      "id": "bitgr7ri2",
+      "customerId": "c1",
+      "vendorId": "v7",
+      "vendorName": "Poznań Kebab",
+      "items": "1x Kebab in Pita",
+      "status": "Ready for Pickup",
+      "distance": 0.9,
+      "fee": 9,
+      "totalPrice": 29,
+      "courierId": null,
+      "createdAt": "2026-05-29T16:43:32.043Z",
+      "deliveryAddress": "Dormitory CDV, Poznan",
+      "deliveryLat": 52.414,
+      "deliveryLng": 16.9295,
+      "house": "45",
+      "apartment": "45",
+      "floor": "45",
+      "notes": "",
+      "phone": "+48 123 456 789",
+      "coefficient": 3
+    },
+    {
+      "id": "ty90irx3m",
+      "customerId": "c1",
+      "vendorId": "v5",
+      "vendorName": "Misha's Pizza",
+      "items": "1x Quattro Formaggi",
+      "status": "Ready for Pickup",
+      "distance": 1.6,
+      "fee": 11,
+      "totalPrice": 59,
+      "courierId": null,
+      "createdAt": "2026-05-29T16:43:52.444Z",
+      "deliveryAddress": "Dormitory CDV, Poznan",
+      "deliveryLat": 52.414,
+      "deliveryLng": 16.9295,
+      "house": "45",
+      "apartment": "45",
+      "floor": "45",
+      "notes": "",
+      "phone": "+48 123 456 789",
+      "coefficient": 3
+    },
+    {
+      "id": "gq7pgpebx",
+      "customerId": "c1",
+      "vendorId": "v4",
+      "vendorName": "Pasibus",
+      "items": "1x Cheese Fries",
+      "status": "Ready for Pickup",
+      "distance": 1.1,
+      "fee": 9,
+      "totalPrice": 27,
+      "courierId": null,
+      "createdAt": "2026-05-29T16:44:19.316Z",
+      "deliveryAddress": "Dormitory CDV, Poznan",
+      "deliveryLat": 52.414,
+      "deliveryLng": 16.9295,
+      "house": "45",
+      "apartment": "45",
+      "floor": "45",
+      "notes": "",
+      "phone": "+48 123 456 789",
+      "coefficient": 3
+    },
+    {
+      "id": "dtmo0hihn",
+      "customerId": "c1",
+      "vendorId": "v8",
+      "vendorName": "Hana Sushi",
+      "items": "1x Salmon Nigiri",
+      "status": "Ready for Pickup",
+      "distance": 0.9,
+      "fee": 9,
+      "totalPrice": 31,
+      "courierId": null,
+      "createdAt": "2026-05-29T16:50:19.184Z",
+      "deliveryAddress": "Dormitory CDV, Poznan",
+      "deliveryLat": 52.414,
+      "deliveryLng": 16.9295,
+      "house": "45",
+      "apartment": "45",
+      "floor": "45",
+      "notes": "",
+      "phone": "+48 123 456 789",
+      "coefficient": 3
+    },
+    {
+      "id": "ka5xei9c2",
+      "customerId": "c1",
+      "vendorId": "v5",
+      "vendorName": "Misha's Pizza",
+      "items": "1x Pasta Carbonara",
+      "status": "Ready for Pickup",
+      "distance": 2.5,
+      "fee": 15,
+      "totalPrice": 53,
+      "courierId": null,
+      "createdAt": "2026-05-30T09:11:44.250Z",
+      "deliveryAddress": "Brzask",
+      "deliveryLat": 52.39846913201307,
+      "deliveryLng": 16.876716613769535,
+      "house": "45",
+      "apartment": "45",
+      "floor": "45",
+      "notes": "",
+      "phone": "+48 123 456 789",
+      "coefficient": 3
+    },
+    {
+      "id": "gbbledwfq",
+      "customerId": "c1",
+      "vendorId": "v5",
+      "vendorName": "Misha's Pizza",
+      "items": "1x Pasta Carbonara",
+      "status": "Ready for Pickup",
+      "distance": 2.5,
+      "fee": 10,
+      "totalPrice": 48,
+      "courierId": null,
+      "createdAt": "2026-05-30T10:26:57.011Z",
+      "deliveryAddress": "Brzask",
+      "deliveryLat": 52.39846913201307,
+      "deliveryLng": 16.876716613769535,
+      "house": "45",
+      "apartment": "45",
+      "floor": "45",
+      "notes": "",
+      "phone": "+48 123 456 789",
+      "coefficient": 3
+    },
+    {
+      "id": "q39m0hy8s",
+      "customerId": "c1",
+      "vendorId": "v4",
+      "vendorName": "Pasibus",
+      "items": "1x Cheese Fries",
+      "status": "Ready for Pickup",
+      "distance": 3.4,
+      "fee": 14,
+      "totalPrice": 32,
+      "courierId": null,
+      "createdAt": "2026-05-30T10:33:22.577Z",
+      "deliveryAddress": "Brzask",
+      "deliveryLat": 52.39846913201307,
+      "deliveryLng": 16.876716613769535,
+      "house": "45",
+      "apartment": "45",
+      "floor": "45",
+      "notes": "",
+      "phone": "+48 123 456 789",
+      "coefficient": 3
+    },
+    {
+      "id": "vtr0obvy0",
+      "customerId": "c1",
+      "vendorId": "v8",
+      "vendorName": "Hana Sushi",
+      "items": "1x Green Tea Mochi",
+      "status": "Ready for Pickup",
+      "distance": 4.4,
+      "fee": 18,
+      "totalPrice": 36,
+      "courierId": null,
+      "createdAt": "2026-05-30T10:40:07.994Z",
+      "deliveryAddress": "Brzask",
+      "deliveryLat": 52.36706564346873,
+      "deliveryLng": 16.9215202331543,
+      "house": "45",
+      "apartment": "45",
+      "floor": "45",
+      "notes": "",
+      "phone": "+48 123 456 789",
+      "coefficient": 3
+    },
+    {
+      "id": "amotaqsro",
+      "customerId": "c_1779574359459",
+      "vendorId": "v5",
+      "vendorName": "Misha's Pizza",
+      "items": "1x Pasta Carbonara",
+      "status": "Ready for Pickup",
+      "distance": 1.6,
+      "fee": 6,
+      "totalPrice": 44,
+      "courierId": null,
+      "createdAt": "2026-05-30T10:42:26.970Z",
+      "deliveryAddress": "мама",
+      "deliveryLat": 52.414,
+      "deliveryLng": 16.9295,
+      "house": "52",
+      "apartment": "67",
+      "floor": "52",
+      "notes": "leave near the door",
+      "phone": "+48 123 456 789",
+      "coefficient": 3
+    },
+    {
+      "id": "8np5qgisn",
+      "customerId": "c_1779574359459",
+      "vendorId": "v3",
+      "vendorName": "Burger King",
+      "items": "1x Crispy Chicken Burger",
+      "status": "Ready for Pickup",
+      "distance": 1.7,
+      "fee": 7,
+      "totalPrice": 27,
+      "courierId": null,
+      "createdAt": "2026-05-30T10:42:40.081Z",
+      "deliveryAddress": "мама",
+      "deliveryLat": 52.414,
+      "deliveryLng": 16.9295,
+      "house": "52",
+      "apartment": "67",
+      "floor": "52",
+      "notes": "leave near the door",
+      "phone": "+48 123 456 789",
+      "coefficient": 3
+    },
+    {
+      "id": "eprah7aeh",
+      "customerId": "c1",
+      "vendorId": "v8",
+      "vendorName": "Hana Sushi",
+      "items": "1x Green Tea Mochi",
+      "status": "Ready for Pickup",
+      "distance": 4.4,
+      "fee": 18,
+      "totalPrice": 36,
+      "courierId": null,
+      "createdAt": "2026-05-31T11:08:29.963Z",
+      "deliveryAddress": "Brzask",
+      "deliveryLat": 52.36706564346873,
+      "deliveryLng": 16.9215202331543,
+      "house": "45",
+      "apartment": "45",
+      "floor": "45",
+      "notes": "",
+      "phone": "+48 123 456 789",
+      "coefficient": 3
     }
   ],
   "$schema": "./node_modules/json-server/schema.json",
   "settings": {
     "pricePerKm": 4,
-    "scooterPricePerKm": 5.5,
-    "carPricePerKm": 6.5,
+    "scooterPricePerKm": 5,
+    "carPricePerKm": 6,
     "globalSurcharge": 0
   },
   "messages": [
@@ -703,7 +1970,8 @@
       "senderName": "Денис",
       "role": "customer",
       "text": "павп",
-      "timestamp": "2026-05-23T22:05:35.026Z"
+      "timestamp": "2026-05-23T22:05:35.026Z",
+      "resolved": true
     },
     {
       "id": "uvcqpn5yb",
@@ -712,7 +1980,8 @@
       "senderName": "Денис",
       "role": "customer",
       "text": "выап",
-      "timestamp": "2026-05-23T22:05:45.927Z"
+      "timestamp": "2026-05-23T22:05:45.927Z",
+      "resolved": true
     },
     {
       "id": "hre27y66w",
@@ -721,7 +1990,8 @@
       "senderName": "Поддержка POLONEZ",
       "role": "admin",
       "text": "ты вася",
-      "timestamp": "2026-05-23T22:06:06.821Z"
+      "timestamp": "2026-05-23T22:06:06.821Z",
+      "resolved": true
     },
     {
       "id": "dhjvs4ntn",
@@ -731,7 +2001,7 @@
       "role": "admin",
       "text": "шо ты вася",
       "timestamp": "2026-05-25T06:55:52.600Z",
-      "resolved": false
+      "resolved": true
     },
     {
       "id": "3oi1r7nhh",
@@ -781,7 +2051,7 @@
       "role": "courier",
       "text": "хелоу",
       "timestamp": "2026-05-25T07:29:35.644Z",
-      "resolved": false
+      "resolved": true
     },
     {
       "id": "r6mfby6cv",
@@ -811,6 +2081,206 @@
       "role": "courier",
       "text": "уже еду бро не мороси",
       "timestamp": "2026-05-25T07:56:07.777Z",
+      "resolved": true
+    },
+    {
+      "id": "49qsuq7aq",
+      "chatId": "order-meknkv1bn",
+      "senderId": "c1",
+      "senderName": "Денис",
+      "role": "customer",
+      "text": "привет бро када буте",
+      "timestamp": "2026-05-29T16:05:42.428Z",
+      "resolved": true
+    },
+    {
+      "id": "rg0a915li",
+      "chatId": "order-meknkv1bn",
+      "senderId": "admin",
+      "senderName": "Поддержка POLONEZ",
+      "role": "admin",
+      "text": "щас спрошу у куры",
+      "timestamp": "2026-05-29T16:08:47.257Z",
+      "resolved": true
+    },
+    {
+      "id": "5lrmq3tuc",
+      "chatId": "order-meknkv1bn-courier",
+      "senderId": "admin",
+      "senderName": "Поддержка POLONEZ",
+      "role": "admin",
+      "text": "шо там вася долго ехать?",
+      "timestamp": "2026-05-29T16:09:18.479Z",
+      "resolved": true
+    },
+    {
+      "id": "3dhnkqbqn",
+      "chatId": "order-meknkv1bn-courier",
+      "senderId": "cour1",
+      "senderName": "Курьер 1",
+      "role": "courier",
+      "text": "не скоро буду",
+      "timestamp": "2026-05-29T16:09:29.218Z",
+      "resolved": true
+    },
+    {
+      "id": "ljaslycs9",
+      "chatId": "order-meknkv1bn",
+      "senderId": "admin",
+      "senderName": "Поддержка POLONEZ",
+      "role": "admin",
+      "text": "скоро будет",
+      "timestamp": "2026-05-29T16:09:38.952Z",
+      "resolved": true
+    },
+    {
+      "id": "v8c8qquv7",
+      "chatId": "order-3we6yvvv4-courier",
+      "senderId": "cour1",
+      "senderName": "Курьер 1",
+      "role": "courier",
+      "text": "шо там",
+      "timestamp": "2026-05-29T16:13:05.781Z",
+      "resolved": true
+    },
+    {
+      "id": "jipmc1k9i",
+      "chatId": "order-erwjw0me2",
+      "senderId": "c1",
+      "senderName": "Денис",
+      "role": "customer",
+      "text": "хелоё",
+      "timestamp": "2026-05-29T16:20:20.345Z",
+      "resolved": true
+    },
+    {
+      "id": "oc3k0rg01",
+      "chatId": "order-bitgr7ri2",
+      "senderId": "admin",
+      "senderName": "Поддержка POLONEZ",
+      "role": "admin",
+      "text": "бро шо там доставили",
+      "timestamp": "2026-05-30T10:14:58.224Z",
+      "resolved": true
+    },
+    {
+      "id": "rye6o6eu3",
+      "chatId": "order-bitgr7ri2",
+      "senderId": "c1",
+      "senderName": "Денис",
+      "role": "customer",
+      "text": "да бро",
+      "timestamp": "2026-05-30T10:22:27.413Z",
+      "resolved": true
+    },
+    {
+      "id": "oxr8ui8al",
+      "chatId": "order-erwjw0me2",
+      "senderId": "c1",
+      "senderName": "Денис",
+      "role": "customer",
+      "text": "пасани шо там",
+      "timestamp": "2026-05-30T10:22:45.625Z",
+      "resolved": true
+    },
+    {
+      "id": "oa6xeihmz",
+      "chatId": "order-erwjw0me2",
+      "senderId": "admin",
+      "senderName": "Поддержка POLONEZ",
+      "role": "admin",
+      "text": "та хуня",
+      "timestamp": "2026-05-30T10:22:52.095Z",
+      "resolved": true
+    },
+    {
+      "id": "87s6s9tnc",
+      "chatId": "order-erwjw0me2",
+      "senderId": "c1",
+      "senderName": "Денис",
+      "role": "customer",
+      "text": "бля броуски и что работает",
+      "timestamp": "2026-05-30T10:26:16.765Z",
+      "resolved": true
+    },
+    {
+      "id": "bo5xbiich",
+      "chatId": "order-erwjw0me2",
+      "senderId": "admin",
+      "senderName": "Поддержка POLONEZ",
+      "role": "admin",
+      "text": "та тип норм",
+      "timestamp": "2026-05-30T10:26:24.882Z",
+      "resolved": true
+    },
+    {
+      "id": "d9lsklhdg",
+      "chatId": "order-ka5xei9c2",
+      "senderId": "c1",
+      "senderName": "Денис",
+      "role": "customer",
+      "text": "бибибоба",
+      "timestamp": "2026-05-30T10:26:34.454Z",
+      "resolved": true
+    },
+    {
+      "id": "ldkx22wor",
+      "chatId": "general-c1",
+      "senderId": "admin",
+      "senderName": "Поддержка POLONEZ",
+      "role": "admin",
+      "text": "бро хейка",
+      "timestamp": "2026-05-30T10:32:12.386Z",
+      "resolved": true
+    },
+    {
+      "id": "f77cria4h",
+      "chatId": "order-gbbledwfq",
+      "senderId": "c1",
+      "senderName": "Денис",
+      "role": "customer",
+      "text": "??",
+      "timestamp": "2026-05-30T10:32:47.976Z",
+      "resolved": true
+    },
+    {
+      "id": "54fu6uffc",
+      "chatId": "general-c1",
+      "senderId": "admin",
+      "senderName": "Поддержка POLONEZ",
+      "role": "admin",
+      "text": "щема",
+      "timestamp": "2026-05-30T10:39:16.930Z",
+      "resolved": true
+    },
+    {
+      "id": "rx7iha40c",
+      "chatId": "order-amotaqsro",
+      "senderId": "c_1779574359459",
+      "senderName": "матвей",
+      "role": "customer",
+      "text": "gh",
+      "timestamp": "2026-05-30T10:42:52.248Z",
+      "resolved": true
+    },
+    {
+      "id": "09kgpuc0o",
+      "chatId": "order-eprah7aeh",
+      "senderId": "admin",
+      "senderName": "Поддержка POLONEZ",
+      "role": "admin",
+      "text": "po",
+      "timestamp": "2026-05-31T12:38:53.808Z",
+      "resolved": true
+    },
+    {
+      "id": "xuwrwceel",
+      "chatId": "order-eprah7aeh",
+      "senderId": "c1",
+      "senderName": "Денис",
+      "role": "customer",
+      "text": "не рохкай",
+      "timestamp": "2026-05-31T12:39:11.690Z",
       "resolved": true
     }
   ]

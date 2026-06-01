@@ -1,5 +1,4 @@
 // src/pages/Customer/components/CheckoutForm.jsx
-import React from 'react';
 
 export default function CheckoutForm({
   house,
@@ -52,22 +51,26 @@ export default function CheckoutForm({
       {/* Phone & Notes */}
       <div className="checkout-grid-row">
         <div>
-          <label className="form-label">📞 Телефон получателя *</label>
+          <label className="form-label" htmlFor="recipient-phone">📞 Телефон получателя *</label>
           <input 
+            id="recipient-phone"
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="+48 123 456 789"
             required
+            autoComplete="tel"
+            spellCheck={false}
             className="form-input"
           />
         </div>
         <div>
-          <label className="form-label">📝 Заметка курьеру</label>
+          <label className="form-label" htmlFor="recipient-notes">📝 Заметка курьеру</label>
           <textarea 
+            id="recipient-notes"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Например: Оставить у двери, домофон не работает..."
+            placeholder="Например: Оставить у двери, домофон не работает…"
             className="form-textarea"
           />
         </div>

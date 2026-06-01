@@ -19,7 +19,7 @@ export function useOrders() {
   // 2. Create order mutation
   const createOrderMutation = useMutation({
     mutationFn: (newOrder) => orderServices.createOrder(newOrder),
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
     }
   });
@@ -27,7 +27,7 @@ export function useOrders() {
   // 3. Update order mutation (status updates, surge coefficient, etc.)
   const updateOrderMutation = useMutation({
     mutationFn: ({ orderId, updates }) => orderServices.updateOrder(orderId, updates),
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
     }
   });

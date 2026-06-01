@@ -1,5 +1,5 @@
 // src/pages/Admin/components/OrdersTable.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 export default function OrdersTable({
   orders,

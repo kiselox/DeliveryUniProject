@@ -1,29 +1,139 @@
 // src/components/SupportChatWidget.jsx
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useSupportChat } from '../hooks/useSupportChat';
+import { useOrders } from '../hooks/useOrders';
+import api from '../services/api';
 
 export default function SupportChatWidget({
   userType,
   userId,
   userName,
-  activeOrderId,
-  activeOrderVendor
+  activeOrderId
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [chatType, setChatType] = useState('general'); // 'general' or 'order'
   const [text, setText] = useState('');
+  const [customOrderId, setCustomOrderId] = useState(null);
+
+  const { orders = [] } = useOrders();
+
+  // Fetch all active chat threads to sort orders by support activity
+  const { data: chatThreads = [] } = useQuery({
+    queryKey: ['supportChats'],
+    queryFn: async () => {
+      const res = await api.get('/support/chats');
+      return res.data;
+    },
+    refetchInterval: 3000
+  });
+
+  // Listen to open-support-chat event from AccountDrawer
+  useEffect(() => {
+    const handleOpenSupport = (e) => {
+      if (e.detail && e.detail.orderId) {
+        setCustomOrderId(e.detail.orderId);
+        setChatType('order');
+      } else {
+        setChatType('general');
+      }
+      setIsOpen(true);
+    };
+    window.addEventListener('open-support-chat', handleOpenSupport);
+    return () => window.removeEventListener('open-support-chat', handleOpenSupport);
+  }, []);
+
+  // Filter and sort active orders by newest support activity
+  const customerActiveOrders = orders.filter(o => 
+    o.customerId === userId && 
+    o.status !== "Delivered" && 
+    o.status !== "Cancelled"
+  );
+
+  // Get all customer orders that have active support dialogue (including delivered/cancelled)
+  const ordersWithActiveChats = orders.filter(o => 
+    o.customerId === userId && 
+    chatThreads.some(t => t.chatId === `order-${o.id}`)
+  );
+
+  // Group all unique orders that are either active in progress or have active support chat
+  const candidateOrdersMap = {};
+  if (activeOrderId) {
+    const activeOrderObj = orders.find(o => o.id === activeOrderId);
+    if (activeOrderObj) {
+      candidateOrdersMap[activeOrderId] = activeOrderObj;
+    }
+  }
+  customerActiveOrders.forEach(o => {
+    candidateOrdersMap[o.id] = o;
+  });
+  ordersWithActiveChats.forEach(o => {
+    candidateOrdersMap[o.id] = o;
+  });
+
+  const candidateOrders = Object.values(candidateOrdersMap);
+
+  // Sort candidate orders by support activity timestamp (most recent first)
+  const sortedCandidates = [...candidateOrders].sort((a, b) => {
+    const threadA = chatThreads.find(t => t.chatId === `order-${a.id}`);
+    const threadB = chatThreads.find(t => t.chatId === `order-${b.id}`);
+    const timeA = threadA ? new Date(threadA.timestamp).getTime() : 0;
+    const timeB = threadB ? new Date(threadB.timestamp).getTime() : 0;
+    return timeB - timeA;
+  });
+
+  const latestActiveOrderId = sortedCandidates[0]?.id || activeOrderId;
   
-  // Determine actual chatId
+  // Determine actual chatId (default to the order with latest support activity)
+  const effectiveOrderId = customOrderId || latestActiveOrderId;
   const generalChatId = `general-${userId}`;
-  const orderChatId = activeOrderId 
-    ? (userType === 'courier' ? `order-${activeOrderId}-courier` : `order-${activeOrderId}`)
+  const orderChatId = effectiveOrderId 
+    ? (userType === 'courier' ? `order-${effectiveOrderId}-courier` : `order-${effectiveOrderId}`)
     : null;
   const currentChatId = chatType === 'order' && orderChatId ? orderChatId : generalChatId;
 
   // Load support messages via our custom real-time hook
   const { messages = [], sendMessage, isSending } = useSupportChat(currentChatId);
 
+  // Build the list of dropdown options:
+  // - Must include the current active order (activeOrderId) if it exists
+  // - Plus any other active orders in progress (even without messages yet)
+  // - Plus any orders that already have active support dialogues
+  const selectOptionsMap = {};
+  
+  if (activeOrderId) {
+    const primaryActiveOrder = orders.find(o => o.id === activeOrderId);
+    if (primaryActiveOrder) {
+      selectOptionsMap[activeOrderId] = {
+        id: activeOrderId,
+        label: `🍕 Текущий заказ #${activeOrderId.slice(-4).toUpperCase()} (${primaryActiveOrder.vendorName})`
+      };
+    }
+  }
+
+  customerActiveOrders.forEach(o => {
+    if (!selectOptionsMap[o.id]) {
+      selectOptionsMap[o.id] = {
+        id: o.id,
+        label: `🍕 Активный заказ #${o.id.slice(-4).toUpperCase()} (${o.vendorName})`
+      };
+    }
+  });
+
+  ordersWithActiveChats.forEach(o => {
+    if (!selectOptionsMap[o.id]) {
+      selectOptionsMap[o.id] = {
+        id: o.id,
+        label: `💬 Чат по заказу #${o.id.slice(-4).toUpperCase()} (${o.vendorName})`
+      };
+    }
+  });
+
+  const selectOptions = Object.values(selectOptionsMap);
+
   const messagesEndRef = useRef(null);
+  const buttonRef = useRef(null);
+  const drawerRef = useRef(null);
 
   // Auto-scroll to bottom of chats
   useEffect(() => {
@@ -34,12 +144,35 @@ export default function SupportChatWidget({
 
   // Handle order changes
   useEffect(() => {
-    if (activeOrderId) {
-      setChatType('order');
-    } else {
-      setChatType('general');
-    }
-  }, [activeOrderId]);
+    setTimeout(() => {
+      if (effectiveOrderId) {
+        setChatType('order');
+      } else {
+        setChatType('general');
+      }
+    }, 0);
+  }, [effectiveOrderId]);
+
+  // Close support chat on click/tap outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        isOpen &&
+        drawerRef.current &&
+        !drawerRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isOpen]);
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -63,8 +196,9 @@ export default function SupportChatWidget({
     <>
       {/* FLOATING BLUE/PURPLE CHAT TRIGGER BUTTON */}
       <button
+        ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="support-floating-button"
+        className={`support-floating-button ${isOpen ? 'drawer-open' : ''}`}
         style={{
           position: 'fixed',
           bottom: '25px',
@@ -99,6 +233,7 @@ export default function SupportChatWidget({
       {/* CHAT DRAWER PANEL */}
       {isOpen && (
         <div
+          ref={drawerRef}
           className="support-chat-drawer"
           style={{
             position: 'fixed',
@@ -137,11 +272,36 @@ export default function SupportChatWidget({
                 Диалог в реальном времени
               </h4>
             </div>
-            <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#00d26a', boxShadow: '0 0 8px #00d26a' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#00d26a', boxShadow: '0 0 8px #00d26a' }} />
+              <button 
+                type="button" 
+                onClick={() => setIsOpen(false)}
+                aria-label="Закрыть чат"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'rgba(255, 255, 255, 0.5)',
+                  fontSize: '20px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  padding: '4px',
+                  lineHeight: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'color 0.2s'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.color = '#ff7beb'}
+                onMouseOut={(e) => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.5)'}
+              >
+                ✕
+              </button>
+            </div>
           </div>
 
-          {/* CHAT SELECTOR (IF ACTIVE ORDER EXISTS) */}
-          {activeOrderId && (
+          {/* CHAT SELECTOR (IF ACTIVE OR CUSTOM ORDER EXISTS) */}
+          {effectiveOrderId && (
             <div style={{
               display: 'flex',
               borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
@@ -152,35 +312,83 @@ export default function SupportChatWidget({
                 onClick={() => setChatType('order')}
                 style={{
                   flex: 1,
-                  padding: '10px',
+                  padding: '12px 10px',
                   background: 'none',
                   border: 'none',
                   borderBottom: chatType === 'order' ? '2px solid #aa3bff' : 'none',
                   color: chatType === 'order' ? '#fff' : 'rgba(255,255,255,0.4)',
                   fontWeight: 'bold',
                   fontSize: '12px',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  textAlign: 'center',
+                  transition: 'all 0.2s'
                 }}
               >
-                🍕 О заказе #{activeOrderId.slice(-4).toUpperCase()}
+                🍕 О заказе #{typeof effectiveOrderId === 'string' && effectiveOrderId.length > 4 ? effectiveOrderId.slice(-4).toUpperCase() : effectiveOrderId}
               </button>
+
               <button
                 type="button"
                 onClick={() => setChatType('general')}
                 style={{
                   flex: 1,
-                  padding: '10px',
+                  padding: '12px 10px',
                   background: 'none',
                   border: 'none',
                   borderBottom: chatType === 'general' ? '2px solid #aa3bff' : 'none',
                   color: chatType === 'general' ? '#fff' : 'rgba(255,255,255,0.4)',
                   fontWeight: 'bold',
                   fontSize: '12px',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  textAlign: 'center',
+                  transition: 'all 0.2s'
                 }}
               >
                 ⚙️ Общий чат
               </button>
+            </div>
+          )}
+
+          {/* ORDER SELECTOR BAR (ONLY RENDER IF THERE ARE MULTIPLE DIALOGUES TO CHOOSE FROM) */}
+          {chatType === 'order' && selectOptions.length > 1 && (
+            <div style={{
+              padding: '10px 16px',
+              background: 'rgba(0, 0, 0, 0.25)',
+              borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '10px'
+            }}>
+              <span style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.5)', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Активный диалог:
+              </span>
+              <select
+                value={effectiveOrderId || ''}
+                onChange={(e) => {
+                  setCustomOrderId(e.target.value);
+                  setChatType('order');
+                }}
+                style={{
+                  background: 'rgba(170, 59, 255, 0.15)',
+                  color: '#ff7beb',
+                  border: '1px solid rgba(170, 59, 255, 0.3)',
+                  borderRadius: '8px',
+                  padding: '5px 12px',
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  outline: 'none',
+                  flexGrow: 1,
+                  maxWidth: '240px'
+                }}
+              >
+                {selectOptions.map(opt => (
+                  <option key={opt.id} value={opt.id} style={{ background: '#151030', color: '#fff' }}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
 
@@ -250,7 +458,7 @@ export default function SupportChatWidget({
           >
             <input
               type="text"
-              placeholder="Напишите сообщение саппорту..."
+              placeholder="Напишите сообщение саппорту…"
               value={text}
               onChange={(e) => setText(e.target.value)}
               style={{

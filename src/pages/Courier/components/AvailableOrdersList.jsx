@@ -1,5 +1,4 @@
 // src/pages/Courier/components/AvailableOrdersList.jsx
-import React from 'react';
 
 export default function AvailableOrdersList({
   activeOrder,

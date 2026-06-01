@@ -7,11 +7,14 @@ export const getCouriers = async (req, res, next) => {
   try {
     if (usePostgres) {
       const result = await pool.query(`
-        SELECT id, name, last_name as "lastName", email, phone, vehicle,
+        SELECT id, name, last_name as "lastName", email, phone, vehicle, rating,
                ST_Y(location::geometry) as lat, ST_X(location::geometry) as lng 
         FROM couriers
       `);
-      res.json(result.rows);
+      res.json(result.rows.map(row => ({
+        ...row,
+        rating: row.rating ? parseFloat(row.rating) : null
+      })));
     } else {
       res.json(localDb.couriers);
     }
@@ -25,12 +28,15 @@ export const getCourierById = async (req, res, next) => {
     const { id } = req.params;
     if (usePostgres) {
       const result = await pool.query(`
-        SELECT id, name, last_name as "lastName", email, phone, vehicle,
+        SELECT id, name, last_name as "lastName", email, phone, vehicle, rating,
                ST_Y(location::geometry) as lat, ST_X(location::geometry) as lng 
         FROM couriers WHERE id = $1
       `, [id]);
       if (result.rows.length === 0) return res.status(404).json({ error: 'Courier not found' });
-      res.json(result.rows[0]);
+      res.json({
+        ...result.rows[0],
+        rating: result.rows[0].rating ? parseFloat(result.rows[0].rating) : null
+      });
     } else {
       const c = localDb.couriers.find(item => item.id === id);
       if (!c) return res.status(404).json({ error: 'Courier not found' });

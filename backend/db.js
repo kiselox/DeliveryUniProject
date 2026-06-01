@@ -4,7 +4,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-import { VENDOR_COORDINATES, POZNAN_ADDRESSES, CUSTOMER_COORDINATES, COURIER_COORDINATES } from './config/poznanAddresses.js';
+import { VENDOR_COORDINATES, CUSTOMER_COORDINATES, COURIER_COORDINATES } from './config/poznanAddresses.js';
+import { hashPassword } from './utils/authUtils.js';
 
 dotenv.config();
 
@@ -67,16 +68,26 @@ export function loadLocalDb() {
       lng: VENDOR_COORDINATES[v.id]?.lng || 16.9252
     }));
 
+    // Ensure customers have passwords & emails (default '123456' for legacy accounts)
     localDb.customers = localDb.customers.map(c => ({
       ...c,
+      lastName: c.lastName || 'Тестовый',
+      email: c.email || (c.id === 'c1' ? 'denis@example.com' : `${c.id}@example.com`),
+      phone: c.phone || '+48 123 456 789',
       lat: CUSTOMER_COORDINATES[c.id]?.lat || 52.4140,
-      lng: CUSTOMER_COORDINATES[c.id]?.lng || 16.9295
+      lng: CUSTOMER_COORDINATES[c.id]?.lng || 16.9295,
+      password: c.password || hashPassword('123456')
     }));
 
+    // Ensure couriers have passwords & emails (default '123456' for legacy accounts)
     localDb.couriers = localDb.couriers.map(cour => ({
       ...cour,
+      lastName: cour.lastName || 'Тестовый',
+      email: cour.email || (cour.id === 'cour1' ? 'vlad@example.com' : cour.id === 'cour2' ? 'scooter@example.com' : cour.id === 'cour3' ? 'car@example.com' : `${cour.id}@example.com`),
+      phone: cour.phone || '+48 987 654 321',
       lat: cour.lat || COURIER_COORDINATES[cour.id]?.lat || 52.4140,
-      lng: cour.lng || COURIER_COORDINATES[cour.id]?.lng || 16.9295
+      lng: cour.lng || COURIER_COORDINATES[cour.id]?.lng || 16.9295,
+      password: cour.password || hashPassword('123456')
     }));
 
     saveLocalDb();
@@ -128,14 +139,16 @@ export async function initDb() {
         image_url VARCHAR(255),
         hero_image VARCHAR(255),
         menu JSONB,
-        location GEOGRAPHY(Point, 4326)
+        location GEOGRAPHY(Point, 4326),
+        rating NUMERIC DEFAULT NULL NULL
       );
 
       CREATE TABLE IF NOT EXISTS couriers (
         id VARCHAR(50) PRIMARY KEY,
         name VARCHAR(100),
         vehicle VARCHAR(50),
-        location GEOGRAPHY(Point, 4326)
+        location GEOGRAPHY(Point, 4326),
+        rating NUMERIC DEFAULT NULL NULL
       );
 
       CREATE TABLE IF NOT EXISTS orders (
@@ -160,7 +173,9 @@ export async function initDb() {
         floor VARCHAR(50) NULL,
         notes TEXT NULL,
         phone VARCHAR(50) NULL,
-        coefficient NUMERIC DEFAULT 1.0 NULL
+        coefficient NUMERIC DEFAULT 1.0 NULL,
+        rating_courier INT DEFAULT NULL NULL,
+        rating_restaurant INT DEFAULT NULL NULL
       );
 
       CREATE TABLE IF NOT EXISTS messages (
@@ -189,18 +204,33 @@ export async function initDb() {
       ALTER TABLE orders ADD COLUMN IF NOT EXISTS coefficient NUMERIC DEFAULT 1.0 NULL;
       ALTER TABLE orders ADD COLUMN IF NOT EXISTS accepted_at VARCHAR(50) NULL;
       ALTER TABLE orders ADD COLUMN IF NOT EXISTS picked_up_at VARCHAR(50) NULL;
+      ALTER TABLE orders ADD COLUMN IF NOT EXISTS rating_courier INT DEFAULT NULL NULL;
+      ALTER TABLE orders ADD COLUMN IF NOT EXISTS rating_restaurant INT DEFAULT NULL NULL;
     `);
 
-    // 3b. Migrate customers and couriers tables for last_name, email, phone
-    console.log('⚙️ Migrating customers and couriers schema for last_name, email, phone...');
+    // 3b. Migrate customers and couriers tables for last_name, email, phone, password
+    console.log('⚙️ Migrating customers and couriers schema for last_name, email, phone, password...');
     await client.query(`
       ALTER TABLE customers ADD COLUMN IF NOT EXISTS last_name VARCHAR(100) NULL;
       ALTER TABLE customers ADD COLUMN IF NOT EXISTS email VARCHAR(100) NULL;
       ALTER TABLE customers ADD COLUMN IF NOT EXISTS phone VARCHAR(100) NULL;
+      ALTER TABLE customers ADD COLUMN IF NOT EXISTS password VARCHAR(255) NULL;
+      ALTER TABLE customers ADD COLUMN IF NOT EXISTS house VARCHAR(50) NULL;
+      ALTER TABLE customers ADD COLUMN IF NOT EXISTS apartment VARCHAR(50) NULL;
+      ALTER TABLE customers ADD COLUMN IF NOT EXISTS floor VARCHAR(50) NULL;
+      ALTER TABLE customers ADD COLUMN IF NOT EXISTS notes TEXT NULL;
 
       ALTER TABLE couriers ADD COLUMN IF NOT EXISTS last_name VARCHAR(100) NULL;
       ALTER TABLE couriers ADD COLUMN IF NOT EXISTS email VARCHAR(100) NULL;
       ALTER TABLE couriers ADD COLUMN IF NOT EXISTS phone VARCHAR(100) NULL;
+      ALTER TABLE couriers ADD COLUMN IF NOT EXISTS password VARCHAR(255) NULL;
+      ALTER TABLE couriers ADD COLUMN IF NOT EXISTS rating NUMERIC NULL;
+    `);
+
+    // 3c. Migrate vendors table for rating column
+    console.log('⚙️ Migrating vendors schema for rating column...');
+    await client.query(`
+      ALTER TABLE vendors ADD COLUMN IF NOT EXISTS rating NUMERIC NULL;
     `);
 
     // 3c. Migrate messages table for resolved column
@@ -208,6 +238,7 @@ export async function initDb() {
     await client.query(`
       ALTER TABLE messages ADD COLUMN IF NOT EXISTS resolved BOOLEAN DEFAULT FALSE;
     `);
+
 
     // 4. Seed tables if empty
     const resVendors = await client.query('SELECT COUNT(*) FROM vendors');
@@ -220,10 +251,11 @@ export async function initDb() {
       // Seed Customers
       for (const c of mockData.customers) {
         const coords = CUSTOMER_COORDINATES[c.id] || { lat: 52.4140, lng: 16.9295 };
+        const pass = c.password || hashPassword('123456');
         await client.query(
-          `INSERT INTO customers (id, name, address, location) 
-           VALUES ($1, $2, $3, ST_MakePoint($4, $5)::geography)`,
-          [c.id, c.name, c.address, coords.lng, coords.lat]
+          `INSERT INTO customers (id, name, last_name, email, phone, address, location, password) 
+           VALUES ($1, $2, $3, $4, $5, $6, ST_MakePoint($7, $8)::geography, $9)`,
+          [c.id, c.name, c.lastName || '', c.email || '', c.phone || '', c.address, coords.lng, coords.lat, pass]
         );
       }
 
@@ -231,19 +263,20 @@ export async function initDb() {
       for (const v of mockData.vendors) {
         const coords = VENDOR_COORDINATES[v.id] || { lat: 52.4064, lng: 16.9252 };
         await client.query(
-          `INSERT INTO vendors (id, name, cuisine, image_url, hero_image, menu, location) 
-           VALUES ($1, $2, $3, $4, $5, $6, ST_MakePoint($7, $8)::geography)`,
-          [v.id, v.name, v.cuisine, v.imageUrl, v.heroImage || null, JSON.stringify(v.menu), coords.lng, coords.lat]
+          `INSERT INTO vendors (id, name, cuisine, image_url, hero_image, menu, location, rating) 
+           VALUES ($1, $2, $3, $4, $5, $6, ST_MakePoint($7, $8)::geography, $9)`,
+          [v.id, v.name, v.cuisine, v.imageUrl, v.heroImage || null, JSON.stringify(v.menu), coords.lng, coords.lat, parseFloat(v.rating) || null]
         );
       }
 
       // Seed Couriers
       for (const cour of mockData.couriers) {
         const coords = COURIER_COORDINATES[cour.id] || { lat: 52.4140, lng: 16.9295 };
+        const pass = cour.password || hashPassword('123456');
         await client.query(
-          `INSERT INTO couriers (id, name, vehicle, location) 
-           VALUES ($1, $2, $3, ST_MakePoint($4, $5)::geography)`,
-          [cour.id, cour.name, cour.vehicle, coords.lng, coords.lat]
+          `INSERT INTO couriers (id, name, last_name, email, phone, vehicle, location, password) 
+           VALUES ($1, $2, $3, $4, $5, $6, ST_MakePoint($7, $8)::geography, $9)`,
+          [cour.id, cour.name, cour.lastName || '', cour.email || '', cour.phone || '', cour.vehicle, coords.lng, coords.lat, pass]
         );
       }
 

@@ -1,5 +1,6 @@
 // backend/middleware/errorHandler.js
 
+// eslint-disable-next-line no-unused-vars
 const errorHandler = (err, req, res, next) => {
   console.error('❌ Express Error caught in Middleware:', err.stack);
   res.status(500).json({

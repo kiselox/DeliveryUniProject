@@ -1,5 +1,4 @@
 // src/pages/Admin/components/SurgeAdjusterModal.jsx
-import React from 'react';
 
 export default function SurgeAdjusterModal({
   editingOrder,
@@ -110,7 +109,7 @@ export default function SurgeAdjusterModal({
                 <strong style={{ color: '#fff' }}>{veloPayout} PLN</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.03)', paddingBottom: '6px' }}>
-                <span>🛴 Самокат (+rate)</span>
+                <span>🛵 Скутер (+rate)</span>
                 <strong style={{ color: '#fff' }}>{scooterPayout} PLN</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>

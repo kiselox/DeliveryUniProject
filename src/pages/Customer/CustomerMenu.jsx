@@ -1,5 +1,4 @@
-// src/pages/Customer/CustomerMenu.jsx
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import L from 'leaflet';
@@ -10,15 +9,9 @@ import MenuItemCard from '../../components/MenuItemCard';
 import CartDrawer from './components/CartDrawer';
 import { useOrders } from '../../hooks/useOrders';
 import SupportChatWidget from '../../components/SupportChatWidget';
+import AccountDrawer from './components/AccountDrawer';
 import './Customer.css';
-
-const PRESET_COORDINATES = {
-  'Półwiejska': { lat: 52.4023, lng: 16.9261 },
-  'Garbary': { lat: 52.4045, lng: 16.9372 },
-  'Jeżyce': { lat: 52.4115, lng: 16.9068 },
-  'Malta': { lat: 52.4018, lng: 16.9205 },
-  'Dormitory CDV': { lat: 52.4140, lng: 16.9295 }
-};
+import { FALLBACK_RESTAURANT_LOGO, FALLBACK_HERO_IMAGE } from '../../utils/imageFallbacks';
 
 export default function CustomerMenu() {
   const { id: customerId, vendorId } = useParams();
@@ -27,9 +20,11 @@ export default function CustomerMenu() {
   const [cart, setCart] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
   
   // Checkout address & pinning states
-  const [deliveryAddress, setDeliveryAddress] = useState('Dormitory CDV, Poznan');
+  const [deliveryAddress, setDeliveryAddress] = useState('');
   const [deliveryLat, setDeliveryLat] = useState(52.4140);
   const [deliveryLng, setDeliveryLng] = useState(16.9295);
   const [house, setHouse] = useState('');
@@ -46,8 +41,8 @@ export default function CustomerMenu() {
   // Custom hook for orders
   const { orders = [], createOrder, isCreating } = useOrders();
 
-  // Find any active order for the client to chat about
-  const activeOrder = orders.find(o => 
+  // Find any active order for the client to chat about (most recent one first)
+  const activeOrder = [...orders].reverse().find(o => 
     o.customerId === customerId && 
     o.status !== "Delivered" && 
     o.status !== "Cancelled"
@@ -55,17 +50,41 @@ export default function CustomerMenu() {
 
   const { data: customer } = useQuery({
     queryKey: ['customer', customerId],
-    queryFn: () => customerServices.getCustomerById(customerId),
-    onSuccess: (data) => {
-      if (data?.address) {
-        setDeliveryAddress(data.address);
-      }
-      if (data?.lat && data?.lng) {
-        setDeliveryLat(data.lat);
-        setDeliveryLng(data.lng);
-      }
-    }
+    queryFn: () => customerServices.getCustomerById(customerId)
   });
+
+  const hasInitializedRef = useRef(false);
+
+  // Sync customer address info once loaded
+  useEffect(() => {
+    if (customer && !hasInitializedRef.current) {
+      setTimeout(() => {
+        if (customer.address) {
+          setDeliveryAddress(customer.address);
+        }
+        if (customer.lat && customer.lng) {
+          setDeliveryLat(customer.lat);
+          setDeliveryLng(customer.lng);
+        }
+        if (customer.house) {
+          setHouse(customer.house);
+        }
+        if (customer.apartment) {
+          setApartment(customer.apartment);
+        }
+        if (customer.floor) {
+          setFloor(customer.floor);
+        }
+        if (customer.phone) {
+          setPhone(customer.phone);
+        }
+        if (customer.notes) {
+          setNotes(customer.notes);
+        }
+      }, 0);
+      hasInitializedRef.current = true;
+    }
+  }, [customer]);
 
   const { data: vendor, isLoading, isError } = useQuery({
     queryKey: ['vendor', vendorId],
@@ -93,10 +112,13 @@ export default function CustomerMenu() {
 
   const totalItems = Object.values(cart).reduce((sum, q) => sum + q, 0);
 
-  // Search logic
-  const filteredMenu = vendor?.menu.filter(item => 
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  // Search and category filtering
+  const filteredMenu = vendor?.menu.filter(item => {
+    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesCategory = activeCategory === 'all' || item.category === activeCategory;
+    return matchesSearch && matchesCategory;
+  }) || [];
 
   const handleCheckout = async () => {
     if (totalItems === 0) return;
@@ -120,7 +142,7 @@ export default function CustomerMenu() {
       fee: totalFee,
       totalPrice: orderTotal + totalFee,
       courierId: null,
-      createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      createdAt: new Date().toISOString(),
       deliveryAddress: deliveryAddress,
       deliveryLat: deliveryLat,
       deliveryLng: deliveryLng,
@@ -133,27 +155,29 @@ export default function CustomerMenu() {
 
     try {
       await createOrder(orderData);
+      
+      // Auto-save delivery details to customer profile for future convenience
+      try {
+        await customerServices.updateCustomer(customerId, {
+          address: deliveryAddress,
+          lat: deliveryLat,
+          lng: deliveryLng,
+          house: house,
+          apartment: apartment,
+          floor: floor,
+          phone: phone,
+          notes: notes
+        });
+      } catch (profileSaveErr) {
+        console.error('Failed to auto-save delivery details to customer profile:', profileSaveErr);
+      }
+
       alert('Заказ успешно оформлен и передан курьеру!');
       setCart({});
       setIsCartOpen(false);
       navigate(`/customer/${customerId}`);
     } catch (err) {
       alert('Ошибка при создании заказа: ' + err.message);
-    }
-  };
-
-  const handlePresetClick = (preset) => {
-    setDeliveryAddress(preset);
-    const coords = PRESET_COORDINATES[preset];
-    if (coords) {
-      setDeliveryLat(coords.lat);
-      setDeliveryLng(coords.lng);
-      if (mapRef.current) {
-        mapRef.current.setView([coords.lat, coords.lng], 14);
-      }
-      if (markerRef.current) {
-        markerRef.current.setLatLng([coords.lat, coords.lng]);
-      }
     }
   };
 
@@ -170,20 +194,7 @@ export default function CustomerMenu() {
         
         setDeliveryLat(lat);
         setDeliveryLng(lng);
-        
-        // Find closest preset
-        let closestPreset = 'Dormitory CDV';
-        let minDist = Infinity;
-        
-        for (const [name, coords] of Object.entries(PRESET_COORDINATES)) {
-          const d = Math.pow(lat - coords.lat, 2) + Math.pow(lng - coords.lng, 2);
-          if (d < minDist) {
-            minDist = d;
-            closestPreset = name;
-          }
-        }
-        
-        setDeliveryAddress(`${closestPreset} (Моя геопозиция)`);
+        setDeliveryAddress("Моя геопозиция");
         
         // Update Leaflet map and marker
         if (mapRef.current) {
@@ -199,6 +210,41 @@ export default function CustomerMenu() {
       { enableHighAccuracy: true, timeout: 8000 }
     );
   };
+
+  // Smart Reorder Cart Parser
+  useEffect(() => {
+    const reorderVendorId = localStorage.getItem('reorder_vendor_id');
+    const reorderItemsStr = localStorage.getItem('reorder_items');
+    
+    if (reorderVendorId && reorderVendorId === vendorId && reorderItemsStr && vendor?.menu) {
+      try {
+        const newCart = {};
+        const itemsList = reorderItemsStr.split(', ');
+        itemsList.forEach(itemStr => {
+          const match = itemStr.match(/^(\d+)x\s+(.+)$/);
+          if (match) {
+            const count = parseInt(match[1], 10);
+            const itemName = match[2].trim().toLowerCase();
+            const menuItem = vendor.menu.find(m => m.name.toLowerCase() === itemName);
+            if (menuItem) {
+              newCart[menuItem.id] = count;
+            }
+          }
+        });
+        if (Object.keys(newCart).length > 0) {
+          setTimeout(() => {
+            setCart(newCart);
+            setIsCartOpen(true);
+          }, 0);
+        }
+      } catch (err) {
+        console.error('Failed to parse reorder items:', err);
+      } finally {
+        localStorage.removeItem('reorder_vendor_id');
+        localStorage.removeItem('reorder_items');
+      }
+    }
+  }, [vendor, vendorId]);
 
   // Leaflet Micro-map initialization when checkout modal opens
   useEffect(() => {
@@ -263,9 +309,9 @@ export default function CustomerMenu() {
     return () => {
       clearTimeout(timer);
     };
-  }, [isCartOpen]);
+  }, [isCartOpen, deliveryLat, deliveryLng]);
 
-  if (isLoading) return <div className="customer-container">Загрузка меню ресторана...</div>;
+  if (isLoading) return <div className="customer-container">Загрузка меню ресторана…</div>;
   if (isError || !vendor) return <div className="customer-container">Ошибка загрузки ресторана!</div>;
 
   // Cart modal calculation data
@@ -274,7 +320,10 @@ export default function CustomerMenu() {
 
   return (
     <div className="customer-container">
-      <Header address={customer?.address} />
+      <Header 
+        address={customer?.address} 
+        onProfileClick={() => setIsAccountOpen(true)}
+      />
 
       <button className="btn-back" onClick={() => navigate(-1)}>
         ← Назад к ресторанам
@@ -282,19 +331,31 @@ export default function CustomerMenu() {
 
       <div className="vendor-hero">
         <img 
-          src={vendor.heroImage || `https://placehold.co/1200x300/111/555?text=${vendor.name}`} 
+          src={vendor.heroImage || FALLBACK_HERO_IMAGE} 
           alt="Hero" 
           className="vendor-hero-img" 
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = FALLBACK_HERO_IMAGE;
+          }}
         />
         <div className="vendor-logo-wrapper">
-          <img src={vendor.imageUrl} alt={vendor.name} className="vendor-logo" />
+          <img 
+            src={vendor.imageUrl || FALLBACK_RESTAURANT_LOGO} 
+            alt={vendor.name} 
+            className="vendor-logo" 
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = FALLBACK_RESTAURANT_LOGO;
+            }}
+          />
         </div>
         <h2 className="vendor-hero-title">{vendor.name}</h2>
         
         <div className="vendor-search-bar">
           <input 
             type="text" 
-            placeholder="Search menu..." 
+            placeholder="Search menu…" 	
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -303,7 +364,30 @@ export default function CustomerMenu() {
       </div>
 
       <div className="menu-section">
-        <h3 className="section-title">Popular Items</h3>
+        <div className="menu-categories-tabs">
+          {[
+            { id: 'all', name: 'Все' },
+            { id: 'mains', name: 'Основное' },
+            { id: 'sides', name: 'Закуски и гарниры' },
+            { id: 'desserts', name: 'Десерты' },
+            { id: 'drinks', name: 'Напитки' }
+          ].map(cat => (
+            <button
+              key={cat.id}
+              className={`btn-category-tab ${activeCategory === cat.id ? 'active' : ''}`}
+              onClick={() => setActiveCategory(cat.id)}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
+
+        <h3 className="section-title">
+          {activeCategory === 'all' ? 'Популярные блюда' : 
+           activeCategory === 'mains' ? 'Основное меню' :
+           activeCategory === 'sides' ? 'Закуски и гарниры' :
+           activeCategory === 'desserts' ? 'Сладкие десерты' : 'Освежающие напитки'}
+        </h3>
         
         {filteredMenu.length === 0 ? (
           <p>Ничего не найдено по вашему запросу "{searchTerm}"</p>
@@ -349,7 +433,6 @@ export default function CustomerMenu() {
         setDeliveryLng={setDeliveryLng}
         mapContainerRef={mapContainerRef}
         handleGetCurrentPosition={handleGetCurrentPosition}
-        handlePresetClick={handlePresetClick}
         house={house}
         setHouse={setHouse}
         apartment={apartment}
@@ -362,6 +445,12 @@ export default function CustomerMenu() {
         setNotes={setNotes}
         handleCheckout={handleCheckout}
         isPending={isCreating}
+      />
+
+      <AccountDrawer 
+        isOpen={isAccountOpen} 
+        onClose={() => setIsAccountOpen(false)} 
+        customerId={customerId} 
       />
 
       <SupportChatWidget 

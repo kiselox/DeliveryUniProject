@@ -1,5 +1,4 @@
 // src/pages/Courier/components/ActiveOrderCard.jsx
-import React from 'react';
 
 export default function ActiveOrderCard({
   activeOrder,

@@ -2,7 +2,56 @@
 import { pool, usePostgres, localDb, saveLocalDb, settings } from '../db.js';
 import { calculateHaversineDistance } from '../utils/haversine.js';
 import { normalizeText } from '../utils/normalizer.js';
-import { POZNAN_ADDRESSES, VENDOR_COORDINATES } from '../config/poznanAddresses.js';
+import { POZNAN_ADDRESSES } from '../config/poznanAddresses.js';
+
+// Helpers to recalculate average ratings
+const recalculateVendorRating = (vendorId) => {
+  const ratedOrders = localDb.orders.filter(o => o.vendorId === vendorId && o.ratingRestaurant !== null && o.ratingRestaurant !== undefined);
+  if (ratedOrders.length > 0) {
+    const sum = ratedOrders.reduce((acc, o) => acc + o.ratingRestaurant, 0);
+    const avg = parseFloat((sum / ratedOrders.length).toFixed(1));
+    const vendorIdx = localDb.vendors.findIndex(v => v.id === vendorId);
+    if (vendorIdx !== -1) {
+      localDb.vendors[vendorIdx].rating = avg;
+    }
+  }
+};
+
+const recalculateCourierRating = (courierId) => {
+  if (!courierId) return;
+  const ratedOrders = localDb.orders.filter(o => o.courierId === courierId && o.ratingCourier !== null && o.ratingCourier !== undefined);
+  if (ratedOrders.length > 0) {
+    const sum = ratedOrders.reduce((acc, o) => acc + o.ratingCourier, 0);
+    const avg = parseFloat((sum / ratedOrders.length).toFixed(1));
+    const courierIdx = localDb.couriers.findIndex(c => c.id === courierId);
+    if (courierIdx !== -1) {
+      localDb.couriers[courierIdx].rating = avg;
+    }
+  }
+};
+
+const recalculateVendorRatingPG = async (vendorId) => {
+  const avgResult = await pool.query(
+    'SELECT AVG(rating_restaurant) as avg_rating FROM orders WHERE vendor_id = $1 AND rating_restaurant IS NOT NULL',
+    [vendorId]
+  );
+  if (avgResult.rows.length > 0 && avgResult.rows[0].avg_rating !== null) {
+    const avg = parseFloat(parseFloat(avgResult.rows[0].avg_rating).toFixed(1));
+    await pool.query('UPDATE vendors SET rating = $1 WHERE id = $2', [avg, vendorId]);
+  }
+};
+
+const recalculateCourierRatingPG = async (courierId) => {
+  if (!courierId) return;
+  const avgResult = await pool.query(
+    'SELECT AVG(rating_courier) as avg_rating FROM orders WHERE courier_id = $1 AND rating_courier IS NOT NULL',
+    [courierId]
+  );
+  if (avgResult.rows.length > 0 && avgResult.rows[0].avg_rating !== null) {
+    const avg = parseFloat(parseFloat(avgResult.rows[0].avg_rating).toFixed(1));
+    await pool.query('UPDATE couriers SET rating = $1 WHERE id = $2', [avg, courierId]);
+  }
+};
 
 export const getOrders = async (req, res, next) => {
   try {
@@ -30,7 +79,9 @@ export const getOrders = async (req, res, next) => {
         floor: row.floor,
         notes: row.notes,
         phone: row.phone,
-        coefficient: row.coefficient ? parseFloat(row.coefficient) : 1.0
+        coefficient: row.coefficient ? parseFloat(row.coefficient) : 1.0,
+        ratingCourier: row.rating_courier ? parseInt(row.rating_courier) : null,
+        ratingRestaurant: row.rating_restaurant ? parseInt(row.rating_restaurant) : null
       })));
     } else {
       // Ensure all orders have coefficient mapped safely
@@ -236,6 +287,14 @@ export const updateOrder = async (req, res, next) => {
         fields.push(`coefficient = $${idx++}`);
         values.push(parseFloat(updates.coefficient));
       }
+      if (updates.ratingCourier !== undefined) {
+        fields.push(`rating_courier = $${idx++}`);
+        values.push(updates.ratingCourier !== null ? parseInt(updates.ratingCourier) : null);
+      }
+      if (updates.ratingRestaurant !== undefined) {
+        fields.push(`rating_restaurant = $${idx++}`);
+        values.push(updates.ratingRestaurant !== null ? parseInt(updates.ratingRestaurant) : null);
+      }
 
       if (fields.length === 0) {
         return res.status(400).json({ error: 'No fields to update' });
@@ -248,6 +307,16 @@ export const updateOrder = async (req, res, next) => {
       if (result.rows.length === 0) return res.status(404).json({ error: 'Order not found' });
       
       const row = result.rows[0];
+
+      if (updates.ratingCourier !== undefined || updates.ratingRestaurant !== undefined) {
+        if (updates.ratingRestaurant !== undefined && row.vendor_id) {
+          await recalculateVendorRatingPG(row.vendor_id);
+        }
+        if (updates.ratingCourier !== undefined && row.courier_id) {
+          await recalculateCourierRatingPG(row.courier_id);
+        }
+      }
+
       res.json({
         id: row.id,
         customerId: row.customer_id,
@@ -270,7 +339,9 @@ export const updateOrder = async (req, res, next) => {
         floor: row.floor,
         notes: row.notes,
         phone: row.phone,
-        coefficient: row.coefficient ? parseFloat(row.coefficient) : 1.0
+        coefficient: row.coefficient ? parseFloat(row.coefficient) : 1.0,
+        ratingCourier: row.rating_courier ? parseInt(row.rating_courier) : null,
+        ratingRestaurant: row.rating_restaurant ? parseInt(row.rating_restaurant) : null
       });
     } else {
       const orderIdx = localDb.orders.findIndex(o => o.id === orderId);
@@ -278,6 +349,12 @@ export const updateOrder = async (req, res, next) => {
       
       if (updates.coefficient !== undefined) {
         updates.coefficient = parseFloat(updates.coefficient);
+      }
+      if (updates.ratingCourier !== undefined) {
+        updates.ratingCourier = updates.ratingCourier !== null ? parseInt(updates.ratingCourier) : null;
+      }
+      if (updates.ratingRestaurant !== undefined) {
+        updates.ratingRestaurant = updates.ratingRestaurant !== null ? parseInt(updates.ratingRestaurant) : null;
       }
 
       if (updates.status === "Accepted") {
@@ -292,6 +369,17 @@ export const updateOrder = async (req, res, next) => {
         ...localDb.orders[orderIdx],
         ...updates
       };
+
+      if (updates.ratingCourier !== undefined || updates.ratingRestaurant !== undefined) {
+        const order = localDb.orders[orderIdx];
+        if (updates.ratingRestaurant !== undefined && order.vendorId) {
+          recalculateVendorRating(order.vendorId);
+        }
+        if (updates.ratingCourier !== undefined && order.courierId) {
+          recalculateCourierRating(order.courierId);
+        }
+      }
+
       saveLocalDb();
       
       const resOrder = {

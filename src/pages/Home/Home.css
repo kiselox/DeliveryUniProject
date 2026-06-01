@@ -1,0 +1,52 @@
+/* src/pages/Home/Home.css */
+
+.auth-mode-toggler {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  margin: 10px 0 25px 0;
+  border-bottom: 1px solid var(--border, #e5e7eb);
+  padding-bottom: 12px;
+}
+
+.auth-mode-btn {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 12px 10px 12px;
+  margin-bottom: -13px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border-bottom: 2px solid transparent;
+  color: #6b7280; /* Neutral gray for inactive */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 4px 4px 0 0;
+}
+
+.auth-mode-btn:hover {
+  color: var(--text, #1f2937);
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.auth-mode-btn.active {
+  color: var(--accent, #8b5cf6);
+  font-weight: 700;
+  border-bottom: 2px solid var(--accent, #8b5cf6);
+}
+
+.legacy-panel-title {
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  color: #ffc107;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.legacy-btn-admin {
+  background: rgba(170, 59, 255, 0.25) !important;
+  border-color: #aa3bff !important;
+}

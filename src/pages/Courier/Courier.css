@@ -281,3 +281,61 @@
   box-shadow: 0 0 10px rgba(170, 59, 255, 0.4);
   outline: none;
 }
+
+/* Courier page static style definitions (Rule 2 compliant) */
+.courier-container-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: system-ui, sans-serif;
+}
+
+.btn-role-switch {
+  background: none;
+  border: none;
+  color: #aa3bff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.courier-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.courier-header-title {
+  font-size: 32px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.courier-header-badge {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #aa3bff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.courier-header-desc {
+  color: #aaa;
+  margin-bottom: 30px;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.flex-column-gap-md {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}

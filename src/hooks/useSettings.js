@@ -25,7 +25,7 @@ export function useSettings() {
       const res = await api.post('/settings', updates);
       return res.data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['settings'] });
     }
   });
