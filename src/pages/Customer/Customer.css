@@ -1,6 +1,6 @@
-/* src/pages/Customer/Customer.css */
 
-/* Custom Customer Menu and Cart Drawer styling */
+
+
 
 .modal-total {
   border-top: 1px solid var(--border);
@@ -192,7 +192,7 @@
   border-color: var(--accent);
 }
 
-/* ================== Account Drawer ================== */
+
 .account-drawer-overlay {
   position: fixed;
   top: 0;
@@ -293,7 +293,7 @@
   padding: 0 24px 24px;
 }
 
-/* Settings Form */
+
 .account-settings-form {
   display: flex;
   flex-direction: column;
@@ -354,7 +354,7 @@
   cursor: not-allowed;
 }
 
-/* Order History */
+
 .orders-history-list {
   display: flex;
   flex-direction: column;
@@ -501,7 +501,7 @@
   color: var(--text-muted);
 }
 
-/* ================== Star Ratings & Evaluation Panel ================== */
+
 
 .btn-rate-order {
   background: rgba(245, 158, 11, 0.08);

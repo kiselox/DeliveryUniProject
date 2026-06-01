@@ -1,4 +1,3 @@
-// src/pages/Admin/AdminMain.jsx
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import api from '../../services/api';
@@ -7,13 +6,11 @@ import { useSettings } from '../../hooks/useSettings';
 import { useSupportChat } from '../../hooks/useSupportChat';
 import { useAuth } from '../../context/AuthContext';
 
-// Global shared page components
 import SettingsPanel from './components/SettingsPanel';
 import OrdersTable from './components/OrdersTable';
 import SurgeAdjusterModal from './components/SurgeAdjusterModal';
 import OrderDetailsModal from './components/OrderDetailsModal';
 
-// Refactored granular page components
 import OrderStatusBadge from './components/OrderStatusBadge';
 import AdminStats from './components/AdminStats';
 import SupportChatSidebar from './components/SupportChatSidebar';
@@ -39,34 +36,27 @@ export default function AdminMain() {
     ensureAdmin();
   }, [user, developerLogin]);
 
-  const [activeTab, setActiveTab] = useState('orders'); // 'orders' or 'support'
-  const [sidebarSubTab, setSidebarSubTab] = useState('orders'); // 'orders' or 'general'
+  const [activeTab, setActiveTab] = useState('orders');
+  const [sidebarSubTab, setSidebarSubTab] = useState('orders');
   
   const [rateSaving, setRateSaving] = useState(false);
   const [customRateVelo, setCustomRateVelo] = useState('');
   const [customRateScooter, setCustomRateScooter] = useState('');
   const [customRateCar, setCustomRateCar] = useState('');
   
-  // Modal state for editing order coefficient
   const [editingOrder, setEditingOrder] = useState(null);
   const [newCoefficient, setNewCoefficient] = useState('');
 
-  // Modal state for viewing order details
   const [selectedOrderDetails, setSelectedOrderDetails] = useState(null);
-  // Client-side pagination state
   const [visibleCount, setVisibleCount] = useState(10);
 
-  // Selected chat ID for Center Support dialogues
   const [selectedChatId, setSelectedChatId] = useState(null);
 
-  // Use modular React Query hooks
   const { orders = [], refetch: refetchOrders, updateOrder } = useOrders();
   const { settings, updateSettings, refetch: refetchSettings } = useSettings();
 
-  // Pull support messages for the active conversation
   const { messages: chatMessages = [], sendMessage: sendAdminMessage } = useSupportChat(selectedChatId);
 
-  // Selected Chat partner info derivation
   const isCourierChat = selectedChatId ? selectedChatId.endsWith('-courier') : false;
   let chatPartnerId = null;
   let chatPartnerRole = 'customer';
@@ -86,7 +76,6 @@ export default function AdminMain() {
     }
   }
 
-  // Fetch partner profile using TanStack React Query instead of useEffect!
   const { data: partnerProfile = null } = useQuery({
     queryKey: ['chatPartner', chatPartnerId, chatPartnerRole],
     queryFn: async () => {
@@ -98,7 +87,6 @@ export default function AdminMain() {
     enabled: !!chatPartnerId
   });
 
-  // Poll active chats from the Express backend (every 3 seconds)
   const { data: chatThreads = [], refetch: refetchChats } = useQuery({
     queryKey: ['supportChats'],
     queryFn: async () => {
@@ -108,7 +96,6 @@ export default function AdminMain() {
     refetchInterval: 3000
   });
 
-  // Initialize inputs on settings load
   useEffect(() => {
     if (settings) {
       setTimeout(() => {
@@ -119,11 +106,10 @@ export default function AdminMain() {
     }
   }, [settings]);
 
-  // Action: Save custom price rate
   const handleSaveRate = async (e) => {
     e.preventDefault();
     if (!customRateVelo || isNaN(customRateVelo) || !customRateScooter || isNaN(customRateScooter) || !customRateCar || isNaN(customRateCar)) {
-      alert("Пожалуйста, введите корректные числовые значения тарифов.");
+      alert("Please enter valid numeric values for tariffs.");
       return;
     }
     try {
@@ -134,15 +120,14 @@ export default function AdminMain() {
         carPricePerKm: parseFloat(customRateCar)
       });
       await refetchSettings();
-      alert("✅ Тарифы успешно обновлены!");
+      alert("✅ Tariffs successfully updated!");
     } catch (err) {
-      alert("Ошибка при обновлении тарифов: " + err.message);
+      alert("Error updating tariffs: " + err.message);
     } finally {
       setRateSaving(false);
     }
   };
 
-  // Action: Toggle weather surcharge
   const handleSelectWeather = async (surchargeValue) => {
     try {
       await updateSettings({
@@ -150,16 +135,15 @@ export default function AdminMain() {
       });
       await refetchSettings();
     } catch (err) {
-      alert("Ошибка при выборе погодных условий: " + err.message);
+      alert("Error setting weather conditions: " + err.message);
     }
   };
 
-  // Action: Update Order Coefficient via Modal
   const handleUpdateOrderCoefficient = async (e) => {
     e.preventDefault();
     if (!editingOrder) return;
     if (!newCoefficient || isNaN(newCoefficient) || parseFloat(newCoefficient) < 1.0) {
-      alert("Пожалуйста, введите корректный коэффициент (не менее 1.0).");
+      alert("Please enter a valid coefficient (at least 1.0).");
       return;
     }
 
@@ -171,16 +155,15 @@ export default function AdminMain() {
       setEditingOrder(null);
       setNewCoefficient('');
       refetchOrders();
-      alert("⚡ Коэффициент повышенного спроса успешно обновлен!");
+      alert("⚡ Surge coefficient successfully updated!");
     } catch (err) {
-      alert("Не удалось обновить коэффициент спроса: " + err.message);
+      alert("Failed to update surge coefficient: " + err.message);
     }
   };
 
-  // Handle resolving a support chat
   const handleResolveChat = async () => {
     if (!selectedChatId) return;
-    if (!window.confirm("Вы действительно хотите пометить это обращение как решенное? Чат будет перемещен в архив.")) {
+    if (!window.confirm("Are you sure you want to mark this ticket as resolved? The chat will be archived.")) {
       return;
     }
     try {
@@ -188,15 +171,13 @@ export default function AdminMain() {
       setSelectedChatId(null);
       refetchChats();
     } catch (err) {
-      alert("Не удалось закрыть чат: " + err.message);
+      alert("Failed to close chat: " + err.message);
     }
   };
 
-  // Safe checks
   const safeOrders = orders || [];
   const safeSettings = settings || { pricePerKm: 4.0, globalSurcharge: 0.0 };
 
-  // Sort orders robustly by ISO date descending
   const sortedOrders = [...safeOrders].sort((a, b) => {
     const timeA = new Date(a.createdAt).getTime();
     const timeB = new Date(b.createdAt).getTime();
@@ -214,36 +195,36 @@ export default function AdminMain() {
         <div className="admin-loading-wrapper">
           <div style={{ fontSize: '48px', marginBottom: '15px' }}>🛠️</div>
           <h2 className="admin-loading-title">
-            Вход в панель диспетчера...
+            Entering Dispatch Panel...
           </h2>
           <p className="admin-loading-desc">
-            Авторизация администратора системы
+            System Administrator Authorization
           </p>
         </div>
       ) : (
         <div className="admin-dashboard-container">
           
-          {/* HEADER BAR */}
+          {}
           <div className="admin-header-bar">
             <div style={{ textAlign: 'left' }}>
               <h1 className="admin-header-title">
-                Панель Поддержки 🛠️
+                Support Dashboard 🛠️
               </h1>
             </div>
             
             <div className="admin-online-badge">
               <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#00d26a', boxShadow: '0 0 10px #00d26a' }} />
-              <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Служба поддержки онлайн</span>
+              <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Support Service Online</span>
             </div>
           </div>
 
-          {/* NAVIGATION TABS */}
+          {}
           <div className="support-tabs-container">
             <button
               onClick={() => setActiveTab('orders')}
               className={`support-tab-btn ${activeTab === 'orders' ? 'active' : ''}`}
             >
-              📦 Заказы и Тарифы
+              📦 Orders and Tariffs
             </button>
             <button
               onClick={() => {
@@ -253,7 +234,7 @@ export default function AdminMain() {
               className={`support-tab-btn ${activeTab === 'support' ? 'active' : ''}`}
               style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
             >
-              💬 Центр Поддержки
+              💬 Support Center
               {chatThreads.length > 0 && (
                 <span style={{
                   backgroundColor: '#ff3b30',
@@ -269,13 +250,13 @@ export default function AdminMain() {
             </button>
           </div>
 
-          {/* TAB CONTENT: ORDERS */}
+          {}
           {activeTab === 'orders' && (
             <>
-              {/* ANALYTICS SECTION */}
+              {}
               <AdminStats orders={safeOrders} />
 
-              {/* SETTINGS PANEL */}
+              {}
               <SettingsPanel 
                 settings={settings}
                 customRateVelo={customRateVelo}
@@ -289,7 +270,7 @@ export default function AdminMain() {
                 rateSaving={rateSaving}
               />
 
-              {/* ORDERS TABLE */}
+              {}
               <OrdersTable 
                 orders={sortedOrders}
                 visibleCount={visibleCount}
@@ -301,10 +282,10 @@ export default function AdminMain() {
             </>
           )}
 
-          {/* TAB CONTENT: SUPPORT REAL-TIME CHATS */}
+          {}
           {activeTab === 'support' && (
             <div className="chat-center-grid">
-              {/* Left Thread Sidebar */}
+              {}
               <SupportChatSidebar 
                 chatThreads={chatThreads}
                 orders={safeOrders}
@@ -314,7 +295,7 @@ export default function AdminMain() {
                 setSidebarSubTab={setSidebarSubTab}
               />
 
-              {/* Right Chat Pane */}
+              {}
               <ActiveChatContainer 
                 selectedChatId={selectedChatId}
                 setSelectedChatId={setSelectedChatId}
@@ -327,7 +308,7 @@ export default function AdminMain() {
             </div>
           )}
 
-          {/* OVERLAY MODAL FOR DYNAMIC SURGE COEFFICIENT */}
+          {}
           <SurgeAdjusterModal 
             editingOrder={editingOrder}
             setEditingOrder={setEditingOrder}
@@ -337,7 +318,7 @@ export default function AdminMain() {
             safeSettings={safeSettings}
           />
 
-          {/* OVERLAY MODAL FOR FULL ORDER DETAILS VIEW */}
+          {}
           <OrderDetailsModal 
             selectedOrderDetails={selectedOrderDetails}
             setSelectedOrderDetails={setSelectedOrderDetails}

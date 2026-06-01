@@ -1,4 +1,3 @@
-// src/pages/Customer/components/CheckoutForm.jsx
 
 export default function CheckoutForm({
   house,
@@ -14,44 +13,44 @@ export default function CheckoutForm({
 }) {
   return (
     <>
-      {/* Detailed Address Grid */}
+      {}
       <div className="checkout-grid-3col">
         <div>
-          <label className="form-label">Дом/Корпус</label>
+          <label className="form-label">House/Building</label>
           <input 
             type="text"
             value={house}
             onChange={(e) => setHouse(e.target.value)}
-            placeholder="дом 12"
+            placeholder="House 12"
             className="form-input"
           />
         </div>
         <div>
-          <label className="form-label">Квартира</label>
+          <label className="form-label">Apartment</label>
           <input 
             type="text"
             value={apartment}
             onChange={(e) => setApartment(e.target.value)}
-            placeholder="кв 45"
+            placeholder="Apt 45"
             className="form-input"
           />
         </div>
         <div>
-          <label className="form-label">Этаж</label>
+          <label className="form-label">Floor</label>
           <input 
             type="text"
             value={floor}
             onChange={(e) => setFloor(e.target.value)}
-            placeholder="3 этаж"
+            placeholder="3rd floor"
             className="form-input"
           />
         </div>
       </div>
 
-      {/* Phone & Notes */}
+      {}
       <div className="checkout-grid-row">
         <div>
-          <label className="form-label" htmlFor="recipient-phone">📞 Телефон получателя *</label>
+          <label className="form-label" htmlFor="recipient-phone">📞 Recipient's Phone *</label>
           <input 
             id="recipient-phone"
             type="tel"
@@ -65,12 +64,12 @@ export default function CheckoutForm({
           />
         </div>
         <div>
-          <label className="form-label" htmlFor="recipient-notes">📝 Заметка курьеру</label>
+          <label className="form-label" htmlFor="recipient-notes">📝 Note to Courier</label>
           <textarea 
             id="recipient-notes"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Например: Оставить у двери, домофон не работает…"
+            placeholder="e.g., Leave at the door, intercom doesn't work..."
             className="form-textarea"
           />
         </div>

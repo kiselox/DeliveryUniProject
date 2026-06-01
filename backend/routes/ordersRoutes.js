@@ -1,4 +1,3 @@
-// backend/routes/ordersRoutes.js
 import express from 'express';
 import { getOrders, createOrder, updateOrder } from '../controllers/ordersController.js';
 

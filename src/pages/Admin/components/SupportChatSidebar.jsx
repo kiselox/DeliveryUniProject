@@ -1,4 +1,3 @@
-// src/pages/Admin/components/SupportChatSidebar.jsx
 
 export default function SupportChatSidebar({
   chatThreads = [],
@@ -8,11 +7,9 @@ export default function SupportChatSidebar({
   sidebarSubTab,
   setSidebarSubTab
 }) {
-  // Derive counts and threads list directly inside the component
   const unreadOrdersCount = chatThreads.filter(t => t.chatId.startsWith('order-')).reduce((acc, t) => acc + (t.unreadCount || 0), 0);
   const unreadGeneralCount = chatThreads.filter(t => t.chatId.startsWith('general-')).reduce((acc, t) => acc + (t.unreadCount || 0), 0);
 
-  // Group order chats for the Orders sub-tab in the sidebar
   const orderGroups = [];
   const seenOrderIds = new Set();
 
@@ -47,22 +44,21 @@ export default function SupportChatSidebar({
 
   orderGroups.sort((a, b) => b.latestTime - a.latestTime);
 
-  // Filter general threads for the General sub-tab
   const generalThreads = chatThreads.filter(thread => thread.chatId.startsWith('general-'));
 
   return (
     <div className="chat-threads-sidebar">
       <h3 className="chat-threads-sidebar-title">
-        Активные обращения
+        Active Tickets
       </h3>
 
-      {/* SUB-TABS (Orders vs General) */}
+      {}
       <div className="sidebar-tabs">
         <button
           onClick={() => setSidebarSubTab('orders')}
           className={`sidebar-tab-btn ${sidebarSubTab === 'orders' ? 'active' : ''}`}
         >
-          🍕 Заказы
+          🍕 Orders
           {unreadOrdersCount > 0 && (
             <span className="sidebar-tab-badge">
               {unreadOrdersCount}
@@ -73,7 +69,7 @@ export default function SupportChatSidebar({
           onClick={() => setSidebarSubTab('general')}
           className={`sidebar-tab-btn ${sidebarSubTab === 'general' ? 'active' : ''}`}
         >
-          ⚙️ Общие
+          ⚙️ General
           {unreadGeneralCount > 0 && (
             <span className="sidebar-tab-badge">
               {unreadGeneralCount}
@@ -82,11 +78,11 @@ export default function SupportChatSidebar({
         </button>
       </div>
 
-      {/* THREADS LIST */}
+      {}
       {sidebarSubTab === 'orders' ? (
         orderGroups.length === 0 ? (
           <div className="sidebar-empty-state">
-            Нет активных обращений по заказам.
+            No active order tickets.
           </div>
         ) : (
           orderGroups.map((group) => {
@@ -98,14 +94,14 @@ export default function SupportChatSidebar({
                 key={group.orderId}
                 className="order-group-card"
               >
-                {/* Header info */}
+                {}
                 <div className="order-group-header">
                   <div>
                     <strong className="order-group-vendor">
-                      {group.foundOrder ? `🏪 ${group.foundOrder.vendorName}` : `🍕 Заказ #${group.orderId.slice(-4).toUpperCase()}`}
+                      {group.foundOrder ? `🏪 ${group.foundOrder.vendorName}` : `🍕 Order #${group.orderId.slice(-4).toUpperCase()}`}
                     </strong>
                     <span className="order-group-subtitle">
-                      🍕 Заказ #{group.orderId.slice(-4).toUpperCase()}
+                      🍕 Order #{group.orderId.slice(-4).toUpperCase()}
                     </span>
                   </div>
                   <span className="order-group-time">
@@ -113,20 +109,20 @@ export default function SupportChatSidebar({
                   </span>
                 </div>
 
-                {/* Last message preview */}
+                {}
                 <div className="order-group-preview">
-                  <i>Последнее:</i> {group.customerThread?.lastMessage || group.courierThread?.lastMessage || 'Нет сообщений'}
+                  <i>Latest:</i> {group.customerThread?.lastMessage || group.courierThread?.lastMessage || 'No messages'}
                 </div>
 
-                {/* Buttons row: Courier vs Customer */}
+                {}
                 {group.isCourierAssigned ? (
                   <div className="order-group-buttons">
-                    {/* Client Button */}
+                    {}
                     <button
                       onClick={() => setSelectedChatId(`order-${group.orderId}`)}
                       className={`order-group-btn-client ${isClientSelected ? 'active' : ''}`}
                     >
-                      👤 Клиент
+                      👤 Customer
                       {group.customerThread?.unreadCount > 0 && (
                         <span className="order-group-btn-badge">
                           {group.customerThread.unreadCount}
@@ -134,12 +130,12 @@ export default function SupportChatSidebar({
                       )}
                     </button>
 
-                    {/* Courier Button */}
+                    {}
                     <button
                       onClick={() => setSelectedChatId(`order-${group.orderId}-courier`)}
                       className={`order-group-btn-courier ${isCourierSelected ? 'active' : ''}`}
                     >
-                      🛵 Курьер
+                      🛵 Courier
                       {group.courierThread?.unreadCount > 0 && (
                         <span className="order-group-btn-badge">
                           {group.courierThread.unreadCount}
@@ -148,13 +144,12 @@ export default function SupportChatSidebar({
                     </button>
                   </div>
                 ) : (
-                  /* Not Assigned */
                   <button
                     onClick={() => setSelectedChatId(`order-${group.orderId}`)}
                     className={`order-group-btn-client ${isClientSelected ? 'active' : ''}`}
                     style={{ width: '100%' }}
                   >
-                    👤 Чат с клиентом
+                    👤 Chat with Customer
                     {group.customerThread?.unreadCount > 0 && (
                       <span className="order-group-btn-badge">
                         {group.customerThread.unreadCount}
@@ -167,10 +162,9 @@ export default function SupportChatSidebar({
           })
         )
       ) : (
-        /* General Threads */
         generalThreads.length === 0 ? (
           <div className="sidebar-empty-state">
-            Нет общих обращений.
+            No general tickets.
           </div>
         ) : (
           generalThreads.map((thread) => {
@@ -196,7 +190,7 @@ export default function SupportChatSidebar({
                 </div>
                 
                 <div className="general-thread-card-subtitle">
-                  ⚙️ Общий вопрос
+                  ⚙️ General Question
                 </div>
                 
                 <div className="general-thread-card-preview">

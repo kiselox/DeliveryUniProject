@@ -1,4 +1,3 @@
-// src/pages/Customer/CustomerMain.jsx
 import { useState } from 'react';
 import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
@@ -27,15 +26,14 @@ export default function CustomerMain() {
 
   const { orders = [] } = useOrders();
 
-  // Find active order for support chat reference (most recent one first)
   const activeOrder = [...orders].reverse().find(o => 
     o.customerId === customerId && 
     o.status !== "Delivered" && 
     o.status !== "Cancelled"
   );
 
-  if (isLoading) return <div className="customer-container">Загрузка меню…</div>;
-  if (isError) return <div className="customer-container">Ошибка загрузки!</div>;
+  if (isLoading) return <div className="customer-container">Loading menu...</div>;
+  if (isError) return <div className="customer-container">Failed to load!</div>;
 
   const filteredVendors = vendors.filter(vendor => 
     vendor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -53,8 +51,8 @@ export default function CustomerMain() {
       
       {filteredVendors.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
-          <h3>Ресторанов по запросу «{searchTerm}» не найдено</h3>
-          <p>Попробуйте поискать что-то другое, например, «Kebab» или «Sushi»</p>
+          <h3>No restaurants found matching "{searchTerm}"</h3>
+          <p>Try searching for something else, e.g. "Kebab" or "Sushi"</p>
         </div>
       ) : (
         <div className="restaurants-grid">
@@ -77,7 +75,7 @@ export default function CustomerMain() {
       <SupportChatWidget 
         userType="customer"
         userId={customerId}
-        userName={customer?.name || "Клиент"}
+        userName={customer?.name || "Customer"}
         activeOrderId={activeOrder?.id}
       />
     </div>

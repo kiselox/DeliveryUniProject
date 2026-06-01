@@ -1,4 +1,3 @@
-// src/pages/Admin/components/OrderStatusBadge.jsx
 
 export default function OrderStatusBadge({ status }) {
   switch (status) {
@@ -9,7 +8,7 @@ export default function OrderStatusBadge({ status }) {
           border: '1px solid rgba(255, 193, 7, 0.3)', padding: '6px 12px',
           borderRadius: '20px', fontSize: '13px', fontWeight: 'bold'
         }}>
-          🟡 Ожидает
+          🟡 Awaiting Courier
         </span>
       );
     case "Accepted":
@@ -19,7 +18,7 @@ export default function OrderStatusBadge({ status }) {
           border: '1px solid rgba(170, 59, 255, 0.3)', padding: '6px 12px',
           borderRadius: '20px', fontSize: '13px', fontWeight: 'bold'
         }}>
-          🟣 Принят курьером
+          🟣 Accepted by Courier
         </span>
       );
     case "Picked Up":
@@ -30,7 +29,7 @@ export default function OrderStatusBadge({ status }) {
           border: '1px solid rgba(0, 210, 106, 0.3)', padding: '6px 12px',
           borderRadius: '20px', fontSize: '13px', fontWeight: 'bold'
         }}>
-          🔵 В пути к клиенту
+          🔵 On the Way to Customer
         </span>
       );
     case "Delivered":
@@ -40,7 +39,7 @@ export default function OrderStatusBadge({ status }) {
           border: '1px solid rgba(74, 144, 226, 0.3)', padding: '6px 12px',
           borderRadius: '20px', fontSize: '13px', fontWeight: 'bold'
         }}>
-          🟢 Доставлен
+          🟢 Delivered
         </span>
       );
     case "Cancelled":
@@ -50,7 +49,7 @@ export default function OrderStatusBadge({ status }) {
           border: '1px solid rgba(255, 77, 77, 0.3)', padding: '6px 12px',
           borderRadius: '20px', fontSize: '13px', fontWeight: 'bold'
         }}>
-          ❌ Отменен
+          ❌ Cancelled
         </span>
       );
     default:

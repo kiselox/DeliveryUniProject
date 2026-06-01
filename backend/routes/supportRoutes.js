@@ -1,4 +1,3 @@
-// backend/routes/supportRoutes.js
 import express from 'express';
 import { sendChatMessage, getChatMessages, getActiveChats, resolveChat } from '../controllers/supportController.js';
 

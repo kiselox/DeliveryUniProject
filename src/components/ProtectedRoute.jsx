@@ -1,4 +1,3 @@
-// src/components/ProtectedRoute.jsx
 import { Navigate, useParams, useNavigate } from 'react-router';
 import { useAuth } from '../context/AuthContext';
 
@@ -7,19 +6,15 @@ export default function ProtectedRoute({ children, role }) {
   const { id: routeId } = useParams();
   const navigate = useNavigate();
 
-  // 1. Not logged in at all
   if (!user) {
     return <Navigate to="/" replace />;
   }
 
-  // 2. Role mismatch
   const hasRoleMismatch = role && user.role !== role;
 
-  // 3. ID mismatch (trying to access someone else's dashboard)
   const hasIdMismatch = routeId && user.id !== routeId;
 
   if (hasRoleMismatch || hasIdMismatch) {
-    // RENDER AN EXTREMELY STUNNING PREMIUM GLASSMORPHIC ACCESS DENIED PAGE
     return (
       <div style={{
         minHeight: '90vh',
@@ -31,7 +26,7 @@ export default function ProtectedRoute({ children, role }) {
         color: '#fff',
         fontFamily: 'system-ui, -apple-system, sans-serif'
       }}>
-        {/* Glowing aura effect */}
+        {}
         <div style={{
           position: 'absolute',
           width: '400px',
@@ -56,7 +51,7 @@ export default function ProtectedRoute({ children, role }) {
           zIndex: 2,
           animation: 'fadeIn 0.5s ease-out'
         }}>
-          {/* Animated Shield / Lock icon */}
+          {}
           <div style={{
             fontSize: '64px',
             marginBottom: '20px',
@@ -75,7 +70,7 @@ export default function ProtectedRoute({ children, role }) {
             WebkitTextFillColor: 'transparent',
             letterSpacing: '-0.5px'
           }}>
-            Доступ ограничен
+            Access Restricted
           </h2>
 
           <p style={{
@@ -84,10 +79,10 @@ export default function ProtectedRoute({ children, role }) {
             lineHeight: '1.6',
             margin: '0 0 25px 0'
           }}>
-            Вы вошли в систему как <strong style={{ color: '#ff7beb' }}>{user.name} {user.lastName || ''}</strong> ({user.role === 'customer' ? 'Клиент' : 'Курьер'}), но пытаетесь получить доступ к панели другого пользователя.
+            You are logged in as <strong style={{ color: '#ff7beb' }}>{user.name} {user.lastName || ''}</strong> ({user.role === 'customer' ? 'Customer' : 'Courier'}), but you are trying to access another user's dashboard.
           </p>
 
-          {/* Details callout block */}
+          {}
           <div style={{
             background: 'rgba(255, 255, 255, 0.02)',
             border: '1px solid rgba(255, 255, 255, 0.04)',
@@ -100,16 +95,16 @@ export default function ProtectedRoute({ children, role }) {
             fontFamily: 'monospace'
           }}>
             <div style={{ marginBottom: '6px', display: 'flex', justifyContent: 'space-between' }}>
-              <span>Ваш ID:</span>
+              <span>Your ID:</span>
               <span style={{ color: '#00d26a', fontWeight: 'bold' }}>{user.id}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span>Запрошенный ID:</span>
-              <span style={{ color: '#ff3b30', fontWeight: 'bold' }}>{routeId || 'Не указан'}</span>
+              <span>Requested ID:</span>
+              <span style={{ color: '#ff3b30', fontWeight: 'bold' }}>{routeId || 'Not specified'}</span>
             </div>
           </div>
 
-          {/* Action Row */}
+          {}
           <div style={{
             display: 'flex',
             flexDirection: 'column',
@@ -132,7 +127,7 @@ export default function ProtectedRoute({ children, role }) {
               onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
               onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
             >
-              Вернуться в свой профиль 🏠
+              Return to your profile 🏠
             </button>
 
             <div style={{
@@ -156,7 +151,7 @@ export default function ProtectedRoute({ children, role }) {
                 onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)'}
                 onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'}
               >
-                На главную
+                Home Page
               </button>
 
               <button
@@ -176,7 +171,7 @@ export default function ProtectedRoute({ children, role }) {
                 onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255, 59, 48, 0.15)'}
                 onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255, 59, 48, 0.1)'}
               >
-                Выйти из аккаунта 🚪
+                Sign Out 🚪
               </button>
             </div>
           </div>

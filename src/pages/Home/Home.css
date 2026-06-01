@@ -1,4 +1,4 @@
-/* src/pages/Home/Home.css */
+
 
 .auth-mode-toggler {
   display: flex;
@@ -20,7 +20,7 @@
   margin-bottom: -13px;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   border-bottom: 2px solid transparent;
-  color: #6b7280; /* Neutral gray for inactive */
+  color: #6b7280; 
   display: flex;
   align-items: center;
   gap: 6px;

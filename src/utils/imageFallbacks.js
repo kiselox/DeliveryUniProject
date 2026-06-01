@@ -1,23 +1,14 @@
-// src/utils/imageFallbacks.js
 
-/**
- * Converts a clean SVG markup string into a cross-browser compatible base64 data URL.
- * This guarantees it loads instantly and runs entirely offline without network requests.
- * @param {string} svgString - The raw SVG string.
- * @returns {string} Safe Base64 Data URL.
- */
 function svgToDataUrl(svgString) {
   try {
     const base64 = btoa(unescape(encodeURIComponent(svgString.trim())));
     return `data:image/svg+xml;base64,${base64}`;
   } catch (err) {
     console.error('Error generating SVG data URL fallback:', err);
-    // Simple fallback data URL
     return 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%238b5cf6"/></svg>';
   }
 }
 
-// 1. Cozy restaurant brand logo (circular dome icon with modern violet gradient)
 const RESTAURANT_LOGO_SVG = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <defs>
@@ -34,7 +25,6 @@ const RESTAURANT_LOGO_SVG = `
 </svg>
 `;
 
-// 2. Cozy restaurant building/bistro facade (premium illustration with purple brand theme)
 const RESTAURANT_IMAGE_SVG = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 180">
   <defs>
@@ -58,7 +48,6 @@ const RESTAURANT_IMAGE_SVG = `
 </svg>
 `;
 
-// 3. Elegant menu item plate/steaming dish (modern cutlery, dome outline, clean violet styling)
 const MENU_ITEM_SVG = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
   <defs>
@@ -86,7 +75,6 @@ const MENU_ITEM_SVG = `
 </svg>
 `;
 
-// 4. Abstract brand banner/hero image with glowing meshes & brand typography
 const HERO_IMAGE_SVG = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300">
   <defs>

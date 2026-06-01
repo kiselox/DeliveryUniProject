@@ -1,4 +1,3 @@
-// src/pages/Admin/components/SurgeAdjusterModal.jsx
 
 export default function SurgeAdjusterModal({
   editingOrder,
@@ -25,7 +24,7 @@ export default function SurgeAdjusterModal({
     <div className="admin-modal-overlay">
       <div className="admin-modal-content" style={{ maxWidth: '480px' }}>
         <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginTop: 0, marginBottom: '15px', color: '#ff4757', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          ⚡ Настройка повышенного спроса
+          ⚡ Surge Pricing Configuration
         </h3>
         
         <div style={{
@@ -36,22 +35,22 @@ export default function SurgeAdjusterModal({
           fontSize: '14px',
           lineHeight: '1.4'
         }}>
-          <div><strong>Ресторан:</strong> {editingOrder.vendorName}</div>
-          <div style={{ marginTop: '5px' }}><strong>Адрес клиента:</strong> {editingOrder.deliveryAddress}</div>
-          <div style={{ marginTop: '5px' }}><strong>Дистанция:</strong> {editingOrder.distance} км</div>
+          <div><strong>Restaurant:</strong> {editingOrder.vendorName}</div>
+          <div style={{ marginTop: '5px' }}><strong>Customer Address:</strong> {editingOrder.deliveryAddress}</div>
+          <div style={{ marginTop: '5px' }}><strong>Distance:</strong> {editingOrder.distance} km</div>
         </div>
 
         <form onSubmit={handleUpdateOrderCoefficient}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <label style={{ fontSize: '13px', opacity: 0.7, fontWeight: 'bold' }}>
-              КОЭФФИЦИЕНТ СПРОСА:
+              SURGE COEFFICIENT:
             </label>
             <span style={{ fontSize: '20px', fontWeight: '900', color: '#ff4757' }}>
               x{coeff.toFixed(1)}
             </span>
           </div>
 
-          {/* SLIDER */}
+          {}
           <input 
             type="range"
             min="1.0"
@@ -68,7 +67,7 @@ export default function SurgeAdjusterModal({
           />
 
           <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-            {/* PRESETS */}
+            {}
             {['1.0', '1.5', '2.0', '3.0'].map((preset) => (
               <button
                 key={preset}
@@ -92,7 +91,7 @@ export default function SurgeAdjusterModal({
             ))}
           </div>
 
-          {/* PAYOUT PROJECTIONS */}
+          {}
           <div style={{
             background: 'rgba(170, 59, 255, 0.05)',
             border: '1px solid rgba(170, 59, 255, 0.15)',
@@ -101,19 +100,19 @@ export default function SurgeAdjusterModal({
             marginBottom: '25px'
           }}>
             <div style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#c480ff', marginBottom: '10px', letterSpacing: '0.5px' }}>
-              💰 Прогноз выплат курьерам:
+              💰 Estimated Courier Payout:
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '14px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.03)', paddingBottom: '6px' }}>
-                <span>🚲 Велосипед (Base)</span>
+                <span>🚲 Bicycle (Base)</span>
                 <strong style={{ color: '#fff' }}>{veloPayout} PLN</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.03)', paddingBottom: '6px' }}>
-                <span>🛵 Скутер (+rate)</span>
+                <span>🛵 Scooter (+rate)</span>
                 <strong style={{ color: '#fff' }}>{scooterPayout} PLN</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span>🚗 Автомобиль (+rate)</span>
+                <span>🚗 Car (+rate)</span>
                 <strong style={{ color: '#fff' }}>{carPayout} PLN</strong>
               </div>
             </div>
@@ -134,14 +133,14 @@ export default function SurgeAdjusterModal({
                 cursor: 'pointer'
               }}
             >
-              Отмена
+              Cancel
             </button>
             <button
               type="submit"
               className="btn-admin-save"
               style={{ flex: 1, padding: '14px', borderRadius: '12px' }}
             >
-              Применить
+              Apply
             </button>
           </div>
         </form>

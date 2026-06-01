@@ -1,4 +1,3 @@
-// src/pages/Home/Home.jsx
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import api from '../../services/api';
@@ -11,18 +10,16 @@ import './Home.css';
 export default function Home() {
   const navigate = useNavigate();
   const { developerLogin } = useAuth();
-  const [activeTab, setActiveTab] = useState('customer'); // 'customer' or 'courier'
-  const [authMode, setAuthMode] = useState('login'); // 'login' or 'register'
+  const [activeTab, setActiveTab] = useState('customer');
+  const [authMode, setAuthMode] = useState('login');
   
   const [customers, setCustomers] = useState([]);
   const [couriers, setCouriers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Global feedback states passed to forms
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  // Fetch all registered users on load
   useEffect(() => {
     async function fetchUsers() {
       try {
@@ -33,7 +30,7 @@ export default function Home() {
         setCustomers(custRes.data || []);
         setCouriers(courRes.data || []);
       } catch (err) {
-        console.error('Ошибка загрузки зарегистрированных пользователей:', err);
+        console.error('Error loading registered users:', err);
       } finally {
         setIsLoading(false);
       }
@@ -44,15 +41,15 @@ export default function Home() {
   const handleDeveloperClick = async (userId, role) => {
     try {
       setErrorMsg('');
-      setSuccessMsg('Вход разработчика… 🛠️');
+      setSuccessMsg('Developer login… 🛠️');
       const user = await developerLogin(userId, role);
-      setSuccessMsg(`Успешный быстрый вход под именем ${user.name}!`);
+      setSuccessMsg(`Quick login successful as ${user.name}!`);
       
       setTimeout(() => {
         navigate(role === 'customer' ? `/customer/${user.id}` : `/courier/${user.id}`);
       }, 500);
     } catch (err) {
-      setErrorMsg(err.message || 'Не удалось выполнить быстрый вход.');
+      setErrorMsg(err.message || 'Failed to perform quick login.');
       setSuccessMsg('');
     }
   };
@@ -60,49 +57,49 @@ export default function Home() {
   return (
     <div className="portal-bg">
       <h1 className="portal-title">POLONEZ Delivery 🚗💨</h1>
-      <p className="portal-subtitle">Удобная доставка еды по Познани в реальном времени</p>
+      <p className="portal-subtitle">Real-time food delivery in Poznań made easy</p>
 
-      {/* REGISTRATION & LOGIN CARD */}
+      {}
       <div className="glass-card">
-        {/* TABS SELECTOR */}
+        {}
         <div className="glass-tabs">
           <button
             type="button"
             className={`glass-tab-btn ${activeTab === 'customer' ? 'active' : ''}`}
             onClick={() => { setActiveTab('customer'); setErrorMsg(''); setSuccessMsg(''); }}
           >
-            🛒 Клиент
+            🛒 Customer
           </button>
           <button
             type="button"
             className={`glass-tab-btn ${activeTab === 'courier' ? 'active' : ''}`}
             onClick={() => { setActiveTab('courier'); setErrorMsg(''); setSuccessMsg(''); }}
           >
-            🚲 Курьер
+            🚲 Courier
           </button>
         </div>
 
-        {/* MODE TOGGLER: SIGN IN OR REGISTER */}
+        {}
         <div className="auth-mode-toggler">
           <button
             onClick={() => { setAuthMode('login'); setErrorMsg(''); setSuccessMsg(''); }}
             className={`auth-mode-btn ${authMode === 'login' ? 'active' : ''}`}
           >
-            🔑 Войти
+            🔑 Log In
           </button>
           <button
             onClick={() => { setAuthMode('register'); setErrorMsg(''); setSuccessMsg(''); }}
             className={`auth-mode-btn ${authMode === 'register' ? 'active' : ''}`}
           >
-            📝 Создать аккаунт
+            📝 Create Account
           </button>
         </div>
 
-        {/* FEEDBACK SYSTEM */}
+        {}
         {errorMsg && <div className="feedback-msg error">⚠️ {errorMsg}</div>}
         {successMsg && <div className="feedback-msg success">✨ {successMsg}</div>}
 
-        {/* FORMS SWITCHER */}
+        {}
         {authMode === 'login' ? (
           <LoginForm role={activeTab} setErrorMsg={setErrorMsg} setSuccessMsg={setSuccessMsg} />
         ) : (
@@ -115,7 +112,7 @@ export default function Home() {
           </>
         )}
 
-        {/* RECENTLY REGISTERED PROFILES */}
+        {}
         <ActiveProfilesList 
           activeTab={activeTab} 
           customers={customers} 
@@ -126,16 +123,16 @@ export default function Home() {
         />
       </div>
 
-      {/* LEGACY QUICK LOGINS & ADMIN */}
+      {}
       <div className="legacy-panel">
         <h4 className="legacy-panel-title">
-          🛠️ Панель быстрого входа разработчика
+          🛠️ Developer Quick Login Panel
         </h4>
         <div className="legacy-btn-row">
-          <button onClick={() => handleDeveloperClick('c1', 'customer')} className="legacy-btn">🛒 Денис (Клиент)</button>
-          <button onClick={() => handleDeveloperClick('cour1', 'courier')} className="legacy-btn">🚲 Курьер 1 (Velo)</button>
-          <button onClick={() => handleDeveloperClick('cour2', 'courier')} className="legacy-btn">🛵 Курьер 2 (Scooter)</button>
-          <button onClick={() => handleDeveloperClick('cour3', 'courier')} className="legacy-btn">🚗 Курьер 3 (Car)</button>
+          <button onClick={() => handleDeveloperClick('c1', 'customer')} className="legacy-btn">🛒 Denis (Customer)</button>
+          <button onClick={() => handleDeveloperClick('cour1', 'courier')} className="legacy-btn">🚲 Courier 1 (Velo)</button>
+          <button onClick={() => handleDeveloperClick('cour2', 'courier')} className="legacy-btn">🛵 Courier 2 (Scooter)</button>
+          <button onClick={() => handleDeveloperClick('cour3', 'courier')} className="legacy-btn">🚗 Courier 3 (Car)</button>
           <button 
             onClick={async () => {
               try {
@@ -148,7 +145,7 @@ export default function Home() {
             }} 
             className="legacy-btn legacy-btn-admin"
           >
-            💻 Панель поддержки (Админ)
+            💻 Support Panel (Admin)
           </button>
         </div>
       </div>
@@ -156,7 +153,6 @@ export default function Home() {
   );
 }
 
-// Sleek glassmorphic LoginForm component
 function LoginForm({ role, setErrorMsg, setSuccessMsg }) {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -167,23 +163,23 @@ function LoginForm({ role, setErrorMsg, setSuccessMsg }) {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     if (!email.trim() || !password) {
-      setErrorMsg('Пожалуйста, заполните все поля!');
+      setErrorMsg('Please fill in all fields!');
       return;
     }
 
     try {
       setIsSubmitting(true);
       setErrorMsg('');
-      setSuccessMsg('Проверяем данные авторизации…');
+      setSuccessMsg('Verifying authorization data...');
       
       const user = await login(role, email, password);
-      setSuccessMsg(`Успешный вход! С возвращением, ${user.name}!`);
+      setSuccessMsg(`Login successful! Welcome back, ${user.name}!`);
 
       setTimeout(() => {
         navigate(role === 'customer' ? `/customer/${user.id}` : `/courier/${user.id}`);
       }, 700);
     } catch (err) {
-      setErrorMsg(err.message || 'Ошибка входа. Проверьте введенные данные.');
+      setErrorMsg(err.message || 'Login error. Please check your credentials.');
       setSuccessMsg('');
     } finally {
       setIsSubmitting(false);
@@ -193,7 +189,7 @@ function LoginForm({ role, setErrorMsg, setSuccessMsg }) {
   return (
     <form onSubmit={handleLoginSubmit}>
       <div className="glass-input-group">
-        <label className="glass-label">Электронная почта (Email)</label>
+        <label className="glass-label">Email Address</label>
         <input
           type="email"
           className="glass-input"
@@ -206,7 +202,7 @@ function LoginForm({ role, setErrorMsg, setSuccessMsg }) {
       </div>
 
       <div className="glass-input-group">
-        <label className="glass-label">Пароль</label>
+        <label className="glass-label">Password</label>
         <input
           type="password"
           className="glass-input"
@@ -219,7 +215,7 @@ function LoginForm({ role, setErrorMsg, setSuccessMsg }) {
       </div>
 
       <button type="submit" className="glass-btn-primary" disabled={isSubmitting}>
-        {isSubmitting ? 'Авторизация…' : 'Войти в систему'}
+        {isSubmitting ? 'Authorizing...' : 'Log In'}
       </button>
     </form>
   );

@@ -1,4 +1,3 @@
-// src/pages/Home/components/CourierRegistrationForm.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../../context/AuthContext';
@@ -17,14 +16,14 @@ export default function CourierRegistrationForm({ setErrorMsg, setSuccessMsg }) 
   const handleCourierSubmit = async (e) => {
     e.preventDefault();
     if (!courName.trim() || !courLastName.trim() || !courEmail.trim() || !courPhone.trim() || !courPassword) {
-      setErrorMsg('Пожалуйста, заполните все поля формы курьера (Имя, Фамилия, Email, Телефон, Пароль)!');
+      setErrorMsg('Please fill in all courier form fields (First Name, Last Name, Email, Phone, Password)!');
       return;
     }
 
     try {
       setIsSubmitting(true);
       setErrorMsg('');
-      setSuccessMsg('Секунду… Создаем аккаунт курьера');
+      setSuccessMsg('One moment... Creating courier account');
       
       const user = await registerCourier({
         name: courName.trim(),
@@ -35,13 +34,13 @@ export default function CourierRegistrationForm({ setErrorMsg, setSuccessMsg }) 
         password: courPassword
       });
       
-      setSuccessMsg('Курьер успешно зарегистрирован!');
+      setSuccessMsg('Courier registered successfully!');
 
       setTimeout(() => {
         navigate(`/courier/${user.id}`);
       }, 700);
     } catch (err) {
-      setErrorMsg(err.message || 'Произошла ошибка при регистрации курьера.');
+      setErrorMsg(err.message || 'An error occurred during courier registration.');
       setSuccessMsg('');
     } finally {
       setIsSubmitting(false);
@@ -52,11 +51,11 @@ export default function CourierRegistrationForm({ setErrorMsg, setSuccessMsg }) 
     <form onSubmit={handleCourierSubmit}>
       <div className="glass-input-row">
         <div className="glass-input-group">
-          <label className="glass-label">Имя курьера</label>
+          <label className="glass-label">Courier First Name</label>
           <input
             type="text"
             className="glass-input"
-            placeholder="Владислав"
+            placeholder="Vlad"
             value={courName}
             onChange={(e) => setCourName(e.target.value)}
             disabled={isSubmitting}
@@ -64,11 +63,11 @@ export default function CourierRegistrationForm({ setErrorMsg, setSuccessMsg }) 
           />
         </div>
         <div className="glass-input-group">
-          <label className="glass-label">Фамилия курьера</label>
+          <label className="glass-label">Courier Last Name</label>
           <input
             type="text"
             className="glass-input"
-            placeholder="Петров"
+            placeholder="Smith"
             value={courLastName}
             onChange={(e) => setCourLastName(e.target.value)}
             disabled={isSubmitting}
@@ -79,11 +78,11 @@ export default function CourierRegistrationForm({ setErrorMsg, setSuccessMsg }) 
 
       <div className="glass-input-row">
         <div className="glass-input-group">
-          <label className="glass-label">Электронная почта (Email)</label>
+          <label className="glass-label">Email Address</label>
           <input
             type="email"
             className="glass-input"
-            placeholder="vladislav@example.com"
+            placeholder="vlad.smith@example.com"
             value={courEmail}
             onChange={(e) => setCourEmail(e.target.value)}
             disabled={isSubmitting}
@@ -91,7 +90,7 @@ export default function CourierRegistrationForm({ setErrorMsg, setSuccessMsg }) 
           />
         </div>
         <div className="glass-input-group">
-          <label className="glass-label">Номер телефона</label>
+          <label className="glass-label">Phone Number</label>
           <input
             type="tel"
             className="glass-input"
@@ -106,7 +105,7 @@ export default function CourierRegistrationForm({ setErrorMsg, setSuccessMsg }) 
 
       <div className="glass-input-row">
         <div className="glass-input-group" style={{ flex: 1 }}>
-          <label className="glass-label">Транспортное средство</label>
+          <label className="glass-label">Vehicle Type</label>
           <select
             className="glass-select"
             value={courVehicle}
@@ -119,7 +118,7 @@ export default function CourierRegistrationForm({ setErrorMsg, setSuccessMsg }) 
           </select>
         </div>
         <div className="glass-input-group" style={{ flex: 1 }}>
-          <label className="glass-label">Пароль</label>
+          <label className="glass-label">Password</label>
           <input
             type="password"
             className="glass-input"
@@ -133,7 +132,7 @@ export default function CourierRegistrationForm({ setErrorMsg, setSuccessMsg }) 
       </div>
 
       <button type="submit" className="glass-btn-primary" disabled={isSubmitting}>
-        {isSubmitting ? 'Регистрация…' : 'Зарегистрироваться и Войти'}
+        {isSubmitting ? 'Registering...' : 'Register and Log In'}
       </button>
     </form>
   );

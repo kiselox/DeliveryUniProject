@@ -1,4 +1,3 @@
-// backend/server.js
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -11,19 +10,15 @@ dotenv.config();
 
 const app = express();
 
-// Apply middleware
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// Mount the centralized API router
 app.use('/', apiRouter);
 
-// Fallback error handler
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
 
-// Initialize Database (Postgres tables/migrations or JSON fallback seeds)
 initDb().then(() => {
   app.listen(PORT, () => {
     console.log(`\n==================================================`);
@@ -33,12 +28,10 @@ initDb().then(() => {
   });
 });
 
-// Background Interval: AUTO-SURGE PRICES FOR OLD PENDING ORDERS (every 10s)
 setInterval(async () => {
   if (usePostgres) {
     try {
       if (pool) {
-        // Increase delivery coefficient by 0.1 (max 3.0) for all orders still waiting for pickup
         await pool.query(`
           UPDATE orders 
           SET coefficient = LEAST(3.0, coefficient + 0.1)
@@ -49,7 +42,6 @@ setInterval(async () => {
       console.error('Error in postgres auto-surge pricing job:', err.message);
     }
   } else {
-    // Local memory db updates
     let updated = false;
     localDb.orders = localDb.orders.map(o => {
       if (o.status === 'Ready for Pickup') {
@@ -65,6 +57,6 @@ setInterval(async () => {
       saveLocalDb();
     }
   }
-}, 10000); // 10 seconds
+}, 10000);
 
 export default app;

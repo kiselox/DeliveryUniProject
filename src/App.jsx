@@ -24,10 +24,10 @@ function App() {
             zIndex: 99
           }}>
             <Link to="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 'bold', fontSize: '14px' }}>
-              🏠 Главная (Смена профиля)
+              🏠 Home (Switch Profile)
             </Link>
             <Link to="/admin" style={{ color: '#ff7beb', textDecoration: 'none', fontWeight: 'bold', fontSize: '14px' }}>
-              🛡️ Диспетчерская
+              🛡️ Dispatch Control
             </Link>
           </nav>
 

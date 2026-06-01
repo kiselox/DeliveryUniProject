@@ -1,11 +1,11 @@
 :root {
-  --text: #1f2937; /* Soft dark slate gray */
-  --bg: #f9fafb; /* Soft light gray backdrop like Wolt */
-  --border: #e5e7eb; /* Subtle gray border */
-  --accent: #8b5cf6; /* Modern Violet brand accent */
+  --text: #1f2937; 
+  --bg: #f9fafb; 
+  --border: #e5e7eb; 
+  --accent: #8b5cf6; 
   --accent-hover: #7c3aed;
   --accent-light: #f3e8ff;
-  --green: #10b981; /* Emerald Green */
+  --green: #10b981; 
   --green-hover: #059669;
   --green-light: #d1fae5;
   --radius-sm: 8px;
@@ -27,7 +27,7 @@ body {
   box-sizing: border-box;
 }
 
-/* ================== App.jsx Styles ================== */
+
 .home-container {
   text-align: center;
   margin-top: 50px;
@@ -68,7 +68,7 @@ body {
   text-decoration: none;
 }
 
-/* ================== Customer Layout ================== */
+
 .customer-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -91,7 +91,7 @@ body {
   color: var(--accent-hover);
 }
 
-/* ================== Header ================== */
+
 .main-header {
   display: flex;
   justify-content: space-between;
@@ -163,7 +163,7 @@ body {
   background-color: rgba(170, 59, 255, 0.25);
 }
 
-/* ================== Restaurant Grid ================== */
+
 .restaurants-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -222,7 +222,7 @@ body {
   text-overflow: ellipsis;
 }
 
-/* ================== Figma Menu Redesign ================== */
+
 .vendor-hero {
   position: relative;
   display: flex;
@@ -372,7 +372,7 @@ body {
   color: var(--accent-hover);
 }
 
-/* ================== Floating Cart ================== */
+
 .floating-cart-btn {
   position: fixed;
   bottom: 100px;
@@ -421,7 +421,7 @@ body {
   border: 2px solid #fff;
 }
 
-/* ================== Quantity Controls ================== */
+
 .quantity-controls {
   display: flex;
   justify-content: space-between;
@@ -456,7 +456,7 @@ body {
   color: #333;
 }
 
-/* ================== Modal Styles ================== */
+
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -542,7 +542,7 @@ body {
   box-shadow: none;
 }
 
-/* ================== Modal Styles ================== */
+
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -566,10 +566,10 @@ body {
 }
 
 .modal-body {
-  overflow-y: scroll !important; /* Force scrollbar to be visible always */
+  overflow-y: scroll !important; 
 }
 
-/* Premium custom scrollbar styling for .modal-body */
+
 .modal-body::-webkit-scrollbar {
   width: 8px;
 }
@@ -653,16 +653,16 @@ body {
   box-shadow: none;
 }
 
-/* Leaflet marker container overrides to make dynamic markers display perfectly without white squares */
+
 .leaflet-div-icon {
   background: transparent !important;
   border: none !important;
 }
 
-/* ================== Registration Portal ================== */
+
 .portal-bg {
   min-height: 100vh;
-  background: #f3f4f6; /* Modern minimalist gray backdrop */
+  background: #f3f4f6; 
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -937,7 +937,7 @@ body {
   }
 }
 
-/* ================== Premium RestaurantCard and MenuItemCard Additions ================== */
+
 .restaurant-rating-badge {
   position: absolute;
   top: 12px;
@@ -1001,7 +1001,7 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* MenuItemCard visual redesign additions */
+
 .menu-item-badges {
   position: absolute;
   top: 12px;
@@ -1066,18 +1066,18 @@ body {
   overflow: hidden;
 }
 
-/* Category menu tabs navigation styling */
+
 .menu-categories-tabs {
   display: flex;
   gap: 10px;
   margin-bottom: 30px;
   overflow-x: auto;
   padding-bottom: 8px;
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none; 
 }
 
 .menu-categories-tabs::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+  display: none; 
 }
 
 .btn-category-tab {
@@ -1106,9 +1106,9 @@ body {
   box-shadow: 0 4px 10px rgba(139, 92, 246, 0.2);
 }
 
-/* ================== Mobile Responsiveness & Adaptive Styles ================== */
 
-/* 1. Base Adaptive Utilities */
+
+
 .checkout-grid-3col {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -1122,7 +1122,7 @@ body {
   }
 }
 
-/* 2. Responsive Styles for Tablet & Mobile Layouts (<= 768px) */
+
 @media (max-width: 768px) {
   .customer-container {
     padding: 16px;
@@ -1158,9 +1158,9 @@ body {
   }
 }
 
-/* 3. Small Screen & Mobile Web Viewports (<= 600px) */
+
 @media (max-width: 600px) {
-  /* Header Adjustments */
+  
   .main-header {
     flex-wrap: wrap;
     gap: 12px;
@@ -1185,7 +1185,7 @@ body {
     padding: 8px 12px;
   }
   
-  /* Grids Adapting to Mobile Screens */
+  
   .restaurants-grid {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 16px;
@@ -1221,7 +1221,7 @@ body {
     padding: 2px 6px;
   }
   
-  /* Menu Grids and Food Cards */
+  
   .menu-grid {
     grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
     gap: 12px;
@@ -1269,7 +1269,7 @@ body {
     font-size: 13px;
   }
   
-  /* Cart Drawer Fullscreen Mobile Layout */
+  
   .modal-overlay {
     align-items: flex-end;
   }
@@ -1291,7 +1291,7 @@ body {
   }
 }
 
-/* 4. Extremely Narrow Mobile Phones (<= 480px) */
+
 @media (max-width: 480px) {
   .vendor-hero-img {
     height: 140px;
@@ -1307,7 +1307,7 @@ body {
     font-size: 18px;
   }
   
-  /* Account Drawer Fullscreen Experience */
+  
   .account-drawer {
     right: -100%;
     max-width: 100%;

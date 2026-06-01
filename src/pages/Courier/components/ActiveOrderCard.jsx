@@ -1,4 +1,3 @@
-// src/pages/Courier/components/ActiveOrderCard.jsx
 
 export default function ActiveOrderCard({
   activeOrder,
@@ -15,8 +14,8 @@ export default function ActiveOrderCard({
   return (
     <div style={{
       background: activeOrder.status === "Picked Up" 
-        ? 'linear-gradient(135deg, #00b35a 0%, #007e3e 100%)' // Green for Customer Route
-        : 'linear-gradient(135deg, #aa3bff 0%, #7b1fa2 100%)', // Purple for Restaurant Route
+        ? 'linear-gradient(135deg, #00b35a 0%, #007e3e 100%)'
+        : 'linear-gradient(135deg, #aa3bff 0%, #7b1fa2 100%)',
       color: '#fff',
       borderRadius: '20px',
       padding: '24px',
@@ -35,13 +34,13 @@ export default function ActiveOrderCard({
         display: 'inline-block',
         marginBottom: '15px'
       }}>
-        {isAccepted ? "Шаг 2: Едем за заказом в ресторан 🍳" : "Шаг 3: Доставка клиенту домой 🏠"}
+        {isAccepted ? "Step 2: Traveling to the Restaurant 🍳" : "Step 3: Delivering to the Customer 🏠"}
       </span>
 
       <h2 style={{ margin: '0 0 8px 0', fontSize: '24px', fontWeight: '800' }}>
         {isAccepted 
-          ? `Ресторан: ${activeOrder.vendorName}`
-          : `Доставка: ${activeOrder.deliveryAddress}`
+          ? `Restaurant: ${activeOrder.vendorName}`
+          : `Delivery: ${activeOrder.deliveryAddress}`
         }
       </h2>
 
@@ -52,10 +51,10 @@ export default function ActiveOrderCard({
         marginBottom: '15px',
         fontSize: '14px'
       }}>
-        <b>Заказ:</b> {activeOrder.items}
+        <b>Order:</b> {activeOrder.items}
       </div>
 
-      {/* Recipient / Delivery Details Card */}
+      {}
       {isAccepted ? (
         <div style={{
           backgroundColor: 'rgba(0, 0, 0, 0.15)',
@@ -72,9 +71,9 @@ export default function ActiveOrderCard({
           gap: '6px'
         }}>
           <span style={{ fontSize: '20px' }}>🔒</span>
-          <span>Детали доставки скрыты</span>
+          <span>Delivery details hidden</span>
           <span style={{ fontSize: '11px', fontWeight: 'normal', opacity: 0.8 }}>
-            Контакты и точный адрес получателя станут доступны после того, как вы подтвердите получение заказа в ресторане.
+            Recipient contacts and exact address will become available after you confirm pick up at the restaurant.
           </span>
         </div>
       ) : (
@@ -89,31 +88,31 @@ export default function ActiveOrderCard({
           gap: '12px'
         }}>
           <div style={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', opacity: 0.9, letterSpacing: '0.5px' }}>
-            📋 Карточка Доставки
+            📋 Delivery Details
           </div>
 
-          {/* Grid for House, Apartment, Floor */}
+          {}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
             <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.15)', padding: '8px 10px', borderRadius: '8px' }}>
-              <span style={{ fontSize: '10px', opacity: 0.7, display: 'block' }}>Дом</span>
+              <span style={{ fontSize: '10px', opacity: 0.7, display: 'block' }}>House</span>
               <strong style={{ fontSize: '15px' }}>{activeOrder.house || '—'}</strong>
             </div>
             <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.15)', padding: '8px 10px', borderRadius: '8px' }}>
-              <span style={{ fontSize: '10px', opacity: 0.7, display: 'block' }}>Квартира</span>
+              <span style={{ fontSize: '10px', opacity: 0.7, display: 'block' }}>Apartment</span>
               <strong style={{ fontSize: '15px' }}>{activeOrder.apartment || '—'}</strong>
             </div>
             <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.15)', padding: '8px 10px', borderRadius: '8px' }}>
-              <span style={{ fontSize: '10px', opacity: 0.7, display: 'block' }}>Этаж</span>
+              <span style={{ fontSize: '10px', opacity: 0.7, display: 'block' }}>Floor</span>
               <strong style={{ fontSize: '15px' }}>{activeOrder.floor || '—'}</strong>
             </div>
           </div>
 
-          {/* Recipient Phone */}
+          {}
           {activeOrder.phone && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(0, 0, 0, 0.15)', padding: '10px 12px', borderRadius: '8px' }}>
               <span>📞</span>
               <div style={{ flexGrow: 1 }}>
-                <span style={{ fontSize: '10px', opacity: 0.7, display: 'block' }}>Телефон получателя</span>
+                <span style={{ fontSize: '10px', opacity: 0.7, display: 'block' }}>Recipient Phone</span>
                 <a href={`tel:${activeOrder.phone}`} style={{ color: '#fff', fontWeight: 'bold', fontSize: '15px', textDecoration: 'underline' }}>
                   {activeOrder.phone}
                 </a>
@@ -121,17 +120,17 @@ export default function ActiveOrderCard({
             </div>
           )}
 
-          {/* Courier Notes */}
+          {}
           {activeOrder.notes && (
             <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.15)', padding: '10px 12px', borderRadius: '8px', borderLeft: '3px solid #ffc107' }}>
-              <span style={{ fontSize: '10px', opacity: 0.8, fontWeight: 'bold', color: '#ffc107', display: 'block', marginBottom: '3px' }}>📝 Заметка курьеру:</span>
+              <span style={{ fontSize: '10px', opacity: 0.8, fontWeight: 'bold', color: '#ffc107', display: 'block', marginBottom: '3px' }}>📝 Note to courier:</span>
               <span style={{ fontSize: '13px', fontStyle: 'italic', lineHeight: '1.4' }}>"{activeOrder.notes}"</span>
             </div>
           )}
         </div>
       )}
 
-      {/* Google Maps Directions Navigator Button */}
+      {}
       <a 
         href={getGoogleMapsDirectionsUrl()} 
         target="_blank" 
@@ -159,10 +158,10 @@ export default function ActiveOrderCard({
         onMouseOver={(e) => e.target.style.backgroundColor = '#ffe066'}
         onMouseOut={(e) => e.target.style.backgroundColor = '#ffc107'}
       >
-        🗺️ Открыть навигатор (Google Maps)
+        🗺️ Open Navigator (Google Maps)
       </a>
 
-      {/* LIVE DISTANCE READOUT */}
+      {}
       <div style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
@@ -173,26 +172,26 @@ export default function ActiveOrderCard({
       }}>
         <div>
           <div style={{ fontSize: '11px', opacity: 0.8 }}>
-            {isAccepted ? "Путь до ресторана:" : "Путь до клиента:"}
+            {isAccepted ? "Distance to restaurant:" : "Distance to customer:"}
           </div>
           <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
             {distanceInfo.distanceMeters > 0 
-              ? `${distanceInfo.distanceMeters} м` 
-              : 'Расчет...'}
+              ? `${distanceInfo.distanceMeters} m` 
+              : 'Calculating...'}
           </div>
           <span style={{ fontSize: '11px', opacity: 0.7 }}>
-            ({distanceInfo.distanceKm} км)
+            ({distanceInfo.distanceKm} km)
           </span>
         </div>
         <div>
-          <div style={{ fontSize: '11px', opacity: 0.8 }}>Статус:</div>
+          <div style={{ fontSize: '11px', opacity: 0.8 }}>Status:</div>
           <div style={{ fontSize: '15px', fontWeight: 'bold', marginTop: '4px' }}>
-            {isAccepted ? '🛒 Еду забирать' : '🛵 Везет курьер'}
+            {isAccepted ? '🛒 Picking up' : '🛵 Delivering'}
           </div>
         </div>
       </div>
 
-      {/* STEP 2: ACCEPTED / RESTAURANT PICKUP */}
+      {}
       {isAccepted && (
         <div style={{
           backgroundColor: 'rgba(255, 255, 255, 0.15)',
@@ -203,10 +202,10 @@ export default function ActiveOrderCard({
           gap: '10px'
         }}>
           <div style={{ fontSize: '15px', textAlign: 'center', fontWeight: 'bold' }}>
-            🔑 Код для ресторана: <span style={{ fontSize: '24px', letterSpacing: '2px', color: '#ffc107', textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>#{activeOrder.id.slice(-4).toUpperCase()}</span>
+            🔑 Code for restaurant: <span style={{ fontSize: '24px', letterSpacing: '2px', color: '#ffc107', textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>#{activeOrder.id.slice(-4).toUpperCase()}</span>
           </div>
           <div style={{ fontSize: '13px', opacity: 0.9, textAlign: 'center', lineHeight: '1.4' }}>
-            Назовите этот код сотрудникам ресторана для выдачи заказа.
+            Give this code to the restaurant staff to pick up the order.
           </div>
           <button
             onClick={handleConfirmPickUp}
@@ -226,16 +225,16 @@ export default function ActiveOrderCard({
             onMouseOver={(e) => e.target.style.backgroundColor = '#ffe066'}
             onMouseOut={(e) => e.target.style.backgroundColor = '#ffc107'}
           >
-            🍲 Подтвердить получение в ресторане
+            🍲 Confirm pickup at restaurant
           </button>
         </div>
       )}
 
-      {/* STEP 3: PICKED UP / CLIENT DELIVERY */}
+      {}
       {!isAccepted && (
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', fontWeight: 'bold' }}>
-            <span>Оплата курьеру:</span>
+            <span>Courier payout:</span>
             <span style={{ fontSize: '24px', color: '#fff' }}>{calculatePayout(activeOrder)} PLN</span>
           </div>
           <button 
@@ -253,7 +252,7 @@ export default function ActiveOrderCard({
               boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
             }}
           >
-            📦 Подтвердить доставку клиенту
+            📦 Confirm delivery to customer
           </button>
         </div>
       )}

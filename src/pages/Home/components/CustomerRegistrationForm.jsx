@@ -1,4 +1,3 @@
-// src/pages/Home/components/CustomerRegistrationForm.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../../context/AuthContext';
@@ -18,14 +17,14 @@ export default function CustomerRegistrationForm({ setErrorMsg, setSuccessMsg })
   const handleCustomerSubmit = async (e) => {
     e.preventDefault();
     if (!custName.trim() || !custLastName.trim() || !custEmail.trim() || !custPhone.trim() || !custAddress.trim() || !custPassword) {
-      setErrorMsg('Пожалуйста, заполните все поля формы (Имя, Фамилия, Email, Телефон, Адрес, Пароль)!');
+      setErrorMsg('Please fill in all fields (First Name, Last Name, Email, Phone, Address, Password)!');
       return;
     }
 
     try {
       setIsSubmitting(true);
       setErrorMsg('');
-      setSuccessMsg('Секунду… Создаем аккаунт клиента');
+      setSuccessMsg('One moment... Creating customer account');
       const coords = geocodePoznanAddress(custAddress);
       
       const user = await registerCustomer({
@@ -39,13 +38,13 @@ export default function CustomerRegistrationForm({ setErrorMsg, setSuccessMsg })
         password: custPassword
       });
       
-      setSuccessMsg('Клиент успешно зарегистрирован!');
+      setSuccessMsg('Customer registered successfully!');
       
       setTimeout(() => {
         navigate(`/customer/${user.id}`);
       }, 700);
     } catch (err) {
-      setErrorMsg(err.message || 'Произошла ошибка при регистрации клиента.');
+      setErrorMsg(err.message || 'An error occurred during customer registration.');
       setSuccessMsg('');
     } finally {
       setIsSubmitting(false);
@@ -56,11 +55,11 @@ export default function CustomerRegistrationForm({ setErrorMsg, setSuccessMsg })
     <form onSubmit={handleCustomerSubmit}>
       <div className="glass-input-row">
         <div className="glass-input-group">
-          <label className="glass-label">Имя</label>
+          <label className="glass-label">First Name</label>
           <input
             type="text"
             className="glass-input"
-            placeholder="Иван"
+            placeholder="John"
             value={custName}
             onChange={(e) => setCustName(e.target.value)}
             disabled={isSubmitting}
@@ -68,11 +67,11 @@ export default function CustomerRegistrationForm({ setErrorMsg, setSuccessMsg })
           />
         </div>
         <div className="glass-input-group">
-          <label className="glass-label">Фамилия</label>
+          <label className="glass-label">Last Name</label>
           <input
             type="text"
             className="glass-input"
-            placeholder="Иванов"
+            placeholder="Doe"
             value={custLastName}
             onChange={(e) => setCustLastName(e.target.value)}
             disabled={isSubmitting}
@@ -83,11 +82,11 @@ export default function CustomerRegistrationForm({ setErrorMsg, setSuccessMsg })
 
       <div className="glass-input-row">
         <div className="glass-input-group">
-          <label className="glass-label">Электронная почта (Email)</label>
+          <label className="glass-label">Email Address</label>
           <input
             type="email"
             className="glass-input"
-            placeholder="ivanov@example.com"
+            placeholder="john.doe@example.com"
             value={custEmail}
             onChange={(e) => setCustEmail(e.target.value)}
             disabled={isSubmitting}
@@ -95,7 +94,7 @@ export default function CustomerRegistrationForm({ setErrorMsg, setSuccessMsg })
           />
         </div>
         <div className="glass-input-group">
-          <label className="glass-label">Номер телефона</label>
+          <label className="glass-label">Phone Number</label>
           <input
             type="tel"
             className="glass-input"
@@ -110,11 +109,11 @@ export default function CustomerRegistrationForm({ setErrorMsg, setSuccessMsg })
       
       <div className="glass-input-row">
         <div className="glass-input-group" style={{ flex: 2 }}>
-          <label className="glass-label">Адрес доставки (текст)</label>
+          <label className="glass-label">Delivery Address (text)</label>
           <input
             type="text"
             className="glass-input"
-            placeholder="Например, ul. Półwiejska 12, Poznań"
+            placeholder="e.g., ul. Półwiejska 12, Poznań"
             value={custAddress}
             onChange={(e) => setCustAddress(e.target.value)}
             disabled={isSubmitting}
@@ -122,7 +121,7 @@ export default function CustomerRegistrationForm({ setErrorMsg, setSuccessMsg })
           />
         </div>
         <div className="glass-input-group" style={{ flex: 1 }}>
-          <label className="glass-label">Пароль</label>
+          <label className="glass-label">Password</label>
           <input
             type="password"
             className="glass-input"
@@ -136,7 +135,7 @@ export default function CustomerRegistrationForm({ setErrorMsg, setSuccessMsg })
       </div>
 
       <button type="submit" className="glass-btn-primary" disabled={isSubmitting}>
-        {isSubmitting ? 'Регистрация…' : 'Зарегистрироваться и Войти'}
+        {isSubmitting ? 'Registering...' : 'Register and Log In'}
       </button>
     </form>
   );

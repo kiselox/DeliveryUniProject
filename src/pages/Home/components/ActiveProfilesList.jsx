@@ -1,4 +1,3 @@
-// src/pages/Home/components/ActiveProfilesList.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../../context/AuthContext';
@@ -21,21 +20,20 @@ export default function ActiveProfilesList({ activeTab, customers, couriers, isL
   const handleModalSubmit = async (e) => {
     e.preventDefault();
     if (!password) {
-      setModalError('Введите пароль!');
+      setModalError('Enter password!');
       return;
     }
 
     try {
       setIsLoggingIn(true);
       setModalError('');
-      const role = activeTab; // 'customer' or 'courier'
+      const role = activeTab;
       const user = await login(role, selectedUser.email, password);
       
-      // If login succeeds, navigate to dashboard
       setSelectedUser(null);
       navigate(role === 'customer' ? `/customer/${user.id}` : `/courier/${user.id}`);
     } catch (err) {
-      setModalError(err.message || 'Неверный пароль. Попробуйте еще раз.');
+      setModalError(err.message || 'Incorrect password. Please try again.');
     } finally {
       setIsLoggingIn(false);
     }
@@ -44,15 +42,15 @@ export default function ActiveProfilesList({ activeTab, customers, couriers, isL
   return (
     <div style={{ marginTop: '30px', borderTop: '1px solid var(--border)', paddingTop: '20px' }}>
       <h3 style={{ fontSize: '14px', color: 'var(--accent)', textAlign: 'left', margin: '0 0 12px 0', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 'bold' }}>
-        Активные профили в системе:
+        Active Profiles in System:
       </h3>
       {isLoading ? (
-        <div style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Загрузка активных профилей…</div>
+        <div style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Loading active profiles…</div>
       ) : (
         <>
           {activeTab === 'customer' ? (
             customers.length === 0 ? (
-              <div style={{ color: 'var(--text-muted)', fontSize: '13px', textAlign: 'left' }}>Зарегистрированные клиенты отсутствуют.</div>
+              <div style={{ color: 'var(--text-muted)', fontSize: '13px', textAlign: 'left' }}>No registered customers found.</div>
             ) : (
               <div className="users-grid">
                 {customers.map((c) => (
@@ -66,7 +64,7 @@ export default function ActiveProfilesList({ activeTab, customers, couriers, isL
             )
           ) : (
             couriers.length === 0 ? (
-              <div style={{ color: 'var(--text-muted)', fontSize: '13px', textAlign: 'left' }}>Зарегистрированные курьеры отсутствуют.</div>
+              <div style={{ color: 'var(--text-muted)', fontSize: '13px', textAlign: 'left' }}>No registered couriers found.</div>
             ) : (
               <div className="users-grid">
                 {couriers.map((cour) => (
@@ -76,7 +74,7 @@ export default function ActiveProfilesList({ activeTab, customers, couriers, isL
                     </span>
                     <span className="user-name">{cour.name} {cour.lastName || ''}</span>
                     <span className="user-subtext">
-                      {cour.vehicle === 'Car' ? 'Авто' : cour.vehicle === 'Scooter' ? 'Скутер' : 'Вело'}
+                      {cour.vehicle === 'Car' ? 'Car' : cour.vehicle === 'Scooter' ? 'Scooter' : 'Velo'}
                     </span>
                   </div>
                 ))}
@@ -86,7 +84,7 @@ export default function ActiveProfilesList({ activeTab, customers, couriers, isL
         </>
       )}
 
-      {/* PASSWORD PROTECTION MODAL DIALOG */}
+      {}
       {selectedUser && (
         <div style={{
           position: 'fixed',
@@ -119,11 +117,11 @@ export default function ActiveProfilesList({ activeTab, customers, couriers, isL
             <div style={{ fontSize: '38px', marginBottom: '12px' }}>🔒</div>
             
             <h4 style={{ margin: '0 0 8px 0', fontSize: '18px', fontWeight: 'bold' }}>
-              Подтверждение входа
+              Confirm Login
             </h4>
             
             <p style={{ fontSize: '13px', color: '#aaa', lineHeight: '1.5', margin: '0 0 20px 0' }}>
-              Введите пароль для профиля <strong style={{ color: 'var(--accent)' }}>{selectedUser.name} {selectedUser.lastName || ''}</strong>
+              Enter password for profile <strong style={{ color: 'var(--accent)' }}>{selectedUser.name} {selectedUser.lastName || ''}</strong>
             </p>
 
             {modalError && (
@@ -148,7 +146,7 @@ export default function ActiveProfilesList({ activeTab, customers, couriers, isL
               <div style={{ marginBottom: '20px' }}>
                 <input
                   type="password"
-                  placeholder="Пароль профиля (по умолчанию 123456)"
+                  placeholder="Profile password (default 123456)"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoggingIn}
@@ -191,7 +189,7 @@ export default function ActiveProfilesList({ activeTab, customers, couriers, isL
                   onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
                   onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
                 >
-                  Отмена
+                  Cancel
                 </button>
                 <button
                   type="submit"
@@ -212,7 +210,7 @@ export default function ActiveProfilesList({ activeTab, customers, couriers, isL
                   onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
                   onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
                 >
-                  {isLoggingIn ? 'Вход…' : 'Войти'}
+                  {isLoggingIn ? 'Logging in...' : 'Log In'}
                 </button>
               </div>
             </form>

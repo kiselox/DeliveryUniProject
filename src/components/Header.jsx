@@ -2,14 +2,14 @@
 function Header({ address, searchTerm, setSearchTerm, onProfileClick }) {
   return (
     <header className="main-header">
-      <div className="header-address">{address || 'Загрузка адреса…'}</div>
+      <div className="header-address">{address || 'Loading address...'}</div>
       
       {setSearchTerm && (
         <div className="header-search">
           <input 
             type="text" 
-            placeholder="Поиск ресторанов…" 
-            aria-label="Поиск ресторанов" 
+            placeholder="Search restaurants..." 
+            aria-label="Search restaurants" 
             value={searchTerm || ''}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -20,7 +20,7 @@ function Header({ address, searchTerm, setSearchTerm, onProfileClick }) {
       <div className="header-profile">
         <button 
           className="profile-icon" 
-          aria-label="Профиль пользователя"
+          aria-label="User Profile"
           style={{ background: 'none', border: 'none' }}
           onClick={onProfileClick}
         >

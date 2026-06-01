@@ -1,10 +1,4 @@
-// backend/utils/normalizer.js
 
-/**
- * Normalizes text by removing Polish diacritics and converting to lowercase
- * @param {string} str Input string
- * @returns {string} Normalized string
- */
 export function normalizeText(str) {
   if (!str) return '';
   return str.toString().toLowerCase()

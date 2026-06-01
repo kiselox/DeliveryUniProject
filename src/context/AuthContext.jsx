@@ -1,4 +1,3 @@
-// src/context/AuthContext.jsx
 import { createContext, useContext, useState, useEffect } from 'react';
 import api from '../services/api';
 
@@ -9,7 +8,6 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(localStorage.getItem('authToken'));
   const [isLoading, setIsLoading] = useState(true);
 
-  // Set up Axios interceptor to append authorization token automatically
   useEffect(() => {
     const interceptor = api.interceptors.request.use((config) => {
       if (token) {
@@ -23,7 +21,6 @@ export function AuthProvider({ children }) {
     };
   }, [token]);
 
-  // Validate existing token on mount
   useEffect(() => {
     async function validateToken() {
       const storedToken = localStorage.getItem('authToken');
@@ -38,7 +35,6 @@ export function AuthProvider({ children }) {
         setToken(storedToken);
       } catch (err) {
         console.warn('Session expired or invalid token:', err.response?.data?.error || err.message);
-        // Clear expired auth session
         localStorage.removeItem('authToken');
         setToken(null);
         setUser(null);
@@ -60,7 +56,7 @@ export function AuthProvider({ children }) {
       setUser(receivedUser);
       return receivedUser;
     } catch (err) {
-      throw new Error(err.response?.data?.error || 'Ошибка входа в систему!', { cause: err });
+      throw new Error(err.response?.data?.error || 'Failed to log in!', { cause: err });
     }
   };
 
@@ -74,7 +70,7 @@ export function AuthProvider({ children }) {
       setUser(receivedUser);
       return receivedUser;
     } catch (err) {
-      throw new Error(err.response?.data?.error || 'Ошибка регистрации клиента!', { cause: err });
+      throw new Error(err.response?.data?.error || 'Failed to register customer!', { cause: err });
     }
   };
 
@@ -88,7 +84,7 @@ export function AuthProvider({ children }) {
       setUser(receivedUser);
       return receivedUser;
     } catch (err) {
-      throw new Error(err.response?.data?.error || 'Ошибка регистрации курьера!', { cause: err });
+      throw new Error(err.response?.data?.error || 'Failed to register courier!', { cause: err });
     }
   };
 
@@ -102,7 +98,7 @@ export function AuthProvider({ children }) {
       setUser(receivedUser);
       return receivedUser;
     } catch (err) {
-      throw new Error(err.response?.data?.error || 'Ошибка входа разработчика!', { cause: err });
+      throw new Error(err.response?.data?.error || 'Failed to bypass developer login!', { cause: err });
     }
   };
 

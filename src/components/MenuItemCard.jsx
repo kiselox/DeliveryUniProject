@@ -38,7 +38,7 @@ function MenuItemCard({ item, quantity, onAdd, onRemove }) {
         </div>
       ) : (
         <button className="btn-add-cart" onClick={onAdd}>
-          Добавить
+          Add to Cart
         </button>
       )}
     </div>

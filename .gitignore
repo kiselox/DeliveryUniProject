@@ -29,3 +29,10 @@ dist-ssr
 .env.*.local
 !.env.example
 
+# AI instructions and Agent files
+.agents/
+.antigravityignore
+ai-instructions.md
+
+# Scratch and temporary files
+scratch/

@@ -1,4 +1,3 @@
-// src/pages/Customer/components/CartDrawer.jsx
 import { useRef } from 'react';
 import MenuItemCard from '../../../components/MenuItemCard';
 import AddressMapPicker from './AddressMapPicker';
@@ -75,7 +74,7 @@ export default function CartDrawer({
             alignItems: 'center'
           }}
         >
-          <h2 style={{ margin: 0, fontSize: '28px' }}>Ваша Корзина</h2>
+          <h2 style={{ margin: 0, fontSize: '28px' }}>Your Cart</h2>
           <button className="btn-close" onClick={() => setIsCartOpen(false)}>×</button>
         </div>
         
@@ -91,7 +90,7 @@ export default function CartDrawer({
           }}
         >
           {cartItemsData.length === 0 ? (
-            <p>Ваша корзина пуста.</p>
+            <p>Your cart is empty.</p>
           ) : (
             <>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
@@ -107,14 +106,14 @@ export default function CartDrawer({
               </div>
               
               <div className="modal-total" style={{ margin: '10px 0', paddingTop: '15px' }}>
-                <div>Стоимость блюд: {totalFoodPrice} PLN</div>
-                <div style={{ color: '#888', fontSize: '14px' }}>Доставка рассчитывается при отправке (4 PLN/км)</div>
+                <div>Subtotal: {totalFoodPrice} PLN</div>
+                <div style={{ color: '#888', fontSize: '14px' }}>Delivery is calculated at checkout (4 PLN/km)</div>
                 <div style={{ marginTop: '10px', fontSize: '24px', color: 'var(--green)' }}>
-                  Итого (без доставки): {totalFoodPrice} PLN
+                  Total (excluding delivery): {totalFoodPrice} PLN
                 </div>
               </div>
 
-              {/* Geolocation Map Picker */}
+              {}
               <AddressMapPicker 
                 deliveryAddress={deliveryAddress}
                 setDeliveryAddress={setDeliveryAddress}
@@ -124,7 +123,7 @@ export default function CartDrawer({
                 handleGetCurrentPosition={handleGetCurrentPosition}
               />
 
-              {/* Address Details & Phone Form */}
+              {}
               <CheckoutForm 
                 house={house}
                 setHouse={setHouse}
@@ -144,7 +143,7 @@ export default function CartDrawer({
                 disabled={isPending}
                 style={{ marginTop: '20px' }}
               >
-                {isPending ? 'Оформляем заказ…' : 'Подтвердить заказ'}
+                {isPending ? 'Placing order...' : 'Confirm Order'}
               </button>
             </>
           )}

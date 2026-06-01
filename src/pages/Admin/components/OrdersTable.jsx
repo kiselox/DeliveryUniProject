@@ -1,4 +1,3 @@
-// src/pages/Admin/components/OrdersTable.jsx
 import { useState } from 'react';
 
 export default function OrdersTable({
@@ -25,7 +24,7 @@ export default function OrdersTable({
             fontWeight: 'bold',
             whiteSpace: 'nowrap'
           }}>
-            🟡 Ожидает
+            🟡 Awaiting Courier
           </span>
         );
       case "Accepted":
@@ -40,7 +39,7 @@ export default function OrdersTable({
             fontWeight: 'bold',
             whiteSpace: 'nowrap'
           }}>
-            🟣 Принят курьером
+            🟣 Accepted by Courier
           </span>
         );
       case "Picked Up":
@@ -56,7 +55,7 @@ export default function OrdersTable({
             fontWeight: 'bold',
             whiteSpace: 'nowrap'
           }}>
-            🔵 В пути к клиенту
+            🔵 On the Way to Customer
           </span>
         );
       case "Delivered":
@@ -71,7 +70,7 @@ export default function OrdersTable({
             fontWeight: 'bold',
             whiteSpace: 'nowrap'
           }}>
-            🟢 Доставлен
+            🟢 Delivered
           </span>
         );
       case "Cancelled":
@@ -86,7 +85,7 @@ export default function OrdersTable({
             fontWeight: 'bold',
             whiteSpace: 'nowrap'
           }}>
-            ❌ Отменен
+            ❌ Cancelled
           </span>
         );
       default:
@@ -105,10 +104,9 @@ export default function OrdersTable({
     setSelectedOrderDetails(order);
   };
 
-  // Safe time formatting for ISO / Local Date
   const formatTime = (timeString) => {
     if (!timeString) return '—';
-    if (!timeString.includes('T')) return timeString; // standard fallback
+    if (!timeString.includes('T')) return timeString;
     try {
       const date = new Date(timeString);
       return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -117,7 +115,6 @@ export default function OrdersTable({
     }
   };
 
-  // Dynamic anomaly calculation based on vehicle type and distance
   const getDelayInfo = (order) => {
     if (order.status === "Delivered" || order.status === "Cancelled") return null;
 
@@ -131,7 +128,7 @@ export default function OrdersTable({
         return {
           type: 'pickup',
           minutes: elapsedMinutes,
-          label: `⚠️ Задержка: +${elapsedMinutes} мин`
+          label: `⚠️ Delay: +${elapsedMinutes} min`
         };
       }
     } else if (order.status === "Accepted" || order.status === "Picked Up") {
@@ -140,28 +137,26 @@ export default function OrdersTable({
 
       const elapsedMinutes = Math.floor((now - startTime) / 60000);
       
-      // Speed (km/h) based on assigned courier vehicle type: Velo = 15, Scooter = 20, Car = 30
-      let speed = 18; // default
+      let speed = 18;
       if (order.courierId === 'cour1') speed = 15;
       else if (order.courierId === 'cour2') speed = 20;
       else if (order.courierId === 'cour3') speed = 30;
 
       const distance = parseFloat(order.distance) || 0.0;
-      const expectedMinutes = Math.round((distance / speed) * 60 + 5); // distance + 5m buffer
+      const expectedMinutes = Math.round((distance / speed) * 60 + 5);
 
       if (elapsedMinutes > expectedMinutes) {
         const delay = elapsedMinutes - expectedMinutes;
         return {
           type: 'delivery',
           minutes: delay,
-          label: `🚨 Опоздание: +${delay} мин`
+          label: `🚨 Running Late: +${delay} min`
         };
       }
     }
     return null;
   };
 
-  // Filter orders by search query
   const filteredOrders = orders.filter(order => {
     const q = searchQuery.toLowerCase().trim();
     if (!q) return true;
@@ -187,12 +182,12 @@ export default function OrdersTable({
         gap: '15px'
       }}>
         <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold' }}>
-          📦 Живой монитор всех заказов Poznań
+          📦 Live Monitor of All Poznań Orders
         </h2>
         
         <input 
           type="text"
-          placeholder="🔍 Поиск по ID, ресторану, телефону или еде..."
+          placeholder="🔍 Search by ID, restaurant, phone or dish..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           style={{
@@ -209,7 +204,7 @@ export default function OrdersTable({
       
       {filteredOrders.length === 0 ? (
         <div style={{ padding: '40px', textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '15px' }}>
-          {searchQuery ? 'Заказы по вашему поисковому запросу не найдены.' : 'Активных заказов в системе нет. Ждем отправлений...'}
+          {searchQuery ? 'No orders found matching your search query.' : 'No active orders in the system. Awaiting new orders...'}
         </div>
       ) : (
         <>
@@ -217,15 +212,15 @@ export default function OrdersTable({
             <table className="support-table-container">
               <thead>
                 <tr>
-                  <th>Время</th>
-                  <th>ID Заказа</th>
-                  <th>🏪 Ресторан</th>
-                  <th>🛒 Блюда</th>
-                  <th>👤 Телефон</th>
-                  <th>🛵 Курьер</th>
-                  <th>Статус</th>
-                  <th>Плата (Доставка)</th>
-                  <th style={{ textAlign: 'right' }}>Действия</th>
+                  <th>Time</th>
+                  <th>Order ID</th>
+                  <th>🏪 Restaurant</th>
+                  <th>🛒 Dishes</th>
+                  <th>👤 Phone</th>
+                  <th>🛵 Courier</th>
+                  <th>Status</th>
+                  <th>Payout (Delivery)</th>
+                  <th style={{ textAlign: 'right' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -243,7 +238,7 @@ export default function OrdersTable({
                       }}
                       onClick={() => setSelectedOrderDetails(order)}
                     >
-                      {/* Time Column with Pulsing Delay Badge */}
+                      {}
                       <td style={{ color: '#c480ff', fontWeight: 'bold', whiteSpace: 'nowrap' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
                           <span>🕒 {formatTime(order.createdAt)}</span>
@@ -283,13 +278,13 @@ export default function OrdersTable({
                           <span style={{ color: '#00d26a', fontWeight: 'bold' }}>🟢 {order.courierId}</span>
                         ) : (
                           <span style={{ color: 'rgba(255,255,255,0.3)' }}>
-                            {order.status === 'Cancelled' ? '—' : '— Не назначен'}
+                          {order.status === 'Cancelled' ? '—' : '— Unassigned'}
                           </span>
                         )}
                       </td>
                       <td>{getStatusBadge(order.status)}</td>
                       
-                      {/* Delivery Payout Column */}
+                      {}
                       <td>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                           {order.status !== 'Cancelled' && (
@@ -307,23 +302,23 @@ export default function OrdersTable({
                             </span>
                           )}
                           
-                          {/* Hide absolute payouts when courier is unassigned */}
+                          {}
                           {hasCourier && order.status !== 'Cancelled' ? (
                             <div style={{ fontSize: '13px', fontWeight: 'bold', color: '#00d26a' }}>
                               {order.fee} PLN
                               <span style={{ display: 'block', fontSize: '10px', color: 'rgba(255,255,255,0.5)', fontWeight: 'normal' }}>
-                                Итого: {order.totalPrice} PLN
+                                Total: {order.totalPrice} PLN
                               </span>
                             </div>
                           ) : (
                             <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', fontStyle: 'italic' }}>
-                              {order.status === 'Cancelled' ? 'Отменен' : 'Скрыто до назначения'}
+                              {order.status === 'Cancelled' ? 'Cancelled' : 'Hidden until assignment'}
                             </span>
                           )}
                         </div>
                       </td>
 
-                      {/* Action buttons */}
+                      {}
                       <td style={{ textAlign: 'right' }}>
                         <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
                           {order.status !== 'Cancelled' && order.status !== 'Delivered' && (
@@ -335,7 +330,7 @@ export default function OrdersTable({
                                 cursor: 'pointer', fontSize: '12px', whiteSpace: 'nowrap'
                               }}
                             >
-                              ⚡ Спрос
+                              ⚡ Surge
                             </button>
                           )}
                           
@@ -347,7 +342,7 @@ export default function OrdersTable({
                               cursor: 'pointer', fontSize: '12px', whiteSpace: 'nowrap'
                             }}
                           >
-                            👁️ Детали
+                            👁️ Details
                           </button>
                         </div>
                       </td>
@@ -358,7 +353,7 @@ export default function OrdersTable({
             </table>
           </div>
 
-          {/* Lazy Load Paginated trigger */}
+          {}
           {filteredOrders.length > visibleCount && (
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
               <button
@@ -371,7 +366,7 @@ export default function OrdersTable({
                 onMouseOver={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'}
                 onMouseOut={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.05)'}
               >
-                Показать еще 10 заказов
+                Show 10 more orders
               </button>
             </div>
           )}

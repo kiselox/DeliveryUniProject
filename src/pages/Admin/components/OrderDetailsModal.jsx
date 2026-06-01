@@ -1,4 +1,3 @@
-// src/pages/Admin/components/OrderDetailsModal.jsx
 import { useState, useEffect } from 'react';
 import api from '../../../services/api';
 
@@ -88,11 +87,10 @@ export default function OrderDetailsModal({
   const scooterPayout = Math.max(5.0, Math.round((distance * scooterPricePerKm + surcharge) * coefficientVal));
   const carPayout = Math.max(5.0, Math.round((distance * carPricePerKm + surcharge) * coefficientVal));
 
-  // Date and Time formatter
   const formatFullDateTime = (isoString) => {
     if (!isoString) return '—';
     const strVal = String(isoString);
-    if (!strVal.includes('T')) return `Сегодня, ${strVal}`;
+    if (!strVal.includes('T')) return `Today, ${strVal}`;
     try {
       const date = new Date(strVal);
       if (isNaN(date.getTime())) return strVal;
@@ -100,25 +98,25 @@ export default function OrderDetailsModal({
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const year = date.getFullYear();
       const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      return `${day}.${month}.${year} в ${time}`;
+      return `${day}.${month}.${year} at ${time}`;
     } catch {
       return strVal;
     }
   };
 
   const handleCancel = async () => {
-    if (!window.confirm("🚨 ВНИМАНИЕ: Вы действительно хотите полностью ОТМЕНИТЬ этот заказ в системе? \nКурьер будет автоматически снят с заказа.")) return;
+    if (!window.confirm("🚨 WARNING: Are you sure you want to completely CANCEL this order in the system? \nThe courier will be automatically removed from the order.")) return;
     try {
       setCancelling(true);
       await updateOrder({
         orderId: order.id,
         updates: { status: 'Cancelled' }
       });
-      alert("❌ Заказ успешно отменен!");
+      alert("❌ Order successfully cancelled!");
       setSelectedOrderDetails(null);
       if (refetchOrders) refetchOrders();
     } catch (err) {
-      alert("Не удалось отменить заказ: " + err.message);
+      alert("Failed to cancel order: " + err.message);
     } finally {
       setCancelling(false);
     }
@@ -127,7 +125,7 @@ export default function OrderDetailsModal({
   return (
     <div className="admin-modal-overlay">
       <div className="admin-modal-content admin-modal-large">
-        {/* CLOSE BUTTON AT TOP RIGHT */}
+        {}
         <button
           onClick={() => setSelectedOrderDetails(null)}
           className="btn-admin-close admin-modal-close-pos"
@@ -135,10 +133,10 @@ export default function OrderDetailsModal({
           ×
         </button>
 
-        {/* HEADER */}
+        {}
         <div className="admin-modal-header">
           <span className="admin-modal-pretitle">
-            ПОЛНАЯ ИНФОРМАЦИЯ О ЗАКАЗЕ
+            COMPLETE ORDER DETAILS
           </span>
           <h3 className="admin-modal-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             #{order?.id ? order.id.toUpperCase() : '—'}
@@ -146,18 +144,18 @@ export default function OrderDetailsModal({
           <div className="admin-modal-subtitle-row">
             {getStatusBadge ? getStatusBadge(order?.status) : <span>{order?.status}</span>}
             <span className="admin-modal-subtitle-item">
-              Дистанция: 📏 {order?.distance} км
+              Distance: 📏 {order?.distance} km
             </span>
           </div>
         </div>
 
-        {/* TWO-COLUMN GRID */}
+        {}
         <div className="admin-modal-grid-2col">
           
-          {/* COLUMN 1: VENDOR & BASKET */}
+          {}
           <div className="admin-modal-card flex-column-gap-sm">
             <h4 className="admin-modal-card-title">
-              🏬 Заведение & Блюда
+              🏬 Restaurant & Dishes
             </h4>
             <div className="admin-modal-card-highlight">
               {order?.vendorName}
@@ -167,40 +165,40 @@ export default function OrderDetailsModal({
             </div>
             
             <div className="admin-modal-timeline">
-              <div>📅 <strong>Создан:</strong> {formatFullDateTime(order?.createdAt)}</div>
+              <div>📅 <strong>Created:</strong> {formatFullDateTime(order?.createdAt)}</div>
               {order?.acceptedAt && (
-                <div className="text-purple">🟣 <strong>Принят курьером:</strong> {formatFullDateTime(order.acceptedAt)}</div>
+                <div className="text-purple">🟣 <strong>Accepted by courier:</strong> {formatFullDateTime(order.acceptedAt)}</div>
               )}
               {order?.pickedUpAt && (
-                <div className="text-green">🍲 <strong>Забран в ресторане:</strong> {formatFullDateTime(order.pickedUpAt)}</div>
+                <div className="text-green">🍲 <strong>Picked up at restaurant:</strong> {formatFullDateTime(order.pickedUpAt)}</div>
               )}
             </div>
           </div>
 
-          {/* COLUMN 2: CLIENT INFO */}
+          {}
           <div className="admin-modal-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <h4 className="admin-modal-card-title">
-              📍 Адрес & Получатель
+              📍 Address & Recipient
             </h4>
             
             <div className="admin-modal-body-text">
-              <div>👤 <strong>Имя:</strong> {customerProfile ? `${customerProfile.name || ''} ${customerProfile.lastName || ''}`.trim() || '—' : order?.customerId || '—'}</div>
+              <div>👤 <strong>Name:</strong> {customerProfile ? `${customerProfile.name || ''} ${customerProfile.lastName || ''}`.trim() || '—' : order?.customerId || '—'}</div>
               {customerProfile?.email && <div className="mt-xs">✉️ <strong>Email:</strong> {customerProfile.email}</div>}
-              <div className="mt-xs">📞 <strong>Телефон:</strong> {customerProfile?.phone || order?.phone || '—'}</div>
+              <div className="mt-xs">📞 <strong>Phone:</strong> {customerProfile?.phone || order?.phone || '—'}</div>
               
               <button
                 onClick={() => handleWriteToPartner('customer')}
                 className="admin-modal-btn-partner"
               >
-                💬 Написать клиенту {order?.status === 'Delivered' ? '(в общий чат)' : '(по заказу)'}
+                💬 Message client {order?.status === 'Delivered' ? '(general chat)' : '(for this order)'}
               </button>
-
+ 
               <div className="admin-modal-card-total-row">
-                📍 Адрес: {order?.deliveryAddress}
+                📍 Address: {order?.deliveryAddress}
               </div>
             </div>
 
-            {/* Address parameters grid */}
+            {}
             <div style={{
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
@@ -210,9 +208,9 @@ export default function OrderDetailsModal({
               padding: '10px',
               borderRadius: '8px'
             }}>
-              <div>🏠 <strong>Дом:</strong> {order?.house || '—'}</div>
-              <div>🚪 <strong>Кв.:</strong> {order?.apartment || '—'}</div>
-              <div>🏢 <strong>Этаж:</strong> {order?.floor || '—'}</div>
+              <div>🏠 <strong>House:</strong> {order?.house || '—'}</div>
+              <div>🚪 <strong>Apt:</strong> {order?.apartment || '—'}</div>
+              <div>🏢 <strong>Floor:</strong> {order?.floor || '—'}</div>
             </div>
 
             {order?.notes && (
@@ -225,7 +223,7 @@ export default function OrderDetailsModal({
                 color: '#ffc107',
                 fontStyle: 'italic'
               }}>
-                <strong>Примечание:</strong> "{order.notes}"
+                <strong>Note:</strong> "{order.notes}"
               </div>
             )}
 
@@ -240,51 +238,51 @@ export default function OrderDetailsModal({
                 color: '#00d26a',
                 lineHeight: '1.4'
               }}>
-                <div>🛵 <strong>Назначенный курьер:</strong></div>
+                <div>🛵 <strong>Assigned courier:</strong></div>
                 <div className="admin-modal-card-name">
                   {courierProfile ? `${courierProfile.name || ''} ${courierProfile.lastName || ''}`.trim() || '—' : order.courierId || '—'}
                 </div>
                 <div className="admin-modal-card-subtext">
-                  Транспорт: {courierProfile?.vehicle === 'Car' ? '🚗 Автомобиль' : courierProfile?.vehicle === 'Scooter' ? '🛵 Скутер' : '🚲 Велосипед'}
+                  Vehicle: {courierProfile?.vehicle === 'Car' ? '🚗 Car' : courierProfile?.vehicle === 'Scooter' ? '🛵 Scooter' : '🚲 Bicycle'}
                 </div>
-                {courierProfile?.phone && <div className="admin-modal-card-subtext">📞 Тел: {courierProfile.phone}</div>}
+                {courierProfile?.phone && <div className="admin-modal-card-subtext">📞 Tel: {courierProfile.phone}</div>}
                 {courierProfile?.email && <div className="admin-modal-card-subtext">✉️ Email: {courierProfile.email}</div>}
 
                 <button
                   onClick={() => handleWriteToPartner('courier')}
                   className="admin-modal-btn-courier"
                 >
-                  💬 Написать курьеру {order?.status === 'Delivered' ? '(в общий чат)' : '(по заказу)'}
+                  💬 Message courier {order?.status === 'Delivered' ? '(general chat)' : '(for this order)'}
                 </button>
               </div>
             )}
           </div>
         </div>
 
-        {/* BOTTOM SECTION: PRICE & DYNAMIC PAYOUT COMPARISONS */}
+        {}
         <div className="admin-modal-wide-card">
           <div className="admin-modal-wide-card-header">
             <div>
               <span className="admin-modal-wide-card-pretitle">
-                ФИНАНСОВЫЙ СТАТУС ЗАКАЗА
+                ORDER FINANCIAL STATUS
               </span>
               <div className="admin-modal-wide-card-title">
-                Коэффициент спроса: <span className="text-red">⚡ x{coefficientVal.toFixed(1)}</span>
+                Surge demand coefficient: <span className="text-red">⚡ x{coefficientVal.toFixed(1)}</span>
               </div>
             </div>
             <div className="text-right">
               {order?.courierId && order?.status !== 'Cancelled' ? (
                 <>
                   <div className="admin-modal-wide-card-total">
-                    {order?.fee} PLN (доставка)
+                    {order?.fee} PLN (delivery)
                   </div>
                   <div className="admin-modal-wide-card-subtotal">
-                    Итого: {order?.totalPrice} PLN
+                    Total: {order?.totalPrice} PLN
                   </div>
                 </>
               ) : (
                 <div className="admin-modal-warning-text">
-                  {order?.status === 'Cancelled' ? '❌ Заказ отменен (оплата заблокирована)' : '⚠️ Финансовые детали скрыты до назначения курьера'}
+                  {order?.status === 'Cancelled' ? '❌ Order cancelled (payment blocked)' : '⚠️ Financial details hidden until courier is assigned'}
                 </div>
               )}
             </div>
@@ -293,25 +291,25 @@ export default function OrderDetailsModal({
           {order?.status !== 'Cancelled' && (
             <>
               <div className="admin-modal-wide-card-subtitle">
-                💸 Прогноз выплат курьерам (с коэф. спроса):
+                💸 Estimated courier payout (with surge):
               </div>
               
               <div className="admin-modal-wide-grid">
-                {/* VELO */}
+                {}
                 <div className="admin-modal-wide-grid-item">
-                  <span className="admin-modal-wide-grid-item-label">ВЕЛОСИПЕД</span>
+                  <span className="admin-modal-wide-grid-item-label">BICYCLE</span>
                   <strong className="admin-modal-wide-grid-item-value">{veloPayout} PLN</strong>
                 </div>
 
-                {/* SCOOTER */}
+                {}
                 <div className="admin-modal-wide-grid-item">
-                  <span className="admin-modal-wide-grid-item-label">СКУТЕР</span>
+                  <span className="admin-modal-wide-grid-item-label">SCOOTER</span>
                   <strong className="admin-modal-wide-grid-item-value">{scooterPayout} PLN</strong>
                 </div>
 
-                {/* CAR */}
+                {}
                 <div className="admin-modal-wide-grid-item">
-                  <span className="admin-modal-wide-grid-item-label">АВТОМОБИЛЬ</span>
+                  <span className="admin-modal-wide-grid-item-label">CAR</span>
                   <strong className="admin-modal-wide-grid-item-value">{carPayout} PLN</strong>
                 </div>
               </div>
@@ -319,7 +317,7 @@ export default function OrderDetailsModal({
           )}
         </div>
 
-        {/* FOOTER ACTIONS */}
+        {}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             {order?.status !== 'Cancelled' && order?.status !== 'Delivered' && (
@@ -333,7 +331,7 @@ export default function OrderDetailsModal({
                   padding: '12px 24px'
                 }}
               >
-                {cancelling ? 'Отмена...' : '❌ Отменить заказ'}
+                {cancelling ? 'Cancelling...' : '❌ Cancel Order'}
               </button>
             )}
           </div>
@@ -343,7 +341,7 @@ export default function OrderDetailsModal({
             className="btn-admin-save"
             style={{ padding: '12px 30px' }}
           >
-            Закрыть детали
+            Close Details
           </button>
         </div>
       </div>

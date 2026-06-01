@@ -1,4 +1,3 @@
-// src/pages/Courier/components/LeafletDeliveryMap.jsx
 
 export default function LeafletDeliveryMap({ mapContainerRef }) {
   return (

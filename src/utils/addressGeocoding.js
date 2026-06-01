@@ -1,11 +1,4 @@
-// src/utils/addressGeocoding.js
 
-/**
- * Helper to geocode Poznań address keywords automatically.
- * Falls back to CDV Dormitory if no matches are found.
- * @param {string} addressText 
- * @returns {{lat: number, lng: number}}
- */
 export function geocodePoznanAddress(addressText) {
   const text = (addressText || '').toLowerCase();
   
@@ -25,6 +18,5 @@ export function geocodePoznanAddress(addressText) {
     return { lat: 52.4069, lng: 16.9299 };
   }
   
-  // Default to CDV Dormitory
   return { lat: 52.4140, lng: 16.9295 };
 }

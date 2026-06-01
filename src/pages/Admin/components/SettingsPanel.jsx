@@ -1,4 +1,3 @@
-// src/pages/Admin/components/SettingsPanel.jsx
 
 export default function SettingsPanel({
   settings,
@@ -27,17 +26,17 @@ export default function SettingsPanel({
   return (
     <div className="support-glass-card" style={{ marginBottom: '40px' }}>
       <h2 style={{ margin: '0 0 20px 0', fontSize: '20px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
-        ⚙️ Глобальное управление тарифами
+        ⚙️ Global Tariff Management
       </h2>
       
       <form onSubmit={handleSaveRate} className="settings-rates-form">
         
-        {/* Dynamic rate grids */}
+        {}
         <div className="price-inputs-grid">
           
-          {/* Bicycle Rate */}
+          {}
           <div className="price-rate-item-box">
-            <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', fontWeight: 'bold' }}>🚲 Велосипед (Ставка)</span>
+            <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', fontWeight: 'bold' }}>🚲 Bicycle (Rate)</span>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               <button 
                 type="button" 
@@ -75,12 +74,12 @@ export default function SettingsPanel({
                 +
               </button>
             </div>
-            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textAlign: 'center' }}>PLN за 1 км пути</span>
+            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textAlign: 'center' }}>PLN per 1 km</span>
           </div>
 
-          {/* Scooter Rate */}
+          {}
           <div className="price-rate-item-box">
-            <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', fontWeight: 'bold' }}>🛵 Скутер (Ставка)</span>
+            <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', fontWeight: 'bold' }}>🛵 Scooter (Rate)</span>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               <button 
                 type="button" 
@@ -118,12 +117,12 @@ export default function SettingsPanel({
                 +
               </button>
             </div>
-            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textAlign: 'center' }}>PLN за 1 км пути</span>
+            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textAlign: 'center' }}>PLN per 1 km</span>
           </div>
 
-          {/* Car Rate */}
+          {}
           <div className="price-rate-item-box">
-            <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', fontWeight: 'bold' }}>🚗 Машина (Ставка)</span>
+            <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', fontWeight: 'bold' }}>🚗 Car (Rate)</span>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               <button 
                 type="button" 
@@ -161,12 +160,12 @@ export default function SettingsPanel({
                 +
               </button>
             </div>
-            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textAlign: 'center' }}>PLN за 1 км пути</span>
+            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textAlign: 'center' }}>PLN per 1 km</span>
           </div>
 
         </div>
 
-        {/* Global Weather modifier */}
+        {}
         <div style={{
           marginTop: '5px',
           borderTop: '1px solid rgba(255,255,255,0.08)',
@@ -178,8 +177,8 @@ export default function SettingsPanel({
           gap: '15px'
         }}>
           <div>
-            <span style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', color: '#fff' }}>🌧️ Погодные условия в Познани</span>
-            <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>Влияет на надбавки к стоимости доставок</span>
+            <span style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', color: '#fff' }}>🌧️ Weather Conditions in Poznań</span>
+            <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>Affects surcharges on delivery cost</span>
           </div>
           
           <div style={{ display: 'flex', gap: '10px' }}>
@@ -194,7 +193,7 @@ export default function SettingsPanel({
                 boxShadow: getWeatherGlow(0), transition: 'all 0.3s'
               }}
             >
-              ☀️ Ясно (+0 PLN)
+              ☀️ Clear (+0 PLN)
             </button>
             <button
               type="button"
@@ -207,7 +206,7 @@ export default function SettingsPanel({
                 boxShadow: getWeatherGlow(5), transition: 'all 0.3s'
               }}
             >
-              🌧️ Дождь (+5 PLN)
+              🌧️ Rain (+5 PLN)
             </button>
             <button
               type="button"
@@ -220,19 +219,19 @@ export default function SettingsPanel({
                 boxShadow: getWeatherGlow(10), transition: 'all 0.3s'
               }}
             >
-              ❄️ Снегопад (+10 PLN)
+              ❄️ Snowfall (+10 PLN)
             </button>
           </div>
         </div>
 
-        {/* Submit rates */}
+        {}
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
           <button 
             type="submit" 
             disabled={rateSaving}
             className="btn-admin-save"
           >
-            {rateSaving ? 'Сохранение...' : '💾 Применить тарифные сетки'}
+            {rateSaving ? 'Saving...' : '💾 Apply Tariff Rates'}
           </button>
         </div>
 

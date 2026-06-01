@@ -1,4 +1,3 @@
-// src/pages/Courier/components/AvailableOrdersList.jsx
 
 export default function AvailableOrdersList({
   activeOrder,
@@ -13,7 +12,7 @@ export default function AvailableOrdersList({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       
-      {/* PREVIEW ORDER DETAILS CARD (BEFORE ACCEPTING) */}
+      {}
       {previewOrder && !activeOrder ? (
         <div style={{
           background: '#fff',
@@ -51,7 +50,7 @@ export default function AvailableOrdersList({
             display: 'inline-block',
             marginBottom: '15px'
           }}>
-            🔍 Предпросмотр Заказа
+            🔍 Order Preview
           </span>
 
           <h2 style={{ margin: '0 0 10px 0', fontSize: '22px', color: '#333' }}>
@@ -59,7 +58,7 @@ export default function AvailableOrdersList({
           </h2>
 
 
-          {/* Distances grid */}
+          {}
           <div style={{
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
@@ -69,24 +68,24 @@ export default function AvailableOrdersList({
             paddingTop: '15px'
           }}>
             <div>
-              <span style={{ fontSize: '12px', color: '#888' }}>1. До ресторана (подача):</span>
+              <span style={{ fontSize: '12px', color: '#888' }}>1. To Restaurant (pickup):</span>
               <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#ffc107', marginTop: '4px' }}>
-                {distanceInfo.distanceMeters > 0 ? `${distanceInfo.distanceMeters} м` : 'Расчет...'}
+                {distanceInfo.distanceMeters > 0 ? `${distanceInfo.distanceMeters} m` : 'Calculating...'}
               </div>
-              <span style={{ fontSize: '11px', color: '#999' }}>({distanceInfo.distanceKm} км)</span>
+              <span style={{ fontSize: '11px', color: '#999' }}>({distanceInfo.distanceKm} km)</span>
             </div>
             
             <div>
-              <span style={{ fontSize: '12px', color: '#888' }}>2. Доставка клиенту:</span>
+              <span style={{ fontSize: '12px', color: '#888' }}>2. Delivery to Customer:</span>
               <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#00d26a', marginTop: '4px' }}>
-                {previewOrder.distance} км
+                {previewOrder.distance} km
               </div>
-              <span style={{ fontSize: '11px', color: '#999' }}>(в: {previewOrder.deliveryAddress || "Poznan CDV"})</span>
+              <span style={{ fontSize: '11px', color: '#999' }}>(to: {previewOrder.deliveryAddress || "Poznan CDV"})</span>
             </div>
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderTop: '1px solid #eee', paddingTop: '15px' }}>
-            <span style={{ fontWeight: 'bold', color: '#333' }}>Доход курьера:</span>
+            <span style={{ fontWeight: 'bold', color: '#333' }}>Courier payout:</span>
             <span style={{ fontSize: '22px', fontWeight: 'bold', color: '#00d26a' }}>{calculatePayout(previewOrder)} PLN</span>
           </div>
 
@@ -105,12 +104,12 @@ export default function AvailableOrdersList({
               boxShadow: '0 4px 12px rgba(170, 59, 255, 0.3)'
             }}
           >
-            🤝 Принять и начать доставку
+            🤝 Accept and Begin Delivery
           </button>
         </div>
       ) : null}
 
-      {/* LIST OF AVAILABLE ORDERS */}
+      {}
       <div style={{
         background: '#fff',
         borderRadius: '16px',
@@ -120,7 +119,7 @@ export default function AvailableOrdersList({
         textAlign: 'left'
       }}>
         <h3 style={{ margin: '0 0 15px 0', fontSize: '18px', fontWeight: 'bold' }}>
-          🛒 Доступные заказы ({availableOrders.length})
+          🛒 Available Orders ({availableOrders.length})
         </h3>
 
         {activeOrder ? (
@@ -133,7 +132,7 @@ export default function AvailableOrdersList({
             fontSize: '13px',
             lineHeight: '1.4'
           }}>
-            Завершите текущую доставку для <b>{activeOrder.vendorName}</b>, чтобы принимать новые заказы!
+            Complete your current delivery for <b>{activeOrder.vendorName}</b> to accept new orders!
           </div>
         ) : availableOrders.length === 0 ? (
           <div style={{
@@ -144,7 +143,7 @@ export default function AvailableOrdersList({
             color: '#999',
             fontSize: '14px'
           }}>
-            Новых заказов пока нет. Ждем клиентов...
+            No new orders yet. Waiting for customers...
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -181,7 +180,7 @@ export default function AvailableOrdersList({
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#666' }}>
                     <span>📍 {order.deliveryAddress || "Poznan"}</span>
-                    <span>🛣️ {order.distance} км</span>
+                    <span>🛣️ {order.distance} km</span>
                   </div>
                   {order.coefficient && parseFloat(order.coefficient) > 1.0 && (
                     <div style={{ marginTop: '5px', textAlign: 'left' }}>
@@ -193,7 +192,7 @@ export default function AvailableOrdersList({
                         fontSize: '10px',
                         fontWeight: 'bold'
                       }}>
-                        ⚡ Спрос: {order.coefficient}x
+                        ⚡ Surge: {order.coefficient}x
                       </span>
                     </div>
                   )}

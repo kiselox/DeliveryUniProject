@@ -1,4 +1,3 @@
-// backend/db.js
 import pg from 'pg';
 import fs from 'fs';
 import path from 'path';
@@ -18,7 +17,6 @@ const DATABASE_URL = process.env.DATABASE_URL;
 export let usePostgres = false;
 export let pool = null;
 
-// Global settings in-memory
 export const settings = {
   pricePerKm: 4.0,
   scooterPricePerKm: 5.5,
@@ -26,7 +24,6 @@ export const settings = {
   globalSurcharge: 0.0
 };
 
-// Local JSON in-memory state
 export let localDb = {
   customers: [],
   couriers: [],
@@ -34,7 +31,6 @@ export let localDb = {
   orders: []
 };
 
-// Attempt to connect to PostgreSQL if URL is provided
 if (DATABASE_URL) {
   try {
     pool = new pg.Pool({
@@ -54,24 +50,21 @@ export function loadLocalDb() {
     const data = fs.readFileSync(DB_JSON_PATH, 'utf8');
     localDb = JSON.parse(data);
     
-    // Restore or initialize settings
     if (localDb.settings) {
       Object.assign(settings, localDb.settings);
     } else {
       localDb.settings = { ...settings };
     }
     
-    // Add coordinates to local vendors & customers if missing
     localDb.vendors = localDb.vendors.map(v => ({
       ...v,
       lat: VENDOR_COORDINATES[v.id]?.lat || 52.4064,
       lng: VENDOR_COORDINATES[v.id]?.lng || 16.9252
     }));
 
-    // Ensure customers have passwords & emails (default '123456' for legacy accounts)
     localDb.customers = localDb.customers.map(c => ({
       ...c,
-      lastName: c.lastName || 'Тестовый',
+      lastName: c.lastName || 'Test',
       email: c.email || (c.id === 'c1' ? 'denis@example.com' : `${c.id}@example.com`),
       phone: c.phone || '+48 123 456 789',
       lat: CUSTOMER_COORDINATES[c.id]?.lat || 52.4140,
@@ -79,10 +72,9 @@ export function loadLocalDb() {
       password: c.password || hashPassword('123456')
     }));
 
-    // Ensure couriers have passwords & emails (default '123456' for legacy accounts)
     localDb.couriers = localDb.couriers.map(cour => ({
       ...cour,
-      lastName: cour.lastName || 'Тестовый',
+      lastName: cour.lastName || 'Test',
       email: cour.email || (cour.id === 'cour1' ? 'vlad@example.com' : cour.id === 'cour2' ? 'scooter@example.com' : cour.id === 'cour3' ? 'car@example.com' : `${cour.id}@example.com`),
       phone: cour.phone || '+48 987 654 321',
       lat: cour.lat || COURIER_COORDINATES[cour.id]?.lat || 52.4140,
@@ -105,7 +97,6 @@ export function saveLocalDb() {
   }
 }
 
-// PostgreSQL Table Initialization & Seeding with PostGIS
 export async function initDb() {
   if (!usePostgres) {
     console.log('📂 Running in JSON File Mode (No Database URL specified).');
@@ -118,11 +109,9 @@ export async function initDb() {
     client = await pool.connect();
     console.log('✅ Connected to PostgreSQL database successfully!');
 
-    // 1. Enable PostGIS
     console.log('🌍 Enabling PostGIS extension...');
     await client.query('CREATE EXTENSION IF NOT EXISTS postgis;');
 
-    // 2. Create tables
     console.log('🛠️ Creating tables if they do not exist...');
     await client.query(`
       CREATE TABLE IF NOT EXISTS customers (
@@ -190,7 +179,6 @@ export async function initDb() {
       );
     `);
 
-    // 3. PostgreSQL migrations: add delivery address and custom coordinates columns if they don't exist
     console.log('⚙️ Migrating orders schema for delivery addresses...');
     await client.query(`
       ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_address VARCHAR(255) NULL;
@@ -208,7 +196,6 @@ export async function initDb() {
       ALTER TABLE orders ADD COLUMN IF NOT EXISTS rating_restaurant INT DEFAULT NULL NULL;
     `);
 
-    // 3b. Migrate customers and couriers tables for last_name, email, phone, password
     console.log('⚙️ Migrating customers and couriers schema for last_name, email, phone, password...');
     await client.query(`
       ALTER TABLE customers ADD COLUMN IF NOT EXISTS last_name VARCHAR(100) NULL;
@@ -227,28 +214,23 @@ export async function initDb() {
       ALTER TABLE couriers ADD COLUMN IF NOT EXISTS rating NUMERIC NULL;
     `);
 
-    // 3c. Migrate vendors table for rating column
     console.log('⚙️ Migrating vendors schema for rating column...');
     await client.query(`
       ALTER TABLE vendors ADD COLUMN IF NOT EXISTS rating NUMERIC NULL;
     `);
 
-    // 3c. Migrate messages table for resolved column
     console.log('⚙️ Migrating messages schema for resolved column...');
     await client.query(`
       ALTER TABLE messages ADD COLUMN IF NOT EXISTS resolved BOOLEAN DEFAULT FALSE;
     `);
 
 
-    // 4. Seed tables if empty
     const resVendors = await client.query('SELECT COUNT(*) FROM vendors');
     if (parseInt(resVendors.rows[0].count) === 0) {
       console.log('🌱 Seeding database with Poznań vendors, customers, and couriers...');
       
-      // Load raw mock JSON
       const mockData = JSON.parse(fs.readFileSync(DB_JSON_PATH, 'utf8'));
 
-      // Seed Customers
       for (const c of mockData.customers) {
         const coords = CUSTOMER_COORDINATES[c.id] || { lat: 52.4140, lng: 16.9295 };
         const pass = c.password || hashPassword('123456');
@@ -259,7 +241,6 @@ export async function initDb() {
         );
       }
 
-      // Seed Vendors
       for (const v of mockData.vendors) {
         const coords = VENDOR_COORDINATES[v.id] || { lat: 52.4064, lng: 16.9252 };
         await client.query(
@@ -269,7 +250,6 @@ export async function initDb() {
         );
       }
 
-      // Seed Couriers
       for (const cour of mockData.couriers) {
         const coords = COURIER_COORDINATES[cour.id] || { lat: 52.4140, lng: 16.9295 };
         const pass = cour.password || hashPassword('123456');
@@ -280,7 +260,6 @@ export async function initDb() {
         );
       }
 
-      // Seed Orders
       for (const o of mockData.orders) {
         await client.query(
           `INSERT INTO orders (id, customer_id, vendor_id, vendor_name, items, status, distance, fee, total_price, courier_id, created_at, delivery_address, delivery_lat, delivery_lng) 

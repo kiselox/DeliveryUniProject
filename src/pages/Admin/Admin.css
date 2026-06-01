@@ -1,6 +1,6 @@
-/* src/pages/Admin/Admin.css */
 
-/* Global Dark Radial purple theme & glass overlays for Admin Support Panel */
+
+
 
 .admin-dashboard-container {
   max-width: 1550px;
@@ -19,7 +19,7 @@
   text-align: left;
 }
 
-/* Analytics Stats Blocks */
+
 .analytics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -109,7 +109,7 @@
   background-color: rgba(170, 59, 255, 0.04);
 }
 
-/* Glassmorphic Modals styling */
+
 .admin-modal-overlay {
   position: fixed;
   top: 0;
@@ -163,7 +163,7 @@
   filter: brightness(1.1);
 }
 
-/* Support Chat Center Styles in Admin Portal */
+
 .support-tabs-container {
   display: flex;
   gap: 15px;
@@ -324,9 +324,7 @@
   }
 }
 
-/* ==========================================================================
-   SUPPORT CHAT SIDEBAR CLASSES (RULE 2 COMPLIANT EXTRACTS)
-   ========================================================================== */
+
 
 .chat-threads-sidebar-title {
   margin: 0 0 10px 0;
@@ -559,9 +557,7 @@
   padding: 0 4px;
 }
 
-/* ==========================================================================
-   ORDER DETAILS MODAL CLASSES (RULE 2 COMPLIANT EXTRACTS)
-   ========================================================================== */
+
 
 .admin-modal-content.admin-modal-large {
   max-width: 750px;

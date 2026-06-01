@@ -1,4 +1,3 @@
-// src/pages/Customer/components/AddressMapPicker.jsx
 
 export default function AddressMapPicker({
   deliveryAddress,
@@ -11,7 +10,7 @@ export default function AddressMapPicker({
   return (
     <div className="location-wrapper">
       <div className="location-header">
-        <label htmlFor="delivery-address-input" className="location-title">📍 Адрес доставки в Познани:</label>
+        <label htmlFor="delivery-address-input" className="location-title">📍 Delivery Address in Poznań:</label>
         <span className="location-coordinates">
           ({deliveryLat.toFixed(4)}, {deliveryLng.toFixed(4)})
         </span>
@@ -23,14 +22,14 @@ export default function AddressMapPicker({
           type="text"
           value={deliveryAddress}
           onChange={(e) => setDeliveryAddress(e.target.value)}
-          placeholder="Улица, например: Półwiejska, Garbary, Jeżyce…"
+          placeholder="Street, e.g., Półwiejska, Garbary, Jeżyce..."
           className="address-text-input"
           autoComplete="street-address"
           style={{ flexGrow: 1 }}
         />
       </div>
 
-      {/* Geolocation Button */}
+      {}
       <button
         type="button"
         onClick={handleGetCurrentPosition}
@@ -54,10 +53,10 @@ export default function AddressMapPicker({
         onMouseOver={(e) => e.currentTarget.style.background = 'linear-gradient(135deg, rgba(170, 59, 255, 0.3) 0%, rgba(123, 31, 162, 0.3) 100%)'}
         onMouseOut={(e) => e.currentTarget.style.background = 'linear-gradient(135deg, rgba(170, 59, 255, 0.2) 0%, rgba(123, 31, 162, 0.2) 100%)'}
       >
-        📡 Использовать мою текущую геопозицию
+        📡 Use My Current Geolocation
       </button>
 
-      {/* Micro map container */}
+      {}
       <div className="map-picker-container" style={{ marginTop: '15px' }}>
         <div 
           ref={mapContainerRef} 
@@ -65,7 +64,7 @@ export default function AddressMapPicker({
           className="micro-leaflet-map"
         />
         <div className="map-hint-badge">
-          Перетащите маркер 📍 или кликните карту
+          Drag marker 📍 or click on the map
         </div>
       </div>
     </div>

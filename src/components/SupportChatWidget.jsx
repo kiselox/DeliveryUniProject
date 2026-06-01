@@ -1,4 +1,3 @@
-// src/components/SupportChatWidget.jsx
 import { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSupportChat } from '../hooks/useSupportChat';
@@ -12,13 +11,12 @@ export default function SupportChatWidget({
   activeOrderId
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [chatType, setChatType] = useState('general'); // 'general' or 'order'
+  const [chatType, setChatType] = useState('general');
   const [text, setText] = useState('');
   const [customOrderId, setCustomOrderId] = useState(null);
 
   const { orders = [] } = useOrders();
 
-  // Fetch all active chat threads to sort orders by support activity
   const { data: chatThreads = [] } = useQuery({
     queryKey: ['supportChats'],
     queryFn: async () => {
@@ -28,7 +26,6 @@ export default function SupportChatWidget({
     refetchInterval: 3000
   });
 
-  // Listen to open-support-chat event from AccountDrawer
   useEffect(() => {
     const handleOpenSupport = (e) => {
       if (e.detail && e.detail.orderId) {
@@ -43,20 +40,17 @@ export default function SupportChatWidget({
     return () => window.removeEventListener('open-support-chat', handleOpenSupport);
   }, []);
 
-  // Filter and sort active orders by newest support activity
   const customerActiveOrders = orders.filter(o => 
     o.customerId === userId && 
     o.status !== "Delivered" && 
     o.status !== "Cancelled"
   );
 
-  // Get all customer orders that have active support dialogue (including delivered/cancelled)
   const ordersWithActiveChats = orders.filter(o => 
     o.customerId === userId && 
     chatThreads.some(t => t.chatId === `order-${o.id}`)
   );
 
-  // Group all unique orders that are either active in progress or have active support chat
   const candidateOrdersMap = {};
   if (activeOrderId) {
     const activeOrderObj = orders.find(o => o.id === activeOrderId);
@@ -73,7 +67,6 @@ export default function SupportChatWidget({
 
   const candidateOrders = Object.values(candidateOrdersMap);
 
-  // Sort candidate orders by support activity timestamp (most recent first)
   const sortedCandidates = [...candidateOrders].sort((a, b) => {
     const threadA = chatThreads.find(t => t.chatId === `order-${a.id}`);
     const threadB = chatThreads.find(t => t.chatId === `order-${b.id}`);
@@ -84,7 +77,6 @@ export default function SupportChatWidget({
 
   const latestActiveOrderId = sortedCandidates[0]?.id || activeOrderId;
   
-  // Determine actual chatId (default to the order with latest support activity)
   const effectiveOrderId = customOrderId || latestActiveOrderId;
   const generalChatId = `general-${userId}`;
   const orderChatId = effectiveOrderId 
@@ -92,13 +84,8 @@ export default function SupportChatWidget({
     : null;
   const currentChatId = chatType === 'order' && orderChatId ? orderChatId : generalChatId;
 
-  // Load support messages via our custom real-time hook
   const { messages = [], sendMessage, isSending } = useSupportChat(currentChatId);
 
-  // Build the list of dropdown options:
-  // - Must include the current active order (activeOrderId) if it exists
-  // - Plus any other active orders in progress (even without messages yet)
-  // - Plus any orders that already have active support dialogues
   const selectOptionsMap = {};
   
   if (activeOrderId) {
@@ -106,7 +93,7 @@ export default function SupportChatWidget({
     if (primaryActiveOrder) {
       selectOptionsMap[activeOrderId] = {
         id: activeOrderId,
-        label: `🍕 Текущий заказ #${activeOrderId.slice(-4).toUpperCase()} (${primaryActiveOrder.vendorName})`
+        label: `🍕 Current Order #${activeOrderId.slice(-4).toUpperCase()} (${primaryActiveOrder.vendorName})`
       };
     }
   }
@@ -115,7 +102,7 @@ export default function SupportChatWidget({
     if (!selectOptionsMap[o.id]) {
       selectOptionsMap[o.id] = {
         id: o.id,
-        label: `🍕 Активный заказ #${o.id.slice(-4).toUpperCase()} (${o.vendorName})`
+        label: `🍕 Active Order #${o.id.slice(-4).toUpperCase()} (${o.vendorName})`
       };
     }
   });
@@ -124,7 +111,7 @@ export default function SupportChatWidget({
     if (!selectOptionsMap[o.id]) {
       selectOptionsMap[o.id] = {
         id: o.id,
-        label: `💬 Чат по заказу #${o.id.slice(-4).toUpperCase()} (${o.vendorName})`
+        label: `💬 Order Chat #${o.id.slice(-4).toUpperCase()} (${o.vendorName})`
       };
     }
   });
@@ -135,14 +122,12 @@ export default function SupportChatWidget({
   const buttonRef = useRef(null);
   const drawerRef = useRef(null);
 
-  // Auto-scroll to bottom of chats
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, isOpen]);
 
-  // Handle order changes
   useEffect(() => {
     setTimeout(() => {
       if (effectiveOrderId) {
@@ -153,7 +138,6 @@ export default function SupportChatWidget({
     }, 0);
   }, [effectiveOrderId]);
 
-  // Close support chat on click/tap outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -182,19 +166,19 @@ export default function SupportChatWidget({
       await sendMessage({
         chatId: currentChatId,
         senderId: userId,
-        senderName: userName || `${userType === 'customer' ? 'Клиент' : 'Курьер'} ${userId}`,
-        role: userType, // 'customer' or 'courier'
+        senderName: userName || `${userType === 'customer' ? 'Customer' : 'Courier'} ${userId}`,
+        role: userType,
         text: text.trim()
       });
       setText('');
     } catch (err) {
-      alert("Не удалось отправить сообщение: " + err.message);
+      alert("Failed to send message: " + err.message);
     }
   };
 
   return (
     <>
-      {/* FLOATING BLUE/PURPLE CHAT TRIGGER BUTTON */}
+      {}
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
@@ -230,7 +214,7 @@ export default function SupportChatWidget({
         {isOpen ? '✕' : '💬'}
       </button>
 
-      {/* CHAT DRAWER PANEL */}
+      {}
       {isOpen && (
         <div
           ref={drawerRef}
@@ -253,7 +237,7 @@ export default function SupportChatWidget({
             textAlign: 'left'
           }}
         >
-          {/* HEADER */}
+          {}
           <div
             style={{
               padding: '16px 20px',
@@ -266,10 +250,10 @@ export default function SupportChatWidget({
           >
             <div>
               <span style={{ fontSize: '10px', color: '#ff7beb', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Служба Поддержки 🛠️
+                Support Service 🛠️
               </span>
               <h4 style={{ margin: '2px 0 0 0', color: '#fff', fontSize: '15px', fontWeight: 'bold' }}>
-                Диалог в реальном времени
+                Live Chat Dialogue
               </h4>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -277,7 +261,7 @@ export default function SupportChatWidget({
               <button 
                 type="button" 
                 onClick={() => setIsOpen(false)}
-                aria-label="Закрыть чат"
+                aria-label="Close Chat"
                 style={{
                   background: 'none',
                   border: 'none',
@@ -300,7 +284,7 @@ export default function SupportChatWidget({
             </div>
           </div>
 
-          {/* CHAT SELECTOR (IF ACTIVE OR CUSTOM ORDER EXISTS) */}
+          {}
           {effectiveOrderId && (
             <div style={{
               display: 'flex',
@@ -324,7 +308,7 @@ export default function SupportChatWidget({
                   transition: 'all 0.2s'
                 }}
               >
-                🍕 О заказе #{typeof effectiveOrderId === 'string' && effectiveOrderId.length > 4 ? effectiveOrderId.slice(-4).toUpperCase() : effectiveOrderId}
+                🍕 Order #{typeof effectiveOrderId === 'string' && effectiveOrderId.length > 4 ? effectiveOrderId.slice(-4).toUpperCase() : effectiveOrderId}
               </button>
 
               <button
@@ -344,12 +328,12 @@ export default function SupportChatWidget({
                   transition: 'all 0.2s'
                 }}
               >
-                ⚙️ Общий чат
+                ⚙️ General Chat
               </button>
             </div>
           )}
 
-          {/* ORDER SELECTOR BAR (ONLY RENDER IF THERE ARE MULTIPLE DIALOGUES TO CHOOSE FROM) */}
+          {}
           {chatType === 'order' && selectOptions.length > 1 && (
             <div style={{
               padding: '10px 16px',
@@ -361,7 +345,7 @@ export default function SupportChatWidget({
               gap: '10px'
             }}>
               <span style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.5)', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                Активный диалог:
+                Active dialogue:
               </span>
               <select
                 value={effectiveOrderId || ''}
@@ -392,7 +376,7 @@ export default function SupportChatWidget({
             </div>
           )}
 
-          {/* MESSAGES VIEW CONTAINER */}
+          {}
           <div
             style={{
               flexGrow: 1,
@@ -406,7 +390,7 @@ export default function SupportChatWidget({
             {messages.length === 0 ? (
               <div style={{ margin: 'auto', textAlign: 'center', padding: '0 20px', color: 'rgba(255,255,255,0.4)', fontSize: '13px', lineHeight: '1.5' }}>
                 <span style={{ fontSize: '24px', display: 'block', marginBottom: '10px' }}>👋</span>
-                Здравствуйте! Напишите нам сообщение. Оператор поддержки ответит вам в течение пары минут.
+                Hello! Send us a message. Support agent will respond in a couple of minutes.
               </div>
             ) : (
               messages.map((msg) => {
@@ -435,7 +419,7 @@ export default function SupportChatWidget({
                     }}
                   >
                     <div style={{ fontSize: '9px', opacity: 0.6, fontWeight: 'bold', marginBottom: '3px' }}>
-                      {isAdmin ? '🛡️ Поддержка' : msg.senderName}
+                      {isAdmin ? '🛡️ Support' : msg.senderName}
                     </div>
                     <div>{msg.text}</div>
                   </div>
@@ -445,7 +429,7 @@ export default function SupportChatWidget({
             <div ref={messagesEndRef} />
           </div>
 
-          {/* CHAT INPUT AREA */}
+          {}
           <form
             onSubmit={handleSend}
             style={{
@@ -458,7 +442,7 @@ export default function SupportChatWidget({
           >
             <input
               type="text"
-              placeholder="Напишите сообщение саппорту…"
+              placeholder="Type a message for support..."
               value={text}
               onChange={(e) => setText(e.target.value)}
               style={{
@@ -485,7 +469,7 @@ export default function SupportChatWidget({
                 fontSize: '12px'
               }}
             >
-              Отпр.
+              Send
             </button>
           </form>
         </div>

@@ -1,4 +1,3 @@
-// src/pages/Courier/CourierMain.jsx
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
@@ -13,7 +12,6 @@ import LeafletDeliveryMap from './components/LeafletDeliveryMap';
 import SupportChatWidget from '../../components/SupportChatWidget';
 import './Courier.css';
 
-// Poznań coordinates for restaurants (Vendors)
 const VENDOR_COORDINATES = {
   v1: { name: 'KFC', lat: 52.4018, lng: 16.9205 },
   v2: { name: "McDonald's", lat: 52.4023, lng: 16.9261 },
@@ -36,23 +34,18 @@ export default function CourierMain() {
   const pathLine1Ref = useRef(null);
   const pathLine2Ref = useRef(null);
 
-  // Courier state
-  const [courierLoc, setCourierLoc] = useState({ lat: 52.4140, lng: 16.9295 }); // Defaults to CDV Dormitory
+  const [courierLoc, setCourierLoc] = useState({ lat: 52.4140, lng: 16.9295 });
   const [isGpsTracking, setIsGpsTracking] = useState(false);
   
-  // Real-time distance state computed by backend
   const [distanceInfo, setDistanceInfo] = useState({ distanceMeters: 0, distanceKm: 0, mode: 'Local' });
 
-  // Selected order for PREVIEW (before accepting)
   const [previewOrder, setPreviewOrder] = useState(null);
   const [isEarningsOpen, setIsEarningsOpen] = useState(false);
-  const activeMobileTab = tab || 'orders'; // 'orders', 'map', 'earnings', 'profile'
+  const activeMobileTab = tab || 'orders';
 
-  // Use modular React Query hooks
   const { orders = [], refetch, updateOrder } = useOrders();
   const { settings } = useSettings();
 
-  // Fetch courier profile
   const { data: courier, isLoading: isCourierLoading, isError: isCourierError } = useQuery({
     queryKey: ['courier', courierId],
     queryFn: async () => {
@@ -61,7 +54,6 @@ export default function CourierMain() {
     }
   });
 
-  // Find active order in progress for this courier
   const activeOrder = orders.find(order => 
     (order.status === "Accepted" || order.status === "Picked Up") && 
     order.courierId === courierId
@@ -69,7 +61,6 @@ export default function CourierMain() {
 
   const hasInitializedLocRef = useRef(false);
 
-  // Dynamically center coordinates when courier loads
   useEffect(() => {
     if (courier?.lat && courier?.lng && !hasInitializedLocRef.current) {
       setTimeout(() => {
@@ -79,7 +70,6 @@ export default function CourierMain() {
     }
   }, [courier]);
 
-  // Automatically redirect to /orders if tab is not set
   useEffect(() => {
     if (!tab) {
       navigate(`/courier/${courierId}/orders`, { replace: true });
@@ -110,7 +100,6 @@ export default function CourierMain() {
   const totalEarnings = completedOrders.reduce((sum, o) => sum + calculatePayout(o), 0);
   const totalDistance = completedOrders.reduce((sum, o) => sum + (parseFloat(o.distance) || 0), 0);
 
-  // Load Leaflet CSS dynamically if not present
   useEffect(() => {
     if (!document.getElementById('leaflet-css')) {
       const link = document.createElement('link');
@@ -121,7 +110,6 @@ export default function CourierMain() {
     }
   }, []);
 
-  // Trigger Leaflet map resize adjustment when tab transitions to 'map'
   useEffect(() => {
     if (activeMobileTab === 'map' && mapRef.current) {
       const timer = setTimeout(() => {
@@ -131,12 +119,11 @@ export default function CourierMain() {
     }
   }, [activeMobileTab]);
 
-  // HTML5 GPS Tracking simulation
   useEffect(() => {
     if (!isGpsTracking) return;
 
     if (!navigator.geolocation) {
-      alert("Геолокация не поддерживается вашим браузером.");
+      alert("Geolocation is not supported by your browser.");
       setTimeout(() => {
         setIsGpsTracking(false);
       }, 0);
@@ -159,7 +146,6 @@ export default function CourierMain() {
     };
   }, [isGpsTracking]);
 
-  // Synchronize location updates with the backend REST API in real time
   useEffect(() => {
     const syncLocation = async () => {
       try {
@@ -191,7 +177,6 @@ export default function CourierMain() {
     return () => clearTimeout(debounceTimer);
   }, [courierLoc, activeOrder?.id, activeOrder?.vendorId, previewOrder?.id, previewOrder?.vendorId, courierId]);
 
-  // Initialize Leaflet Map
   useEffect(() => {
     if (isCourierLoading || !mapContainerRef.current) return;
 
@@ -205,34 +190,29 @@ export default function CourierMain() {
         maxZoom: 20
       }).addTo(map);
 
-      // Manual coordinates drag selector when GPS is off
       map.on('click', (e) => {
         if (isGpsTracking) {
-          alert("📡 Выключите режим GPS Tracking, чтобы вручную перемещать курьера кликами по карте!");
+          alert("📡 Turn off GPS Tracking to manually move the courier by clicking on the map!");
           return;
         }
         const { lat, lng } = e.latlng;
         setCourierLoc({ lat, lng });
       });
 
-      // Force size recalculation to prevent gray/empty map rendering on mount
       setTimeout(() => {
         map.invalidateSize();
       }, 100);
     }
   }, [isCourierLoading, isGpsTracking, courierLoc.lat, courierLoc.lng]);
 
-  // Redraw Layers & Markers on Coordinate/Route changes
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
 
-    // Auto-center map if GPS Tracking is active
     if (isGpsTracking) {
       map.panTo([courierLoc.lat, courierLoc.lng]);
     }
 
-    // 1. Render/Update Courier marker with absolute presence check
     if (courierMarkerRef.current && map.hasLayer(courierMarkerRef.current)) {
       courierMarkerRef.current.setLatLng([courierLoc.lat, courierLoc.lng]);
     } else {
@@ -248,7 +228,6 @@ export default function CourierMain() {
       courierMarkerRef.current = L.marker([courierLoc.lat, courierLoc.lng], { icon: courierIcon }).addTo(map);
     }
 
-    // 2. Render target Restaurant (Vendor) only if order is active or previewed
     restaurantMarkersRef.current.forEach(m => map.removeLayer(m));
     restaurantMarkersRef.current = [];
 
@@ -282,14 +261,13 @@ export default function CourierMain() {
         });
 
         const m = L.marker([coords.lat, coords.lng], { icon: restIcon })
-          .bindPopup(`<b>Ресторан: ${coords.name}</b>`)
+          .bindPopup(`<b>Restaurant: ${coords.name}</b>`)
           .addTo(map);
         
         restaurantMarkersRef.current.push(m);
       }
     }
 
-    // 3. Render Client destination marker if order active/previewed
     if (customerMarkerRef.current) {
       map.removeLayer(customerMarkerRef.current);
       customerMarkerRef.current = null;
@@ -306,11 +284,10 @@ export default function CourierMain() {
       customerMarkerRef.current = L.marker(
         [currentOrder.deliveryLat, currentOrder.deliveryLng],
         { icon: clientIcon }
-      ).bindPopup(`<b>Клиент: ${currentOrder.deliveryAddress || "Poznań CDV"}</b>`)
+      ).bindPopup(`<b>Customer: ${currentOrder.deliveryAddress || "Poznań CDV"}</b>`)
        .addTo(map);
     }
 
-    // 4. Render Route Polylines (Segment 1 and Segment 2)
     if (pathLine1Ref.current) {
       map.removeLayer(pathLine1Ref.current);
       pathLine1Ref.current = null;
@@ -323,14 +300,12 @@ export default function CourierMain() {
     if (activeOrder) {
       const restCoords = VENDOR_COORDINATES[activeOrder.vendorId];
       if (activeOrder.status === "Accepted" && restCoords) {
-        // Active Order Segment 1: Courier to Restaurant (Purple, dashed)
         const points1 = [
           [courierLoc.lat, courierLoc.lng],
           [restCoords.lat, restCoords.lng]
         ];
         pathLine1Ref.current = L.polyline(points1, { color: '#aa3bff', weight: 4, dashArray: '8, 8' }).addTo(map);
       } else if (activeOrder.status === "Picked Up" && restCoords && activeOrder.deliveryLat) {
-        // Active Order Segment 2: Restaurant to Client (Green, solid)
         const points2 = [
           [restCoords.lat, restCoords.lng],
           [activeOrder.deliveryLat, activeOrder.deliveryLng]
@@ -338,17 +313,14 @@ export default function CourierMain() {
         pathLine2Ref.current = L.polyline(points2, { color: '#4cd964', weight: 5 }).addTo(map);
       }
     } else if (previewOrder) {
-      // Previewing Order: Draw both segments to give a complete trip preview!
       const restCoords = VENDOR_COORDINATES[previewOrder.vendorId];
       if (restCoords) {
-        // Segment 1: Courier to Restaurant (Purple, dashed)
         const points1 = [
           [courierLoc.lat, courierLoc.lng],
           [restCoords.lat, restCoords.lng]
         ];
         pathLine1Ref.current = L.polyline(points1, { color: '#aa3bff', weight: 4, dashArray: '8, 8' }).addTo(map);
 
-        // Segment 2: Restaurant to Client (Green, solid)
         if (previewOrder.deliveryLat && previewOrder.deliveryLng) {
           const points2 = [
             [restCoords.lat, restCoords.lng],
@@ -360,7 +332,6 @@ export default function CourierMain() {
     }
   }, [courierLoc, activeOrder, orders, previewOrder, isGpsTracking]);
 
-  // Clean up Leaflet on unmount
   useEffect(() => {
     return () => {
       if (mapRef.current) {
@@ -387,7 +358,7 @@ export default function CourierMain() {
       setPreviewOrder(null);
       refetch();
     } catch (err) {
-      alert("Не удалось принять заказ: " + err.message);
+      alert("Failed to accept order: " + err.message);
     }
   };
 
@@ -398,10 +369,10 @@ export default function CourierMain() {
         orderId: activeOrder.id,
         updates: { status: "Picked Up" }
       });
-      alert("🍗 Получение в ресторане подтверждено. Едем к клиенту!");
+      alert("🍗 Pickup at restaurant confirmed. Heading to the customer!");
       refetch();
     } catch (err) {
-      alert("Не удалось забрать заказ: " + err.message);
+      alert("Failed to pick up order: " + err.message);
     }
   };
 
@@ -413,10 +384,10 @@ export default function CourierMain() {
         orderId: activeOrder.id,
         updates: { status: "Delivered" }
       });
-      alert("🎉 Поздравляем! Заказ успешно доставлен клиенту!");
+      alert("🎉 Congratulations! Order successfully delivered to the customer!");
       refetch();
     } catch (err) {
-      alert("Не удалось завершить заказ: " + err.message);
+      alert("Failed to complete order: " + err.message);
     }
   };
 
@@ -439,38 +410,38 @@ export default function CourierMain() {
     return `https://www.google.com/maps/dir/?api=1&origin=${courierLoc.lat},${courierLoc.lng}&destination=${destLat},${destLng}`;
   };
 
-  if (isCourierLoading) return <div style={{ padding: '20px' }}>Загрузка эмулятора курьера...</div>;
-  if (isCourierError) return <div style={{ padding: '20px' }}>Ошибка загрузки API профиля курьера</div>;
+  if (isCourierLoading) return <div style={{ padding: '20px' }}>Loading courier emulator...</div>;
+  if (isCourierError) return <div style={{ padding: '20px' }}>Error loading courier profile API</div>;
 
   return (
     <div className="courier-container-wrapper">
-      {/* Return button */}
+      {}
       <button 
         className="btn-role-switch"
         onClick={() => navigate('/')}
       >
-        ← Сменить роль
+        ← Switch Role
       </button>
 
       <div className="courier-page-header">
         <div className="courier-header-row">
           <h1 className="courier-header-title">
-            Панель Курьера {courier?.vehicle === 'Scooter' ? '🛵' : courier?.vehicle === 'Car' ? '🚗' : '🚲'}
+            Courier Panel {courier?.vehicle === 'Scooter' ? '🛵' : courier?.vehicle === 'Car' ? '🚗' : '🚲'}
           </h1>
           <span className="courier-header-badge">
-            {courier?.name || `Курьер: ${courierId}`} ({courier?.vehicle || 'Bicycle'})
+            {courier?.name || `Courier: ${courierId}`} ({courier?.vehicle || 'Bicycle'})
           </span>
         </div>
 
         <p className="courier-header-desc">
-          Эмулируйте движение курьера по г. Познань. <b>Все рестораны</b> постоянно видны на карте. Кликните по карте для перемещения.
+          Simulate courier movement in Poznań. <b>All restaurants</b> are always visible on the map. Click on the map to move.
         </p>
       </div>
 
-      {/* Main Grid Layout */}
+      {}
       <div className="courier-dashboard-container">
         
-        {/* Left Column: Courier Profile & Active/Available orders */}
+        {}
         <div className="courier-left-column flex-column-gap-md">
           
           <div className={`mobile-tab-content ${activeMobileTab === 'profile' ? 'active-tab' : ''}`}>
@@ -483,7 +454,7 @@ export default function CourierMain() {
           </div>
 
           <div className={`mobile-tab-content ${activeMobileTab === 'earnings' ? 'active-tab' : ''}`}>
-            {/* DAILY EARNINGS GLASSMORPHIC DASHBOARD PANEL */}
+            {}
             <div style={{
               background: '#fff',
               border: '1px solid #eee',
@@ -493,26 +464,20 @@ export default function CourierMain() {
               textAlign: 'left',
               transition: 'all 0.3s ease'
             }}>
-              {/* Header toggle row */}
+              {}
               <div 
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
                 onClick={() => setIsEarningsOpen(!isEarningsOpen)}
-                style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center', 
-                  cursor: 'pointer',
-                  userSelect: 'none'
-                }}
               >
                 <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', color: '#333' }}>
-                  📊 Мой доход за сегодня
+                  📊 My Earnings Today
                 </h3>
                 <span style={{ fontSize: '14px', color: '#aa3bff', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  {isEarningsOpen ? 'Свернуть ▲' : 'Подробнее ▼'}
+                  {isEarningsOpen ? 'Collapse ▲' : 'Details ▼'}
                 </span>
               </div>
-
-              {/* Quick stats grid */}
+ 
+              {}
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr 1fr',
@@ -521,24 +486,24 @@ export default function CourierMain() {
                 borderTop: '1px solid #eee',
                 paddingTop: '15px'
               }}>
-                {/* Earnings column */}
+                {}
                 <div style={{ background: 'rgba(0,210,106,0.05)', border: '1px solid rgba(0,210,106,0.12)', padding: '10px', borderRadius: '12px', textAlign: 'center' }}>
-                  <span style={{ fontSize: '11px', color: '#555', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>Заработано</span>
+                  <span style={{ fontSize: '11px', color: '#555', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>Earned</span>
                   <strong style={{ fontSize: '18px', color: '#00aa54' }}>{totalEarnings} PLN</strong>
                 </div>
-                {/* Deliveries count */}
+                {}
                 <div style={{ background: 'rgba(74,144,226,0.05)', border: '1px solid rgba(74,144,226,0.12)', padding: '10px', borderRadius: '12px', textAlign: 'center' }}>
-                  <span style={{ fontSize: '11px', color: '#555', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>Доставки</span>
-                  <strong style={{ fontSize: '18px', color: '#2575fc' }}>{completedOrders.length} шт</strong>
+                  <span style={{ fontSize: '11px', color: '#555', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>Deliveries</span>
+                  <strong style={{ fontSize: '18px', color: '#2575fc' }}>{completedOrders.length} orders</strong>
                 </div>
-                {/* Distance count */}
+                {}
                 <div style={{ background: 'rgba(170,59,255,0.05)', border: '1px solid rgba(170,59,255,0.12)', padding: '10px', borderRadius: '12px', textAlign: 'center' }}>
-                  <span style={{ fontSize: '11px', color: '#555', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>Пробег</span>
-                  <strong style={{ fontSize: '18px', color: '#8c31d8' }}>{totalDistance.toFixed(1)} км</strong>
+                  <span style={{ fontSize: '11px', color: '#555', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>Distance</span>
+                  <strong style={{ fontSize: '18px', color: '#8c31d8' }}>{totalDistance.toFixed(1)} km</strong>
                 </div>
               </div>
 
-              {/* Detailed deliveries list (expandable) */}
+              {}
               {isEarningsOpen && (
                 <div style={{
                   marginTop: '15px',
@@ -553,7 +518,7 @@ export default function CourierMain() {
                 }}>
                   {completedOrders.length === 0 ? (
                     <div style={{ padding: '20px 0', textAlign: 'center', color: '#777', fontSize: '13px' }}>
-                      У вас пока нет выполненных заказов за сегодня. 🛵
+                      You have no completed orders today yet. 🛵
                     </div>
                   ) : (
                     completedOrders.map(order => {
@@ -581,7 +546,7 @@ export default function CourierMain() {
                             <div style={{ display: 'flex', gap: '8px', fontSize: '11px', color: '#666', marginTop: '2px' }}>
                               <span>🍕 #{order.id.slice(-4).toUpperCase()}</span>
                               <span>⏱️ {order.createdAt}</span>
-                              <span>🛣️ {order.distance} км</span>
+                              <span>🛣️ {order.distance} km</span>
                             </div>
                           </div>
                           <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#00aa54' }}>
@@ -619,7 +584,7 @@ export default function CourierMain() {
           </div>
         </div>
 
-        {/* Right Column: Leaflet Micro Map */}
+        {}
         <div className={`map-tab-wrapper ${activeMobileTab === 'map' ? 'active-tab' : ''}`} style={{ position: 'relative' }}>
           <LeafletDeliveryMap mapContainerRef={mapContainerRef} />
           {activeOrder && (
@@ -649,20 +614,20 @@ export default function CourierMain() {
                 fontFamily: 'inherit'
               }}
             >
-              🗺️ Открыть Google Maps
+              🗺️ Open Google Maps
             </a>
           )}
         </div>
       </div>
 
-      {/* Bottom Sticky Tab Navigation Bar (Mobile only) */}
+      {}
       <div className="courier-bottom-nav">
         <button 
           className={activeMobileTab === 'map' ? 'active' : ''} 
           onClick={() => navigate(`/courier/${courierId}/map`)}
         >
           <span className="nav-icon">🗺️</span>
-          <span className="nav-label">Карта</span>
+          <span className="nav-label">Map</span>
         </button>
         <button 
           className={activeMobileTab === 'orders' ? 'active' : ''} 
@@ -674,28 +639,28 @@ export default function CourierMain() {
               <span className="nav-badge">{availableOrders.length}</span>
             )}
           </span>
-          <span className="nav-label">Заказы</span>
+          <span className="nav-label">Orders</span>
         </button>
         <button 
           className={activeMobileTab === 'earnings' ? 'active' : ''} 
           onClick={() => navigate(`/courier/${courierId}/earnings`)}
         >
           <span className="nav-icon">📈</span>
-          <span className="nav-label">Доход</span>
+          <span className="nav-label">Earnings</span>
         </button>
         <button 
           className={activeMobileTab === 'profile' ? 'active' : ''} 
           onClick={() => navigate(`/courier/${courierId}/profile`)}
         >
           <span className="nav-icon">👤</span>
-          <span className="nav-label">Профиль</span>
+          <span className="nav-label">Profile</span>
         </button>
       </div>
 
       <SupportChatWidget 
         userType="courier"
         userId={courierId}
-        userName={courier?.name || `Курьер ${courierId}`}
+        userName={courier?.name || `Courier ${courierId}`}
         activeOrderId={activeOrder?.id}
         activeOrderVendor={activeOrder?.vendorName}
       />

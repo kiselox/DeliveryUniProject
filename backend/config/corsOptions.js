@@ -1,7 +1,6 @@
-// backend/config/corsOptions.js
 
 const corsOptions = {
-  origin: '*', // Allow all origins for dev simulation
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 };

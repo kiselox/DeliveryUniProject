@@ -1,4 +1,4 @@
-# POLONEZ Delivery 🚗💨 — Симулятор Службы Экспресс-Доставки (Poznań)
+# POLONEZ Delivery 🚗💨 — Real-Time Express Delivery Service Simulator (Poznań)
 
 ![React](https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-8.0-646CFF?style=for-the-badge&logo=vite&logoColor=white)
@@ -6,52 +6,52 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-PostGIS-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Leaflet](https://img.shields.io/badge/Leaflet-1.9-199900?style=for-the-badge&logo=leaflet&logoColor=white)
 
-**POLONEZ Delivery** — это интерактивный симулятор службы экспресс-доставки еды в реальном времени, адаптированный под географическую карту города **Познань (Польша)**. 
+**POLONEZ Delivery** is an interactive, real-time express food delivery simulator adapted to the geographic map of **Poznań, Poland**. 
 
-Проект решает комплексную логистическую задачу связывания клиентов, ресторанов и курьеров через центральный диспетчерский пункт поддержки (саппорт). Реализована сложная математическая и географическая модель: автоматический расчет цен на основе геопозиции, динамическое ценообразование в зависимости от погоды и повышенного спроса, а также интерактивное отслеживание курьеров по картам Leaflet с построением маршрутов.
+The project solves a complex, real-world logistics and coordination puzzle by establishing real-time communication between customers, restaurants, and couriers via a central administrative support dashboard. It integrates an advanced geographical and mathematical model: automated price calculation based on geolocation, dynamic pricing based on active weather conditions and surging demand multipliers, and real-time courier GPS tracking using Leaflet maps with visual route mapping.
 
-Интерфейс приложения выполнен в эстетике **Glassmorphism (эффект матового стекла)** с темно-фиолетовой неоновой цветовой палитрой, создавая премиальный и современный пользовательский опыт (WOW-эффект).
+The user interface is designed using **Glassmorphism aesthetics (frosted glass effects)** with a sleek, dark-purple neon color scheme, creating a premium and immersive visual experience.
 
 ---
 
-## 🗺️ Общая Архитектура Решения
+## 🗺️ System Architecture & Workflow
 
-Процесс обработки заказа и взаимодействия между ролями наглядно представлен на следующей схеме:
+The entire lifecycle of an order and the interaction between the system's modules are illustrated in the diagram below:
 
 ```mermaid
 graph TD
-    %% Стилизация узлов
+    %% Node Styling
     classDef client fill:#ff99c8,stroke:#333,stroke-width:2px;
     classDef support fill:#dec0f1,stroke:#333,stroke-width:2px;
     classDef courier fill:#b9fbc0,stroke:#333,stroke-width:2px;
     classDef db fill:#a0c4ff,stroke:#333,stroke-width:2px;
 
-    subgraph ClientRole [👨‍💻 Модуль Клиента]
-        A[Сетка ресторанов Poznań] -->|Выбор блюд & Корзина| B[Форма деталей заказа]
-        B -->|Указание координат & Шеринг геопозиции| C[Создание заказа]
+    subgraph ClientRole [👨‍💻 Customer Module]
+        A[Poznań Restaurant Grid] -->|Dish Selection & Cart| B[Order Details Form]
+        B -->|Coordinate Selection & Location Sharing| C[Create Order]
     end
 
-    subgraph ServerLayer [⚙️ Бэкенд & База Данных]
+    subgraph ServerLayer [⚙️ Backend & Database]
         C -->|POST /orders| D[(Dual Database: Postgres/PostGIS vs. JSON db.json)]
-        D -->|Расчет Haversine & Geocoder| E[Статус заказа: Ready for Pickup]
+        D -->|Haversine / PostGIS Calculations & Geocoding| E[Order Status: Ready for Pickup]
     end
 
-    subgraph SupportRole [🎧 Пульт Саппорта]
-        E -->|React Query Polling 3s| F[Диспетчерский Монитор Admin.jsx]
-        F -->|Регулировка погоды & Спроса| G[Мутация /settings и /orders/:id]
-        G -->|Обновление тарифов| D
+    subgraph SupportRole [🎧 Support & Dispatch Console]
+        E -->|React Query Polling 3s| F[Dispatch Monitor Admin.jsx]
+        F -->|Weather & Demand Adjustment| G[Mutation /settings and /orders/:id]
+        G -->|Update Rates & Surges| D
     end
 
-    subgraph CourierRole [🚴 Модуль Курьера]
-        E -->|Отображение на карте Leaflet| H[Консоль Курьера Courier.jsx]
-        H -->|Принятие заказа| I(Статус: Accepted)
-        I -->|Движение к ресторану| J(Статус: Picked Up)
-        J -->|Доставка клиенту| K(Статус: Delivering)
-        K -->|Ввод проверочного кода| L(Статус: Delivered)
-        L -->|Начисление баланса курьера| D
+    subgraph CourierRole [🚴 Courier Console]
+        E -->|Leaflet Map Visualization| H[Courier Console Courier.jsx]
+        H -->|Accept Order| I(Status: Accepted)
+        I -->|Travel to Restaurant| J(Status: Picked Up)
+        J -->|Deliver to Customer| K(Status: Delivering)
+        K -->|Enter Verification PIN| L(Status: Delivered)
+        L -->|Credit Courier Balance| D
     end
 
-    %% Назначение стилей
+    %% Apply Styles
     class A,B,C client;
     class D,E db;
     class F,G support;
@@ -60,200 +60,204 @@ graph TD
 
 ---
 
-## 🚀 1. Быстрый старт (Quick Start)
+## 🚀 1. Quick Start
 
-Для развертывания проекта в локальном окружении выполните следующие шаги.
+Follow these steps to set up and run the project locally.
 
-### Требования
-* Node.js версии **18.x** или выше.
-* npm версии **9.x** или выше.
-* *(Опционально)* База данных PostgreSQL с установленным расширением PostGIS для промышленного режима.
+### Prerequisites
+* **Node.js**: Version `18.x` or higher.
+* **npm**: Version `9.x` or higher.
+* *(Optional)*: A running **PostgreSQL** database with the **PostGIS** extension enabled for production-grade spatial querying.
 
-### Установка зависимостей
-Склонируйте репозиторий и в его корневом каталоге выполните установку пакетов:
+### Installation
+Clone the repository and install all dependencies in the root directory:
 ```bash
 npm install
 ```
 
-### Настройка переменных окружения
-Создайте файл `.env` в корневом каталоге проекта со следующим содержимым:
+### Environment Setup
+Create a `.env` file in the root directory of the project with the following configuration:
 ```env
 PORT=3001
-# Укажите строку подключения к PostgreSQL, если хотите запустить PostGIS-режим
+# Add your PostgreSQL connection string to activate PostGIS-driven production mode
 # DATABASE_URL=postgresql://username:password@localhost:5432/polonez_delivery
 ```
 
-### Запуск серверов
-Проект состоит из клиентской части (Vite) и бэкенд-сервера (Express), которые запускаются параллельно.
+### Running the Application
+The application consists of a React/Vite frontend and an Express backend, designed to run concurrently.
 
-1. **Запуск бэкенд-сервера** (REST API, по умолчанию на порту `3001`):
+1. **Start the Backend Server** (REST API, running by default on port `3001`):
    ```bash
    npm run server
    ```
-2. **Запуск фронтенд-сервера разработки** (Vite, на порту `5173`):
+2. **Start the Vite Dev Server** (Frontend, running by default on port `5173`):
    ```bash
    npm run dev
    ```
 
-После успешного старта перейдите по адресу: **[http://localhost:5173/](http://localhost:5173/)**
+Once both servers are running successfully, navigate to: **[http://localhost:5173/](http://localhost:5173/)**
 
 ---
 
-## 💎 2. Текущее состояние (Current State)
+## 💎 2. Core Modules & Dual-DB Architecture
 
-Проект полностью интерактивен, данные синхронизируются каждые **3 секунды** через механизм React Query Polling, создавая ощущение real-time взаимодействия. 
+All states, lists, and positions are synchronized across modules every **3 seconds** using **React Query Polling**, providing an immersive, lag-free simulator experience.
 
-### ⚙️ Сравнение Режимов Базы Данных (Dual-Mode DB)
-Бэкенд умеет бесшовно адаптироваться под окружение:
+### ⚙️ Dual-Mode Database Engine (Seamless Adaptability)
+The backend dynamically adapts its data storage, geocoding, and routing calculations based on the environment configuration:
 
-| Характеристика | 🏢 Промышленный режим (PostgreSQL + PostGIS) | 💾 Локальный режим (JSON Fallback) |
+| Metric / Feature | 🏢 Production Mode (PostgreSQL + PostGIS) | 💾 Local Mode (JSON Fallback) |
 | :--- | :--- | :--- |
-| **Условие активации** | Наличие вадиной строки `DATABASE_URL` в `.env` | Отсутствие переменной `DATABASE_URL` (по умолчанию) |
-| **Хранилище данных** | Реляционная БД PostgreSQL с расширением `postgis` | Файловая база `db.json` с in-memory кэшированием |
-| **Расчет дистанции** | Пространственный SQL-запрос `ST_DistanceSphere` | Математическая формула Гаверсинусов (Haversine) на JS |
-| **Тип гео-координат** | Стандартизированный тип `GEOGRAPHY(Point, 4326)` | Сериализованные объекты `{ lat, lng }` |
-| **Устойчивость** | Полная транзакционность, авто-миграции при запуске | Синхронная перезапись `db.json` при каждом изменении |
+| **Activation Rule** | Valid `DATABASE_URL` present in the `.env` file | Absence of `DATABASE_URL` (Default fallback) |
+| **Storage Engine** | PostgreSQL Relational Database with `postgis` | Local `db.json` file with in-memory caching |
+| **Distance Calculation** | Highly accurate SQL-level spatial queries via `ST_DistanceSphere` | Mathematical **Haversine formula** calculated in JavaScript |
+| **Geo-Coordinate Type** | Standardized Spatial Geography Point: `GEOGRAPHY(Point, 4326)` | Serialized JSON coordinate objects: `{ lat, lng }` |
+| **Data Integrity** | ACID transactions, automated migrations on startup | Synchronous write-backs to `db.json` on each update |
 
 ---
 
-### 🛠️ Детализированный функционал по ролям
+### 🛠️ Role-Specific Features
 
-#### 1. ⚙️ Бэкенд и Инфраструктура (`server.js`)
-* **Познаньский геокодер (Poznań Street Geocoder)**: Реализован серверный нормализатор польских символов (например, `ł -> l`, `ó -> o`, `ę -> e`) со словарем известных адресов (Półwiejska, Garbary, Jeżyce, CDV, Malta и др.), возвращающий точные GPS-координаты для поиска.
-* **Автоматические миграции**: При старте PostgreSQL автоматически проверяются и создаются таблицы `orders`, `couriers`, `vendors` и `settings` с интеграцией PostGIS-типов.
-* **REST API**: Разработаны эндпоинты для управления тарифами, курьерами, ресторанами и заказами.
-
----
-
-#### 2. 👨‍💻 Интерфейс Клиента (`src/pages/Customer/`)
-* **Витрина заведений (`CustomerMain.jsx`)**: Сетка популярных ресторанов Познани (KFC, McDonald's, Pasibus и др.) с живым поиском и красивой анимацией карточек на наведение.
-* **Интерактивная корзина (`CustomerMenu.jsx`)**: Добавление/удаление блюд, подсчет промежуточного итога и стоимости доставки в реальном времени.
-* **Расширенное оформление заказа**:
-  * Карта Leaflet для визуального выбора точки доставки.
-  * Кнопка автоматического шеринга геопозиции (HTML5 Geolocation).
-  * Полноценная форма адреса: *Улица*, *Дом*, *Квартира*, *Этаж*, *Телефон*, *Примечания для курьера*. Все поля имеют безопасные дефолты при рендеринге для предотвращения ошибок JS.
+#### 1. ⚙️ Robust Backend & Infrastructure (`server.js`)
+* **Poznań Street Geocoder**: A custom server-side text normalizer for Polish addresses (e.g., `ł -> l`, `ó -> o`, `ę -> e`) paired with a coordinate dictionary of famous Poznań streets and landmarks (Półwiejska, Garbary, Jeżyce, CDV, Lake Malta, etc.) returning absolute GPS coordinates.
+* **Auto-Migrations**: When connected to PostgreSQL, the server automatically checks, updates, and creates the spatial tables (`orders`, `couriers`, `vendors`, `settings`), applying PostGIS data types out of the box.
+* **REST API Layer**: Complete set of endpoints managing courier configurations, vendors, menu item sets, settings, and orders.
 
 ---
 
-#### 3. 🚴 Консоль Курьера (`src/pages/Courier.jsx`)
-* **Мульти-транспортная сетка**: Поддержка трех классов курьеров со своими тарифами:
-  * 🚲 **Bicycle (Курьер 1)** — стандартная ставка за километр.
-  * 🛵 **Scooter (Курьер 2)** — повышенная ставка за скорость.
-  * 🚗 **Car (Курьер 3)** — максимальная ставка за комфорт и дальность.
-* **Интерактивная Leaflet-карта**: Отображает маркер курьера (GPS-трекинг), маркер ресторана и дома клиента. Рисует цветную векторную полилинию маршрута.
-* **Динамический кошелек**: Рассчитывает выплату за заказ прямо на экране по формуле: `Math.max(5.0, (Дистанция * Тариф_Транспорта + Погодная_Надбавка) * Коэффициент_Спроса)`.
-* **Быстрая навигация**: Встроена кнопка мгновенного перехода в **Google Карты** для автоматического построения маршрута по внешнему навигатору.
-* **Безопасное завершение**: Добавлена форма верификации доставки — курьер должен ввести уникальный код заказа (последние 4 символа ID) для завершения поездки.
+#### 2. 👨‍💻 Premium Customer Interface (`src/pages/Customer/`)
+* **Poznań Venues Hub (`CustomerMain.jsx`)**: An elegant grid showcasing famous Poznań dining venues (KFC, McDonald's, Pasibus, etc.) with real-time text-filtering and custom hover animations.
+* **Reactive Checkout Shopping Cart (`CustomerMenu.jsx`)**: Responsive cart overlay calculating item quantities, subtotals, and real-time delivery fees as items are added or removed.
+* **Geographical Order Form**:
+  * An interactive Leaflet map allows users to visually drag and drop their location pin.
+  * Single-tap HTML5 Geolocation sharing.
+  * Comprehensive delivery details form: *Street Name*, *House Number*, *Apartment*, *Floor*, *Phone Number*, and *Courier Notes* with secure default fallbacks preventing JS runtime errors.
 
 ---
 
-#### 4. 🎧 Диспетчерский Пульт Поддержки (`src/pages/Admin.jsx`)
-* **Очищенный и сфокусированный интерфейс**: Таблица заказов избавлена от лишней технической информации (убраны столбцы с прогнозом времени и дистанцией), делая панель просторной.
-* **Хронологический порядок**: Все заказы выводятся строго по времени их создания, начиная с самых новых (сверху).
-* **Показатель времени**: Добавлена колонка `Время`, отображающая время создания заказа (например, `🕒 14:35`).
-* **Корректные индикаторы статусов**: Заказы в пути визуализируются понятным синим статусом `🔵 В пути к клиенту`.
-* **Стеклянная карточка деталей (`👁️ Детали`)**: В один клик открывается Glassmorphic-модалка, показывающая полный профиль заказа: контакты, этаж, квартиру, телефон, комментарий и раскладку стоимости для курьера.
-* **Управление спросом (`⚡ Спрос`)**: Регулировка коэффициента повышенного спроса (слайдер от `1.0x` до `5.0x` + быстрые кнопки-пресеты) с мгновенным пересчетом будущих выплат курьерам.
-* **Климатический пульт**: Кнопки переключения погоды (Ясно `+0 PLN`, Дождь `+5 PLN`, Снегопад `+10 PLN`), мгновенно меняющие глобальную набавку тарифа на бэкенде.
+#### 3. 🚴 Courier Navigation & Console (`src/pages/Courier.jsx`)
+* **Multi-Transport Support**: Support for three distinct courier transport tiers, each dynamically calculating travel rates and earnings:
+  * 🚲 **Bicycle** — Standard per-kilometer base rate.
+  * 🛵 **Scooter** — Mid-tier base rate optimized for swift traffic navigation.
+  * 🚗 **Car** — Premium base rate suited for long-distance deliveries.
+* **Interactive Mapping with Route Tracing**: Real-time Leaflet mapping showing the courier's GPS location, the restaurant location, and the customer's delivery destination. Connects the points with a distinct, styled vector routing polyline.
+* **Real-Time Earnings Calculator**: Displays calculated order payout live on screen based on the dynamic formula:
+  $$\text{Payout} = \max\left(5.0,\, (\text{Distance} \times \text{Transport Rate} + \text{Weather Surcharge}) \times \text{Demand Multiplier}\right)$$
+* **External Navigation Redirect**: Integrated button to quickly push current destination coordinates to **Google Maps** for active voice guidance on external navigation apps.
+* **Secure Delivery Pin Verification**: Safe-close protocol requiring the courier to input the last 4 characters of the unique order ID to confirm successful handoff.
 
 ---
 
-## 🗺️ 3. Архитектура и Структура файлов
+#### 4. 🎧 Support & Dispatch Console (`src/pages/Admin.jsx`)
+* **Optimized Dispatch Interface**: The main queue list is stripped of redundant metrics (like raw distance or estimated arrival times), giving dispatchers a spacious, easy-to-read workspace.
+* **Strict Chronological Queue**: Orders are arranged based on checkout time, displaying the newest orders at the very top.
+* **Chronological Time Badges**: Adds a dedicated `Time` column showing exact checkout times (e.g., `🕒 14:35`).
+* **Precise Status Colors**: Active transit orders are displayed with a clear, color-coded status badge: `🔵 In transit to customer`.
+* **Glassmorphism Detail Drawer (`👁️ Details`)**: Open an elegant overlay displaying full order summaries: client contact details, floor/apartment details, courier notes, and exact payout breakdown.
+* **Global Demand Regulator (`⚡ Demand`)**: Command panel containing a fluid demand multiplier slider (ranging from `1.0x` to `5.0x`) and preset quick-buttons that recalculate all active courier payouts instantly.
+* **Weather Simulator Dashboard**: Dynamic controls representing weather conditions (Clear `+0 PLN`, Rainy `+5 PLN`, Snowy `+10 PLN`) that instantly write surcharge mutations back to the server.
 
-Проект построен по строгому модульному принципу:
+---
+
+## 🗺️ 3. Folder Directory & Code Layout
+
+The project follows a modular React + Express codebase architecture:
 
 ```
-├── server.js                 # Сервер Express (REST API, Geocoder, Dual DB)
-├── db.json                   # Локальная база данных (JSON Fallback)
-├── package.json              # Зависимости и npm-скрипты
-├── ai-instructions.md        # [NEW] Инструкция для ИИ-агентов по правилам написания кода
+├── server.js                 # Express backend server (APIs, Geocoder, Dual DB, Haversine)
+├── db.json                   # Local Database fallback (JSON storage)
+├── package.json              # Project dependencies, scripts, and runtime commands
+├── ai-instructions.md        # [GUIDE] Strict code rules and architectural guide for AI agents
 ├── src/
-│   ├── main.jsx              # Точка входа React
-│   ├── App.jsx               # Глобальный роутер и распределение ролей
-│   ├── index.css             # Стили оформления, темы, сбросы Leaflet
+│   ├── main.jsx              # React mounting point
+│   ├── App.jsx               # Global router, role-based navigation routes, layout styling
+│   ├── index.css             # Main stylesheet (Glassmorphic variables, Leaflet overrides, themes)
 │   │
-│   ├── components/           # Презентационные (UI) компоненты без логики данных
-│   │   ├── Header.jsx        # Шапка личного кабинета
-│   │   ├── RestaurantCard.jsx# Карточка заведения
-│   │   └── MenuItemCard.jsx  # Карточка блюда в меню
+│   ├── components/           # Universal UI components (Presenter-only)
+│   │   ├── Header.jsx        # Navigation bar with address and search elements
+│   │   ├── RestaurantCard.jsx# Hover-animated cards in the restaurant directory
+│   │   └── MenuItemCard.jsx  # Individual menu items with quantity pickers
 │   │
-│   ├── pages/                # Страницы-контейнеры (бизнес-логика, стейт, карты)
-│   │   ├── Customer/         # Модуль клиента (CustomerMain.jsx, CustomerMenu.jsx)
-│   │   ├── Courier.jsx       # Консоль курьера с Leaflet-картой
-│   │   └── Admin.jsx         # Панель управления тарифами, спросом и заказами
+│   ├── pages/                # Page-level containers (State management, maps, logic hooks)
+│   │   ├── Customer/         # Customer Module
+│   │   │   ├── CustomerMain.jsx # Poznań Restaurant Grid selector
+│   │   │   └── CustomerMenu.jsx # Cart, checkout map interface, and address forms
+│   │   │
+│   │   ├── Courier.jsx       # Courier dashboard with interactive maps and route tracing
+│   │   └── Admin.jsx         # Support panel with climate systems, surge rates, and order charts
 │   │
-│   └── services/             # Axios-сервисы интеграции с REST API
-│       ├── api.js            # Инициализация Axios-клиента
-│       ├── customer-services.js # Сервисы профилей и авторизации
-│       ├── orders-services.js   # API-запросы по заказам
-│       └── vendors-services.js  # API-запросы по ресторанам и меню
+│   └── services/             # Dynamic API service adapters (Axios wrapper)
+│       ├── api.js            # Axios client initialization (pointing to port 3001)
+│       ├── customer-services.js # Account profile and authentication logic
+│       ├── orders-services.js   # Order creation, mutations, and status changes
+│       └── vendors-services.js  # Menu and Restaurant fetching services
 ```
 
 > [!NOTE]
-> В корне проекта находится файл `ai-instructions.md` — он содержит детальный свод из **7 строгих правил написания кода** (включая запрет на TailwindCSS, правила кэширования в React Query v5 и менеджмент слоев Leaflet). Обязательно ознакомьтесь с ним перед написанием кода!
+> There is a specialized guide `ai-instructions.md` located in the project's root. It highlights **8 strict coding rules** (including the total restriction of TailwindCSS, React Query v5 guidelines, and Leaflet layer cleanup). Developers and AI coding partners should read this guide before making modifications!
 
 ---
 
-## 🚀 4. Roadmap / Next Steps (Задачи для Вашего ИИ-напарника)
+## 🚀 4. Technical Roadmap & Next Steps
 
-Этот раздел подготовлен специально для вашего напарника Миши и его ИИ-агента. Любую из этих задач можно скопировать целиком, передать ИИ в работу, и он сможет мгновенно приступить к ее качественному выполнению.
-
----
-
-### 📋 Задача 1: Интеграция реальной Google Maps API вместо Leaflet
-* **🎯 Цель**: Заменить Leaflet-карту на полноценную интеграцию Google Maps.
-* **💡 Мотивация**: Leaflet сейчас прокладывает маршрут по вектору «по прямой». Использование Google Maps Directions Service позволит строить реальные маршруты по дорожной сети Познани с учетом выбранного типа транспорта (автомобиль, велосипед, пешком) и отображать реальное время в пути с учетом пробок.
-* **🛠️ Шаги для ИИ**:
-  1. Установить официальный загрузчик карт: `npm install @googlemaps/js-api-loader`.
-  2. Зарегистрировать API-ключ в Google Cloud Console и прописать его в `.env` как `VITE_GOOGLE_MAPS_API_KEY`.
-  3. В компонентах `Courier.jsx` и `CustomerMenu.jsx` переписать логику отрисовки карт с Leaflet на Google Maps API.
-  4. Использовать `google.maps.DirectionsService` и `google.maps.DirectionsRenderer` для прокладки точного маршрута: `[Курьер] -> [Ресторан] -> [Клиент]`.
-  5. Стилизовать Google-карту в темных/фиолетовых тонах (через Map Styling JSON) для сохранения неоновой дизайн-системы проекта.
-* **🔬 Как проверить**: 
-  - Открыть консоль курьера и убедиться, что карта загружается без Leaflet-артефактов.
-  - Принять заказ и проверить, что маршрутная линия следует по изгибам дорог, а не пробивает дома по прямой.
+This roadmap is designed for developer sprints or collaborative AI coding agents. You can hand off these tasks directly to your AI partner to immediately start implementing them.
 
 ---
 
-### 📋 Задача 2: JWT-авторизация пользователей и защита роутов ролями
-* **🎯 Цель**: Защитить доступ к страницам курьеров (`/courier`) и администратора (`/admin`) с помощью логина, пароля и JWT-токенов.
-* **💡 Мотивация**: Сейчас любой пользователь может зайти на диспетчерский пульт или в консоль чужого курьера, просто перейдя по URL. Это нарушает безопасность системы.
-* **🛠️ Шаги для ИИ**:
-  1. Установить на бэкенд библиотеки: `npm install jsonwebtoken bcrypt`.
-  2. Добавить таблицу `users` (в Postgres) или секцию `users` (в `db.json`) с полями: `id, username, password_hash, role (customer/courier/admin)`.
-  3. Написать эндпоинты `/api/auth/register` (с хешированием пароля через `bcrypt`) и `/api/auth/login` (возвращающий подписанный JWT-токен).
-  4. Написать Middleware проверки токена `authenticateToken` на бэкенде и закрыть им мутирующие эндпоинты (например, обновление настроек).
-  5. На фронтенде создать компонент `ProtectedRoute.jsx`, проверяющий наличие токена и роль в контексте авторизации React. Закрыть им маршруты `/admin` и `/courier` в `App.jsx`.
-* **🔬 Как проверить**:
-  - Попытаться зайти на страницу `/admin` неавторизованным. Приложение должно перенаправить на страницу входа `/login`.
-  - Успешно войти под учетной записью администратора и убедиться, что токен сохраняется в куки/localStorage.
+### 📋 Task 1: Real-World Google Maps API Integration
+* **🎯 Goal**: Replace the current Leaflet configuration with Google Maps API.
+* **💡 Motivation**: Leaflet maps currently draw routes in direct vector lines ("as the crow flies"). Replacing them with Google Maps Directions Service will enable calculating actual routes along Poznań's streets, taking travel mode (bicycle, driving, walking) into account and computing real-time durations adjusted for traffic.
+* **🛠️ Implementation Steps**:
+  1. Install the official Google Maps loader: `npm install @googlemaps/js-api-loader`.
+  2. Configure a Google Cloud Console API key and register it in `.env` as `VITE_GOOGLE_MAPS_API_KEY`.
+  3. Refactor `Courier.jsx` and `CustomerMenu.jsx` to mount Google Maps instead of Leaflet.
+  4. Integrate `google.maps.DirectionsService` and `google.maps.DirectionsRenderer` to map real routes from `[Courier] ➔ [Restaurant] ➔ [Customer]`.
+  5. Apply a dark/neon custom JSON styling theme to the Google Map to match the current purple Glassmorphism aesthetics.
+* **🔬 Verification**:
+  - Open the Courier Console; verify maps load cleanly with zero styling fragments.
+  - Accept an order and confirm that the path polyline curves around Poznań streets and does not clip straight through buildings.
 
 ---
 
-### 📋 Задача 3: Переход с React Query Polling на WebSockets (Socket.io)
-* **🎯 Цель**: Обеспечить мгновенную синхронизацию заказов и местоположения курьеров без холостых запросов раз в 3 секунды.
-* **💡 Мотивация**: Сейчас React Query постоянно опрашивает сервер по таймеру. Это создает избыточную нагрузку на бэкенд. Веб-сокеты позволят серверу самостоятельно «пушить» информацию клиентам в момент её изменения.
-* **🛠️ Шаги для ИИ**:
-  1. Установить сокеты: `npm install socket.io` (на бэкенд) и `npm install socket.io-client` (на фронтенд).
-  2. В `server.js` обернуть Express-приложение в HTTP-сервер и инициализировать `socket.io`.
-  3. На бэкенде при каждом создании заказа (`POST /orders`) или изменении статуса (`PATCH /orders/:id`) вызывать `io.emit('order_updated', order)`.
-  4. При изменении GPS-координат курьером слать событие `courier_location` на сервер, чтобы диспетчер видел перемещение курьера на карте в реальном времени.
-  5. На фронтенде настроить слушатель сокетов в корне приложения и вызывать `queryClient.invalidateQueries` или обновлять локальный стейт при получении сокет-событий.
-* **🔬 Как проверить**:
-  - Открыть два вкладки браузера: Клиент и Диспетчер Саппорта.
-  - Оформить заказ на стороне клиента и убедиться, что он моментально появился в таблице саппорта без трехсекундной задержки.
+### 📋 Task 2: JWT Authentication and Role-Based Route Guards
+* **🎯 Goal**: Protect the Courier (`/courier`) and Support Admin (`/admin`) routes behind credential logins and JWT tokens.
+* **💡 Motivation**: Any user can currently access dispatch controls or another courier's route by entering the URL, which is a major security flaw.
+* **🛠️ Implementation Steps**:
+  1. Install security packages on the backend: `npm install jsonwebtoken bcrypt`.
+  2. Add a `users` table schema (in PostgreSQL) or section (in `db.json`) containing `id, username, password_hash, role (customer/courier/admin)`.
+  3. Create backend authentication routes `/api/auth/register` (hashing passwords with `bcrypt`) and `/api/auth/login` (returning signed JWT tokens).
+  4. Write an Express validation middleware `authenticateToken` to secure mutating endpoints (e.g. settings updates, order status patches).
+  5. Create a `ProtectedRoute.jsx` wrapper component on the frontend that reads token claims and checks them against required route roles in React context, routing unauthorized attempts back to `/login`.
+* **🔬 Verification**:
+  - Attempt to access `/admin` while unauthenticated. The app should immediately redirect you to the `/login` screen.
+  - Log in with valid credentials, verify that the token is stored correctly in cookie/localStorage, and confirm that access is successfully granted.
 
 ---
 
-### 📋 Задача 4: Страница истории выполненных заказов и Кошелек курьера
-* **🎯 Цель**: Реализовать для курьера полноценный экран с историей его выполненных заказов и детализацией сменного заработка.
-* **💡 Мотивация**: Курьеру необходимо видеть прозрачную историю своих поездок: сколько он заработал за каждый заказ, какие надбавки (спрос, погода) были начислены, и какой общий баланс доступен к выводу.
-* **🛠️ Шаги для ИИ**:
-  1. На бэкенде расширить схему таблицы `orders` (или свойства объектов в `db.json`), добавив поля `payout_base`, `payout_surcharge`, `payout_coefficient`, `payout_total` для фиксации заработка в момент завершения заказа.
-  2. Добавить эндпоинт `GET /couriers/:id/history` для получения завершенных заказов со статусом `Delivered` для конкретного курьера.
-  3. В интерфейсе `Courier.jsx` добавить красивую вкладку «Мой кошелек» (в Glassmorphic-стиле).
-  4. Отобразить виджет баланса: суммарный доход курьера и количество успешно выполненных доставок.
-  5. Вывести интерактивный список завершенных заказов с указанием даты, адреса, километража и детальной формулы расчета выплаты.
-* **🔬 Как проверить**:
-  - Завершить доставку заказа в консоли курьера (введя код подтверждения).
-  - Зайти во вкладку «Мой кошелек» и убедиться, что баланс увеличился на рассчитанную сумму, а заказ отобразился в списке выполненных с правильной разбивкой на тариф, погоду и коэффициент.
+### 📋 Task 3: Migrate React Query Polling to WebSockets (Socket.io)
+* **🎯 Goal**: Implement instant data synchronization and real-time courier tracking without regular 3-second polling cycles.
+* **💡 Motivation**: Periodic HTTP polling cycles generate a high volume of redundant server requests. Migrating to WebSockets allows the backend to instantly push updates only when changes occur.
+* **🛠️ Implementation Steps**:
+  1. Install socket modules: `npm install socket.io` (backend) and `npm install socket.io-client` (frontend).
+  2. Bind the Express server inside an HTTP server wrapper in `server.js` and initialize `socket.io`.
+  3. On the backend, trigger `io.emit('order_updated', order)` whenever orders are created (`POST /orders`) or updated (`PATCH /orders/:id`).
+  4. Emit `courier_location` socket events when couriers update their GPS position, allowing dispatchers to watch couriers move smoothly across the screen.
+  5. Set up WebSocket event listeners in the React frontend, invalidating relevant React Query keys or updating local page states immediately upon receiving socket alerts.
+* **🔬 Verification**:
+  - Open two separate browser tabs: the Customer page and the Support dashboard.
+  - Create a new order as a customer and verify that it instantly appears in the Support queue with zero latency.
+
+---
+
+### 📋 Task 4: Completed Order History and Courier Earnings Wallet
+* **🎯 Goal**: Equip couriers with a dedicated history screen documenting completed tasks and full earnings breakdowns.
+* **💡 Motivation**: Couriers need full transparency into their historical shifts—visualizing their base pay, weather bonuses, active demand rates, and total withdrawable balance.
+* **🛠️ Implementation Steps**:
+  1. Extend the backend `orders` schemas to store historical financials when an order completes: `payout_base`, `payout_surcharge`, `payout_coefficient`, and `payout_total`.
+  2. Implement an Express endpoint `GET /couriers/:id/history` filtering for completed orders (`Delivered` status) under the specific courier's ID.
+  3. Create a visually striking "My Earnings" Glassmorphism card/tab in `Courier.jsx`.
+  4. Render aggregated metrics: total lifetime earnings and number of successfully completed deliveries.
+  5. Create an interactive log tracking completed deliveries showing dates, dropoff coordinates, travel distance, and full price calculation breakdowns.
+* **🔬 Verification**:
+  - Fulfill an order in the Courier page (entering the 4-digit verification code).
+  - Open the "My Earnings" panel, verify that the total balance increases by the exact calculated payout, and confirm that the delivery appears in the log list with accurate breakdown metrics.

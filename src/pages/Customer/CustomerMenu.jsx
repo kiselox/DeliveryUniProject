@@ -23,7 +23,6 @@ export default function CustomerMenu() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   
-  // Checkout address & pinning states
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [deliveryLat, setDeliveryLat] = useState(52.4140);
   const [deliveryLng, setDeliveryLng] = useState(16.9295);
@@ -33,15 +32,12 @@ export default function CustomerMenu() {
   const [phone, setPhone] = useState('');
   const [notes, setNotes] = useState('');
 
-  // Map refs
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
   const markerRef = useRef(null);
 
-  // Custom hook for orders
   const { orders = [], createOrder, isCreating } = useOrders();
 
-  // Find any active order for the client to chat about (most recent one first)
   const activeOrder = [...orders].reverse().find(o => 
     o.customerId === customerId && 
     o.status !== "Delivered" && 
@@ -55,7 +51,6 @@ export default function CustomerMenu() {
 
   const hasInitializedRef = useRef(false);
 
-  // Sync customer address info once loaded
   useEffect(() => {
     if (customer && !hasInitializedRef.current) {
       setTimeout(() => {
@@ -112,7 +107,6 @@ export default function CustomerMenu() {
 
   const totalItems = Object.values(cart).reduce((sum, q) => sum + q, 0);
 
-  // Search and category filtering
   const filteredMenu = vendor?.menu.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -123,7 +117,7 @@ export default function CustomerMenu() {
   const handleCheckout = async () => {
     if (totalItems === 0) return;
     if (!phone.trim()) {
-      alert('Пожалуйста, введите номер телефона получателя для связи с курьером!');
+      alert("Please enter the recipient's phone number to connect with the courier!");
       return;
     }
     
@@ -138,7 +132,7 @@ export default function CustomerMenu() {
       vendorName: vendor.name,
       items: itemsString,
       status: "Ready for Pickup",
-      distance: 0, // Calculated automatically by the backend using PostGIS / Haversine!
+      distance: 0,
       fee: totalFee,
       totalPrice: orderTotal + totalFee,
       courierId: null,
@@ -156,7 +150,6 @@ export default function CustomerMenu() {
     try {
       await createOrder(orderData);
       
-      // Auto-save delivery details to customer profile for future convenience
       try {
         await customerServices.updateCustomer(customerId, {
           address: deliveryAddress,
@@ -172,18 +165,18 @@ export default function CustomerMenu() {
         console.error('Failed to auto-save delivery details to customer profile:', profileSaveErr);
       }
 
-      alert('Заказ успешно оформлен и передан курьеру!');
+      alert('Order successfully placed and sent to the courier!');
       setCart({});
       setIsCartOpen(false);
       navigate(`/customer/${customerId}`);
     } catch (err) {
-      alert('Ошибка при создании заказа: ' + err.message);
+      alert('Error creating order: ' + err.message);
     }
   };
 
   const handleGetCurrentPosition = () => {
     if (!navigator.geolocation) {
-      alert("Геолокация не поддерживается вашим браузером.");
+      alert("Geolocation is not supported by your browser.");
       return;
     }
     
@@ -194,9 +187,8 @@ export default function CustomerMenu() {
         
         setDeliveryLat(lat);
         setDeliveryLng(lng);
-        setDeliveryAddress("Моя геопозиция");
+        setDeliveryAddress("My location");
         
-        // Update Leaflet map and marker
         if (mapRef.current) {
           mapRef.current.setView([lat, lng], 15);
         }
@@ -205,13 +197,12 @@ export default function CustomerMenu() {
         }
       },
       (error) => {
-        alert("Не удалось определить вашу геопозицию: " + error.message);
+        alert("Unable to determine your location: " + error.message);
       },
       { enableHighAccuracy: true, timeout: 8000 }
     );
   };
 
-  // Smart Reorder Cart Parser
   useEffect(() => {
     const reorderVendorId = localStorage.getItem('reorder_vendor_id');
     const reorderItemsStr = localStorage.getItem('reorder_items');
@@ -246,10 +237,8 @@ export default function CustomerMenu() {
     }
   }, [vendor, vendorId]);
 
-  // Leaflet Micro-map initialization when checkout modal opens
   useEffect(() => {
     if (!isCartOpen) {
-      // Clean up map when modal is closed
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
@@ -311,10 +300,9 @@ export default function CustomerMenu() {
     };
   }, [isCartOpen, deliveryLat, deliveryLng]);
 
-  if (isLoading) return <div className="customer-container">Загрузка меню ресторана…</div>;
-  if (isError || !vendor) return <div className="customer-container">Ошибка загрузки ресторана!</div>;
+  if (isLoading) return <div className="customer-container">Loading restaurant menu...</div>;
+  if (isError || !vendor) return <div className="customer-container">Error loading restaurant!</div>;
 
-  // Cart modal calculation data
   const cartItemsData = vendor.menu.filter(item => cart[item.id] > 0);
   const totalFoodPrice = cartItemsData.reduce((sum, item) => sum + (item.price * cart[item.id]), 0);
 
@@ -326,7 +314,7 @@ export default function CustomerMenu() {
       />
 
       <button className="btn-back" onClick={() => navigate(-1)}>
-        ← Назад к ресторанам
+        ← Back to restaurants
       </button>
 
       <div className="vendor-hero">
@@ -366,11 +354,11 @@ export default function CustomerMenu() {
       <div className="menu-section">
         <div className="menu-categories-tabs">
           {[
-            { id: 'all', name: 'Все' },
-            { id: 'mains', name: 'Основное' },
-            { id: 'sides', name: 'Закуски и гарниры' },
-            { id: 'desserts', name: 'Десерты' },
-            { id: 'drinks', name: 'Напитки' }
+            { id: 'all', name: 'All' },
+            { id: 'mains', name: 'Mains' },
+            { id: 'sides', name: 'Sides & Starters' },
+            { id: 'desserts', name: 'Desserts' },
+            { id: 'drinks', name: 'Drinks' }
           ].map(cat => (
             <button
               key={cat.id}
@@ -383,14 +371,14 @@ export default function CustomerMenu() {
         </div>
 
         <h3 className="section-title">
-          {activeCategory === 'all' ? 'Популярные блюда' : 
-           activeCategory === 'mains' ? 'Основное меню' :
-           activeCategory === 'sides' ? 'Закуски и гарниры' :
-           activeCategory === 'desserts' ? 'Сладкие десерты' : 'Освежающие напитки'}
+          {activeCategory === 'all' ? 'Popular Dishes' : 
+           activeCategory === 'mains' ? 'Main Menu' :
+           activeCategory === 'sides' ? 'Sides & Starters' :
+           activeCategory === 'desserts' ? 'Sweet Desserts' : 'Refreshing Drinks'}
         </h3>
         
         {filteredMenu.length === 0 ? (
-          <p>Ничего не найдено по вашему запросу "{searchTerm}"</p>
+          <p>Nothing found for your request "{searchTerm}"</p>
         ) : (
           <div className="menu-grid">
             {filteredMenu.map(item => (
@@ -406,7 +394,7 @@ export default function CustomerMenu() {
         )}
       </div>
 
-      {/* Floating Cart Button */}
+      {}
       <button 
         className="floating-cart-btn" 
         onClick={() => setIsCartOpen(true)}
@@ -416,7 +404,7 @@ export default function CustomerMenu() {
         {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
       </button>
 
-      {/* Refactored Cart Drawer Modal */}
+      {}
       <CartDrawer 
         isCartOpen={isCartOpen}
         setIsCartOpen={setIsCartOpen}
@@ -456,7 +444,7 @@ export default function CustomerMenu() {
       <SupportChatWidget 
         userType="customer"
         userId={customerId}
-        userName={customer?.name || "Клиент"}
+        userName={customer?.name || "Customer"}
         activeOrderId={activeOrder?.id}
         activeOrderVendor={activeOrder?.vendorName}
       />

@@ -1,4 +1,3 @@
-// src/pages/Courier/components/EarningsDashboard.jsx
 import { useState } from 'react';
 
 export default function EarningsDashboard({ completedOrders = [], calculatePayout }) {
@@ -17,7 +16,7 @@ export default function EarningsDashboard({ completedOrders = [], calculatePayou
       textAlign: 'left',
       transition: 'all 0.3s ease'
     }}>
-      {/* Header toggle row */}
+      {}
       <div 
         onClick={() => setIsEarningsOpen(!isEarningsOpen)}
         style={{ 
@@ -29,14 +28,14 @@ export default function EarningsDashboard({ completedOrders = [], calculatePayou
         }}
       >
         <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', color: '#333' }}>
-          📊 Мой доход за сегодня
+          📊 My Earnings Today
         </h3>
         <span style={{ fontSize: '14px', color: '#aa3bff', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px' }}>
-          {isEarningsOpen ? 'Свернуть ▲' : 'Подробнее ▼'}
+          {isEarningsOpen ? 'Collapse ▲' : 'Details ▼'}
         </span>
       </div>
 
-      {/* Quick stats grid */}
+      {}
       <div style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr 1fr',
@@ -45,24 +44,24 @@ export default function EarningsDashboard({ completedOrders = [], calculatePayou
         borderTop: '1px solid #eee',
         paddingTop: '15px'
       }}>
-        {/* Earnings column */}
+        {}
         <div style={{ background: 'rgba(0,210,106,0.05)', border: '1px solid rgba(0,210,106,0.12)', padding: '10px', borderRadius: '12px', textAlign: 'center' }}>
-          <span style={{ fontSize: '11px', color: '#555', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>Заработано</span>
+          <span style={{ fontSize: '11px', color: '#555', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>Earned</span>
           <strong style={{ fontSize: '18px', color: '#00aa54' }}>{totalEarnings} PLN</strong>
         </div>
-        {/* Deliveries count */}
+        {}
         <div style={{ background: 'rgba(74,144,226,0.05)', border: '1px solid rgba(74,144,226,0.12)', padding: '10px', borderRadius: '12px', textAlign: 'center' }}>
-          <span style={{ fontSize: '11px', color: '#555', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>Доставки</span>
-          <strong style={{ fontSize: '18px', color: '#2575fc' }}>{completedOrders.length} шт</strong>
+          <span style={{ fontSize: '11px', color: '#555', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>Deliveries</span>
+          <strong style={{ fontSize: '18px', color: '#2575fc' }}>{completedOrders.length} orders</strong>
         </div>
-        {/* Distance count */}
+        {}
         <div style={{ background: 'rgba(170,59,255,0.05)', border: '1px solid rgba(170,59,255,0.12)', padding: '10px', borderRadius: '12px', textAlign: 'center' }}>
-          <span style={{ fontSize: '11px', color: '#555', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>Пробег</span>
-          <strong style={{ fontSize: '18px', color: '#8c31d8' }}>{totalDistance.toFixed(1)} км</strong>
+          <span style={{ fontSize: '11px', color: '#555', display: 'block', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>Distance</span>
+          <strong style={{ fontSize: '18px', color: '#8c31d8' }}>{totalDistance.toFixed(1)} km</strong>
         </div>
       </div>
 
-      {/* Detailed deliveries list (expandable) */}
+      {}
       {isEarningsOpen && (
         <div style={{
           marginTop: '15px',
@@ -77,7 +76,7 @@ export default function EarningsDashboard({ completedOrders = [], calculatePayou
         }}>
           {completedOrders.length === 0 ? (
             <div style={{ padding: '20px 0', textAlign: 'center', color: '#777', fontSize: '13px' }}>
-              У вас пока нет выполненных заказов за сегодня. 🛵
+              You have no completed orders today yet. 🛵
             </div>
           ) : (
             completedOrders.map(order => {
@@ -105,7 +104,7 @@ export default function EarningsDashboard({ completedOrders = [], calculatePayou
                     <div style={{ display: 'flex', gap: '8px', fontSize: '11px', color: '#666', marginTop: '2px' }}>
                       <span>🍕 #{order.id.slice(-4).toUpperCase()}</span>
                       <span>⏱️ {order.createdAt}</span>
-                      <span>🛣️ {order.distance} км</span>
+                      <span>🛣️ {order.distance} km</span>
                     </div>
                   </div>
                   <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#00aa54' }}>
